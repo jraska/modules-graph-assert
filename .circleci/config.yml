@@ -1,0 +1,28 @@
+version: 2
+jobs:
+  build:
+    environment:
+      _JAVA_OPTIONS: "-Xmx4g"
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8u222-jdk
+    steps:
+      - checkout
+      - restore_cache:
+          key: cache-{{ checksum "build.gradle" }}-{{ checksum  "plugin/build.gradle" }}
+      - run:
+          name: Run checks
+          command: ./gradlew check --no-daemon
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "plugin/build.gradle" }}
+      - store_artifacts:
+          path: plugin/build/reports
+          destination: plugin/reports
+      - store_test_results:
+          path: plugin/build/test-results
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build
