@@ -1,4 +1,4 @@
-package com.jraska.module.graph.plugin
+package com.jraska.module.graph.assertion
 
 open class GraphRulesExtension {
   var appModuleName = ":app"

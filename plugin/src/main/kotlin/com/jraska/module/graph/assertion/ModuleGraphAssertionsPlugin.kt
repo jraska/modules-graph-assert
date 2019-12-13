@@ -1,15 +1,16 @@
-package com.jraska.module.graph.plugin
+package com.jraska.module.graph.assertion
 
-import com.jraska.module.graph.plugin.tasks.AssertLayersOrderTask
-import com.jraska.module.graph.plugin.tasks.AssertModuleTreeHeightTask
-import com.jraska.module.graph.plugin.tasks.AssertNoInLayerDependencies
-import com.jraska.module.graph.plugin.tasks.GenerateModulesGraphTask
-import com.jraska.module.graph.plugin.Api.Tasks
+import com.jraska.module.graph.assertion.Api.Tasks
+import com.jraska.module.graph.assertion.tasks.AssertLayersOrderTask
+import com.jraska.module.graph.assertion.tasks.AssertModuleTreeHeightTask
+import com.jraska.module.graph.assertion.tasks.AssertNoInLayerDependencies
+import com.jraska.module.graph.assertion.tasks.GenerateModulesGraphTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
-import java.util.Locale
+import java.util.*
 
 @Suppress("unused", "UnstableApiUsage") // Used as plugin
 class ModuleGraphAssertionsPlugin : Plugin<Project> {
@@ -27,7 +28,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
     val allAssertionsTask = project.tasks.create(Tasks.ASSERT_ALL)
     allAssertionsTask.group = VERIFICATION_GROUP
-    project.tasks.find { it.name == Api.CHECK_TASK }?.dependsOn(allAssertionsTask)
+    project.tasks.find { it.name == CHECK_TASK_NAME }?.dependsOn(allAssertionsTask)
 
     project.addMaxHeightTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }
     project.addModuleLayersTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }

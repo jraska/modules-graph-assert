@@ -1,6 +1,6 @@
-package com.jraska.module.graph.plugin.tasks
+package com.jraska.module.graph.assertion.tasks
 
-import com.jraska.module.graph.plugin.GradleDependencyGraphFactory
+import com.jraska.module.graph.assertion.GradleDependencyGraphFactory
 import com.jraska.module.graph.GraphvizWriter
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input

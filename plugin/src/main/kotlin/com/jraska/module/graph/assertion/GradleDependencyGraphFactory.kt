@@ -1,4 +1,4 @@
-package com.jraska.module.graph.plugin
+package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
 import org.gradle.api.Project

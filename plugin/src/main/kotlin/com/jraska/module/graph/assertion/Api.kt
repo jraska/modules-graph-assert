@@ -1,4 +1,4 @@
-package com.jraska.module.graph.plugin
+package com.jraska.module.graph.assertion
 
 object Api {
   object Tasks {
@@ -10,8 +10,6 @@ object Api {
     const val ASSERT_NO_IN_LAYER_PREFIX = "assertNoDependenciesWithin"
   }
 
-  const val CHECK_TASK = "check"
-
-  const val EXTENSION_ROOT = "moduleGraphRules"
+  const val EXTENSION_ROOT = "modulesGraphAssert"
 }
 
