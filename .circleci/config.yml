@@ -15,7 +15,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "plugin/build.gradle" }}
+          key: cache-{{ checksum "build.gradle" }}-{{ checksum  "plugin/build.gradle" }}
       - store_artifacts:
           path: plugin/build/reports
           destination: plugin/reports
