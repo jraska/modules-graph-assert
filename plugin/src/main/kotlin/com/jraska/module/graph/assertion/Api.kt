@@ -10,6 +10,6 @@ object Api {
     const val ASSERT_NO_IN_LAYER_PREFIX = "assertNoDependenciesWithin"
   }
 
-  const val EXTENSION_ROOT = "modulesGraphAssert"
+  const val EXTENSION_ROOT = "moduleGraphAssert"
 }
 

@@ -65,7 +65,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   }
 
   private fun Project.addInLayerDependencyTasks(graphRules: GraphRulesExtension): List<Task> {
-    return graphRules.restrinctInLayerDependencies.map { layerPrefix ->
+    return graphRules.restrictInLayerDependencies.map { layerPrefix ->
       val taskNameSuffix = layerPrefix.replace(":", "").capitalizeFirst()
       val task = tasks.create("${Tasks.ASSERT_NO_IN_LAYER_PREFIX}$taskNameSuffix", AssertNoInLayerDependencies::class.java)
       task.layerPrefix = layerPrefix
