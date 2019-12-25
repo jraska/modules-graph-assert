@@ -13,7 +13,7 @@ buildscript {
     maven { url "https://plugins.gradle.org/m2/" }
   }
   dependencies {
-    classpath 'gradle.plugin.modules-graph-assert:plugin:0.1.1'
+    classpath 'gradle.plugin.modules-graph-assert:plugin:0.2.0'
   }
 }
 
@@ -27,4 +27,14 @@ moduleGraphAssert {
   moduleLayersFromTheTop = [":feature", ":lib", ":core"]
   restrictInLayerDependencies = [":feature", ":lib"]
 }
+```
+
+### Helper Graphviz Graph Export
+- Visualising graph could be useful to see the dependency problem, therefore helper `generateModulesGrapvizText` is included.
+- By default it generates graph of all modules in a project.
+- Longest path of the project is in red.
+- Adding parameter `modules.graph.print.statistics` prints also information about the graph.
+- You can set `modules.graph.of.module` parameter if you want only subgraph of total graph.
+```
+./gradlew generateModulesGrapvizText -Pmodules.graph.print.statistics=true -Pmodules.graph.of.module=:feature-one
 ```
