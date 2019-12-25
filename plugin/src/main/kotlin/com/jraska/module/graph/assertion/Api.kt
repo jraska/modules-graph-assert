@@ -10,6 +10,11 @@ object Api {
     const val ASSERT_NO_IN_LAYER_PREFIX = "assertNoDependenciesWithin"
   }
 
+  object Parameters {
+    const val PRINT_STATISTICS = "modules.graph.print.statistics"
+    const val PRINT_ONLY_MODULE = "modules.graph.print.module"
+  }
+  
   const val EXTENSION_ROOT = "moduleGraphAssert"
 }
 
