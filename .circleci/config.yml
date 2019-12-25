@@ -32,7 +32,7 @@ jobs:
           key: cache-{{ checksum "build.gradle" }}-{{ checksum  "plugin/build.gradle" }}
       - run:
           name: Deploy Gradle Plugin
-          command: ./gradlew publishPlugins -Pgradle.publish.key=PUBLISH_KEY -Pgradle.publish.secret=PUBLISH_SECRET --no-daemon
+          command: ./gradlew publishPlugins -Pgradle.publish.key=$PUBLISH_KEY -Pgradle.publish.secret=$PUBLISH_SECRET --no-daemon
       - save_cache:
           paths:
             - ~/.gradle
