@@ -1,4 +1,4 @@
-version: 2
+version: 2.4.4
 jobs:
   check:
     environment:
@@ -42,6 +42,9 @@ workflows:
   workflow:
     jobs:
       - check
+          filters:  # required since `deploy` has tag filters AND requires `check` https://circleci.com/docs/2.0/workflows/#executing-workflows-for-a-git-tag
+            tags:
+              only: /.*/
       - deploy:
           requires:
             - check
