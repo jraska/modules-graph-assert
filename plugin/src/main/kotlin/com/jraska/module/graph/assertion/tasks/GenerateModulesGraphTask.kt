@@ -26,15 +26,17 @@ open class GenerateModulesGraphTask : DefaultTask() {
   private fun createDependencyGraph(): DependencyGraph {
     val dependencyGraph = GradleDependencyGraphFactory.create(project)
 
-    val moduleName = project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
-    if (moduleName != null) {
-      return dependencyGraph.subTree(moduleName)
+    if (project.hasProperty(Api.Parameters.PRINT_ONLY_MODULE)) {
+      val moduleName = project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
+      if (moduleName != null) {
+        return dependencyGraph.subTree(moduleName)
+      }
     }
 
     return dependencyGraph
   }
 
   private fun shouldPrintStatistics(): Boolean {
-    return project.property(Api.Parameters.PRINT_STATISTICS) == true
+    return project.hasProperty(Api.Parameters.PRINT_STATISTICS) && project.property(Api.Parameters.PRINT_STATISTICS) == "true"
   }
 }
