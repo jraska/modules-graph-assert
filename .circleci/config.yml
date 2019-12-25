@@ -46,7 +46,7 @@ workflows:
           requires:
             - check
           filters:
-#            branches:
-#              ignore: /.*/
+            branches:
+              ignore: /.*/
             tags:
               only: /[0-9]{1,}.[0-9]{1,}.[0-9]{1,}/
