@@ -12,7 +12,7 @@ object Api {
 
   object Parameters {
     const val PRINT_STATISTICS = "modules.graph.print.statistics"
-    const val PRINT_ONLY_MODULE = "modules.graph.print.module"
+    const val PRINT_ONLY_MODULE = "modules.graph.of.module"
   }
   
   const val EXTENSION_ROOT = "moduleGraphAssert"
