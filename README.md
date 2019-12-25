@@ -13,7 +13,7 @@ buildscript {
     maven { url "https://plugins.gradle.org/m2/" }
   }
   dependencies {
-    classpath 'gradle.plugin.modules-graph-assert:plugin:0.2.0'
+    classpath 'gradle.plugin.modules-graph-assert:plugin:0.2.1'
   }
 }
 
