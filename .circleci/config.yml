@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  check:
     environment:
       _JAVA_OPTIONS: "-Xmx4g"
     docker: # run the steps with Docker
@@ -21,8 +21,32 @@ jobs:
           destination: plugin/reports
       - store_test_results:
           path: plugin/build/test-results
+  deploy:
+    environment:
+      _JAVA_OPTIONS: "-Xmx4g"
+    docker:
+      - image: circleci/openjdk:8u222-jdk
+    steps:
+      - checkout
+      - restore_cache:
+          key: cache-{{ checksum "build.gradle" }}-{{ checksum  "plugin/build.gradle" }}
+      - run:
+          name: Deploy Gradle Plugin
+          command: ./gradlew publishPlugins -Pgradle.publish.key=$PUBLISH_KEY -Pgradle.publish.secret=$PUBLISH_SECRET --no-daemon
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: cache-{{ checksum "build.gradle" }}-{{ checksum  "plugin/build.gradle" }}
 workflows:
   version: 2
   workflow:
     jobs:
-      - build
+      - check
+      - deploy:
+          requires:
+            - check
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /[0-9]{1,}.[0-9]{1,}.[0-9]{1,}/
