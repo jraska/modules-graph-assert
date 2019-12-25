@@ -1,5 +1,5 @@
 plugins {
-  id('com.jraska.module.graph.assertion') version "0.1.1"
+  id('com.jraska.module.graph.assertion') version "0.2.0"
 }
 
 apply plugin: 'java-library'
