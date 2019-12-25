@@ -1,7 +1,9 @@
 package com.jraska.module.graph.assertion.tasks
 
-import com.jraska.module.graph.assertion.GradleDependencyGraphFactory
+import com.jraska.module.graph.DependencyGraph
 import com.jraska.module.graph.GraphvizWriter
+import com.jraska.module.graph.assertion.Api
+import com.jraska.module.graph.assertion.GradleDependencyGraphFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
@@ -12,9 +14,29 @@ open class GenerateModulesGraphTask : DefaultTask() {
 
   @TaskAction
   fun run() {
-    val allModulesTree = GradleDependencyGraphFactory.create(project)
+    val dependencyGraph = createDependencyGraph()
 
-    println(allModulesTree.statistics())
-    println(GraphvizWriter.toGraphviz(allModulesTree, layers.toSet()))
+    if (shouldPrintStatistics()) {
+      println(dependencyGraph.statistics())
+    }
+
+    println(GraphvizWriter.toGraphviz(dependencyGraph, layers.toSet()))
+  }
+
+  private fun createDependencyGraph(): DependencyGraph {
+    val dependencyGraph = GradleDependencyGraphFactory.create(project)
+
+    if (project.hasProperty(Api.Parameters.PRINT_ONLY_MODULE)) {
+      val moduleName = project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
+      if (moduleName != null) {
+        return dependencyGraph.subTree(moduleName)
+      }
+    }
+
+    return dependencyGraph
+  }
+
+  private fun shouldPrintStatistics(): Boolean {
+    return project.hasProperty(Api.Parameters.PRINT_STATISTICS) && project.property(Api.Parameters.PRINT_STATISTICS) == "true"
   }
 }

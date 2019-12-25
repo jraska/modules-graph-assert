@@ -1,0 +1,19 @@
+plugins {
+  id('com.jraska.module.graph.assertion') version "0.1.1"
+}
+
+apply plugin: 'java-library'
+
+dependencies {
+  implementation project(':feature-one')
+  implementation project(':feature-two')
+  implementation project(':lib')
+
+  implementation 'javax.inject:javax.inject:1'
+}
+
+moduleGraphAssert {
+  maxHeight = 3
+  moduleLayersFromTheTop = [":feature", ":lib", ":core"]
+  restrictInLayerDependencies = [":feature", ":lib"]
+}
