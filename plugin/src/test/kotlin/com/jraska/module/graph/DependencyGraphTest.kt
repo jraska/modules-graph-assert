@@ -48,7 +48,7 @@ class DependencyGraphTest {
   }
 
   @Test
-  fun createSubtreeProperly() {
+  fun createsSubtreeProperly() {
     val dependencyTree = DependencyGraph.create(
       listOf(
         "feature" to "lib",
@@ -67,7 +67,7 @@ class DependencyGraphTest {
   }
 
   @Test
-  fun createCountStatisticsWell() {
+  fun countsStatisticsWell() {
     val dependencyTree = DependencyGraph.create(
       listOf(
         ":app" to ":core",
