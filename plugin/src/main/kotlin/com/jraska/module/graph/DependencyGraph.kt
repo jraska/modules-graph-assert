@@ -107,5 +107,9 @@ class DependencyGraph() {
       dependencies.forEach { graph.addEdge(it.first, it.second) }
       return graph
     }
+
+    fun create(vararg dependencies: Pair<String, String>): DependencyGraph {
+      return create(dependencies.asList())
+    }
   }
 }

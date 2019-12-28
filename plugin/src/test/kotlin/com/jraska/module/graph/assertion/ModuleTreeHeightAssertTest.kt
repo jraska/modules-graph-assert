@@ -28,12 +28,10 @@ class ModuleTreeHeightAssertTest {
 
   private fun testGraph(): DependencyGraph {
     return DependencyGraph.create(
-      listOf(
-        "app" to "feature",
-        "app" to "lib",
-        "feature" to "lib",
-        "lib" to "core"
-      )
+      "app" to "feature",
+      "app" to "lib",
+      "feature" to "lib",
+      "lib" to "core"
     )
   }
 }

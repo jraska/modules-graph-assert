@@ -2,7 +2,6 @@ package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
 import org.gradle.api.GradleException
-import org.gradle.api.tasks.TaskAction
 
 class NoInLayerDependencyAssert(
   private val layerPrefix: String

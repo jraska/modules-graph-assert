@@ -29,16 +29,14 @@ class NoInLayerDependencyAssertTest {
 
   private fun testGraph(): DependencyGraph {
     return DependencyGraph.create(
-      listOf(
-        "app" to "feature",
-        "app" to "feature2",
-        "app" to "lib",
-        "feature" to "lib",
-        "feature" to "lib2",
-        "feature" to "feature2",
-        "lib" to "core",
-        "lib2" to "core"
-      )
+      "app" to "feature",
+      "app" to "feature2",
+      "app" to "lib",
+      "feature" to "lib",
+      "feature" to "lib2",
+      "feature" to "feature2",
+      "lib" to "core",
+      "lib2" to "core"
     )
   }
 }
