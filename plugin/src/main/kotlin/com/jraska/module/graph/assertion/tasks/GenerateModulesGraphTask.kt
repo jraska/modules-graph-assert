@@ -9,8 +9,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-private const val GRAPH_VIZ_FILE_EXTENSION = ".gv"
-
 open class GenerateModulesGraphTask : DefaultTask() {
   @Input
   var layers: Array<String> = emptyArray()
@@ -55,11 +53,6 @@ open class GenerateModulesGraphTask : DefaultTask() {
   }
 
   private fun getOutputFile(): File {
-    val file = File(project.property(Api.Parameters.OUTPUT_PATH).toString())
-    return if (file.extension.isEmpty()) {
-      File("${file.path}${GRAPH_VIZ_FILE_EXTENSION}")
-    } else {
-      file
-    }
+    return File(project.property(Api.Parameters.OUTPUT_PATH).toString())
   }
 }
