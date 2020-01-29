@@ -7,6 +7,7 @@ import com.jraska.module.graph.assertion.GradleDependencyGraphFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 open class GenerateModulesGraphTask : DefaultTask() {
   @Input
@@ -19,8 +20,16 @@ open class GenerateModulesGraphTask : DefaultTask() {
     if (shouldPrintStatistics()) {
       println(dependencyGraph.statistics())
     }
+    val graphviz = GraphvizWriter.toGraphviz(dependencyGraph, layers.toSet())
 
-    println(GraphvizWriter.toGraphviz(dependencyGraph, layers.toSet()))
+    if (shouldOutputFile()) {
+      getOutputFile().apply {
+          println("GraphViz saved to $path")
+          writeText(graphviz)
+        }
+    } else {
+      println(graphviz)
+    }
   }
 
   private fun createDependencyGraph(): DependencyGraph {
@@ -38,5 +47,12 @@ open class GenerateModulesGraphTask : DefaultTask() {
 
   private fun shouldPrintStatistics(): Boolean {
     return project.hasProperty(Api.Parameters.PRINT_STATISTICS) && project.property(Api.Parameters.PRINT_STATISTICS) == "true"
+  }
+  private fun shouldOutputFile(): Boolean {
+    return project.hasProperty(Api.Parameters.OUTPUT_PATH)
+  }
+
+  private fun getOutputFile(): File {
+    return File(project.property(Api.Parameters.OUTPUT_PATH).toString())
   }
 }

@@ -38,3 +38,7 @@ moduleGraphAssert {
 ```
 ./gradlew generateModulesGrapvizText -Pmodules.graph.print.statistics=true -Pmodules.graph.of.module=:feature-one
 ```
+- Adding parameter `modules.graph.output.gv` saves the graphViz file to specified path
+```
+./gradlew generateModulesGrapvizText -Pmodules.graph.output.gv=all_modules
+```
