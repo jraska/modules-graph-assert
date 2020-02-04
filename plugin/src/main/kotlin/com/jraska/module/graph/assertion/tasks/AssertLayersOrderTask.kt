@@ -10,10 +10,13 @@ open class AssertLayersOrderTask : DefaultTask() {
   @Input
   lateinit var layersFromTheTop: Array<String>
 
+  @Input
+  lateinit var excludedForCheck: Set<Pair<String, String>>
+
   @TaskAction
   fun run() {
     val modulesGraph = GradleDependencyGraphFactory.create(project)
 
-    LayersOrderAssert(layersFromTheTop).assert(modulesGraph)
+    LayersOrderAssert(layersFromTheTop, excludedForCheck).assert(modulesGraph)
   }
 }

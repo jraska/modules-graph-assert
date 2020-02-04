@@ -10,10 +10,13 @@ open class AssertNoInLayerDependencies : DefaultTask() {
   @Input
   lateinit var layerPrefix: String
 
+  @Input
+  lateinit var excludedForCheck: Set<Pair<String, String>>
+
   @TaskAction
   fun run() {
     val modulesGraph = GradleDependencyGraphFactory.create(project)
 
-    NoInLayerDependencyAssert(layerPrefix).assert(modulesGraph)
+    NoInLayerDependencyAssert(layerPrefix, excludedForCheck).assert(modulesGraph)
   }
 }

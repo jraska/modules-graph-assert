@@ -4,7 +4,8 @@ import com.jraska.module.graph.DependencyGraph
 import org.gradle.api.GradleException
 
 class LayersOrderAssert(
-  private val layersFromTheTop: Array<String>
+  private val layersFromTheTop: Array<String>,
+  private val excludedForCheck: Set<Pair<String, String>> = emptySet()
 ) {
 
   fun assert(dependencyGraph: DependencyGraph) {
@@ -12,15 +13,18 @@ class LayersOrderAssert(
 
     val againstLayerDependencies = dependencyGraph.nodes()
       .flatMap { parent -> parent.dependsOn.map { dependency -> parent to dependency } }
+      .map { it.first.key to it.second.key }
       .filter { isRestrictedDependency(it) }
+      .filterNot { excludedForCheck.contains(it) }
+
 
     if (againstLayerDependencies.isNotEmpty()) {
       throw GradleException(buildErrorMessage(againstLayerDependencies))
     }
   }
 
-  private fun buildErrorMessage(againstLayerDependencies: List<Pair<DependencyGraph.Node, DependencyGraph.Node>>): String {
-    val errorsMessage = againstLayerDependencies.joinToString("\n") { " Module '${it.first.key}' cannot depend on '${it.second.key}'." }
+  private fun buildErrorMessage(againstLayerDependencies: List<Pair<String, String>>): String {
+    val errorsMessage = againstLayerDependencies.joinToString("\n") { " Module '${it.first}' cannot depend on '${it.second}'." }
 
     return "Dependencies against direction of layers '${layersDependencyString()}' are not allowed. The violating dependencies are: \n$errorsMessage"
   }
@@ -38,9 +42,9 @@ class LayersOrderAssert(
     }
   }
 
-  private fun isRestrictedDependency(dependency: Pair<DependencyGraph.Node, DependencyGraph.Node>): Boolean {
-    val higherLayerIndex = layerIndex(dependency.first.key) ?: return false
-    val lowerLayerIndex = layerIndex(dependency.second.key) ?: return false
+  private fun isRestrictedDependency(dependency: Pair<String, String>): Boolean {
+    val higherLayerIndex = layerIndex(dependency.first) ?: return false
+    val lowerLayerIndex = layerIndex(dependency.second) ?: return false
 
     return higherLayerIndex > lowerLayerIndex
   }
