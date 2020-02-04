@@ -9,7 +9,7 @@ class LayersOrderAssertTest {
   fun passesOnCorrectTree() {
     val dependencyGraph = testGraph()
 
-    LayersOrderAssert(arrayOf("feature", "lib", "core")).assert(dependencyGraph)
+    LayersOrderAssert(arrayOf("feature", "lib", "core"), setOf("lib" to "feature2")).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
@@ -30,8 +30,10 @@ class LayersOrderAssertTest {
     return DependencyGraph.create(
       "app" to "feature",
       "app" to "lib",
+      "feature2" to "core",
       "feature" to "lib",
-      "lib" to "core"
+      "lib" to "core",
+      "lib" to "feature2"
     )
   }
 }

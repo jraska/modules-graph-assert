@@ -26,7 +26,7 @@ class LayersOrderAssert(
   private fun buildErrorMessage(againstLayerDependencies: List<Pair<String, String>>): String {
     val errorsMessage = againstLayerDependencies.joinToString("\n") { " Module '${it.first}' cannot depend on '${it.second}'." }
 
-    return "Dependencies against direction of layers '${layersDependencyString()}' are not allowed. The violating dependencies are: \n$errorsMessage"
+    return "Direction of layers '${layersDependencyString()}' violated. The violating dependencies are: \n$errorsMessage"
   }
 
   private fun layersDependencyString(): String {

@@ -17,7 +17,7 @@ class NoInLayerDependencyAssertTest {
   fun passesOnCoreLayer() {
     val dependencyGraph = testGraph()
 
-    NoInLayerDependencyAssert("core").assert(dependencyGraph)
+    NoInLayerDependencyAssert("core", setOf("core-android" to "core")).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
@@ -36,7 +36,8 @@ class NoInLayerDependencyAssertTest {
       "feature" to "lib2",
       "feature" to "feature2",
       "lib" to "core",
-      "lib2" to "core"
+      "lib2" to "core-android",
+      "core-android" to "core"
     )
   }
 }
