@@ -9,12 +9,11 @@ class NoInLayerDependencyAssert(
 ) {
 
   fun assert(modulesTree: DependencyGraph) {
-    val inLayerDependencies = modulesTree.nodes()
-      .filter { it.key.startsWith(layerPrefix) }
+    val inLayerDependencies = modulesTree.dependencyPairs()
+      .filter { it.first.startsWith(layerPrefix) }
       .ifEmpty { throw GradleException("There are no modules with prefix $layerPrefix") }
-      .flatMap { parent -> parent.dependsOn.map { dependency -> parent to dependency } }
-      .filter { it.second.key.startsWith(layerPrefix) }
-      .map { it.first.key to it.second.key }
+      .filter { it.second.startsWith(layerPrefix) }
+      .map { it.first to it.second }
       .filterNot { excludedForCheck.contains(it) }
 
     if (inLayerDependencies.isNotEmpty()) {

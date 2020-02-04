@@ -2,6 +2,7 @@ package com.jraska.module.graph.assertion.tasks
 
 import com.jraska.module.graph.DependencyMatcher
 import com.jraska.module.graph.assertion.GradleDependencyGraphFactory
+import com.jraska.module.graph.assertion.UserDefinedRulesAssert
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
@@ -15,11 +16,6 @@ class AssertUserDefinedRulesTask : DefaultTask() {
   fun run() {
     val modulesTree = GradleDependencyGraphFactory.create(project)
 
-    val failedDependencies = modulesTree.dependencyPairs()
-      .flatMap { dependency -> matchers.filter { it.matches(dependency) }.map { dependency to it } }
-
-    if(failedDependencies.isNotEmpty()) {
-      throw GradleException("Viloated") //todo
-    }
+    UserDefinedRulesAssert(matchers).assert(modulesTree)
   }
 }
