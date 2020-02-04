@@ -7,6 +7,7 @@ apply plugin: 'java-library'
 dependencies {
   implementation project(':feature-one')
   implementation project(':feature-two')
+  implementation project(':feature-exclusion-test')
   implementation project(':lib')
 
   implementation 'javax.inject:javax.inject:1'
@@ -16,4 +17,5 @@ moduleGraphAssert {
   maxHeight = 3
   moduleLayersFromTheTop = [":feature", ":lib", ":core"]
   restrictInLayerDependencies = [":feature", ":lib"]
+  excludeFromLayersCheck = [':feature-one -> :feature-exclusion-test']
 }

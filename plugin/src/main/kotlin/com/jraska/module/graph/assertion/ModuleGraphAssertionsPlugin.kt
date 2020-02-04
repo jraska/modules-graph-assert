@@ -1,5 +1,6 @@
 package com.jraska.module.graph.assertion
 
+import com.jraska.module.graph.GraphParse
 import com.jraska.module.graph.assertion.Api.Tasks
 import com.jraska.module.graph.assertion.tasks.AssertLayersOrderTask
 import com.jraska.module.graph.assertion.tasks.AssertModuleTreeHeightTask
@@ -59,6 +60,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
     val task = tasks.create(Tasks.ASSERT_LAYER_ORDER, AssertLayersOrderTask::class.java)
     task.layersFromTheTop = graphRules.moduleLayersFromTheTop
+    task.excludedForCheck = graphRules.excludedFromLayers()
     task.group = VERIFICATION_GROUP
 
     return listOf(task)
@@ -69,6 +71,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       val taskNameSuffix = layerPrefix.replace(":", "").capitalizeFirst()
       val task = tasks.create("${Tasks.ASSERT_NO_IN_LAYER_PREFIX}$taskNameSuffix", AssertNoInLayerDependencies::class.java)
       task.layerPrefix = layerPrefix
+      task.excludedForCheck = graphRules.excludedFromLayers()
       task.group = VERIFICATION_GROUP
 
       return@map task
@@ -77,5 +80,10 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
   private fun String.capitalizeFirst(): String {
     return this.substring(0, 1).toUpperCase(Locale.US).plus(this.substring(1))
+  }
+
+
+  private fun GraphRulesExtension.excludedFromLayers() : Set<Pair<String, String>> {
+    return excludeFromLayersCheck.map { GraphParse.parse(it) }.toSet()
   }
 }

@@ -3,4 +3,5 @@ apply plugin: 'java-library'
 dependencies {
   implementation project(':core')
   implementation project(':lib')
+  implementation project(':feature-exclusion-test')
 }

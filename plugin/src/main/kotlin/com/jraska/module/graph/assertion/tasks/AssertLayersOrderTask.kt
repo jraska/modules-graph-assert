@@ -11,6 +11,9 @@ open class AssertLayersOrderTask : DefaultTask() {
   @Input
   lateinit var layersFromTheTop: Array<String>
 
+  @Input
+  lateinit var excludedForCheck: Set<Pair<String, String>>
+
   @TaskAction
   fun run() {
     val modulesTree = GradleDependencyGraphFactory.create(project)
@@ -20,14 +23,16 @@ open class AssertLayersOrderTask : DefaultTask() {
     val againstLayerDependencies = modulesTree.nodes()
       .flatMap { parent -> parent.dependsOn.map { dependency -> parent to dependency } }
       .filter { isRestrictedDependency(it) }
+      .map { it.first.key to it.second.key }
+      .filterNot { excludedForCheck.contains(it) }
 
     if (againstLayerDependencies.isNotEmpty()) {
       throw GradleException(buildErrorMessage(againstLayerDependencies))
     }
   }
 
-  private fun buildErrorMessage(againstLayerDependencies: List<Pair<DependencyGraph.Node, DependencyGraph.Node>>): String {
-    val errorsMessage = againstLayerDependencies.joinToString("\n") { " Module '${it.first.key}' cannot depend on '${it.second.key}'." }
+  private fun buildErrorMessage(againstLayerDependencies: List<Pair<String, String>>): String {
+    val errorsMessage = againstLayerDependencies.joinToString("\n") { " Module '${it.first}' cannot depend on '${it.second}'." }
 
     return "Dependencies against direction of layers '${layersDependencyString()}' are not allowed. The violating dependencies are: \n$errorsMessage"
   }
