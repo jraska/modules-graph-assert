@@ -5,4 +5,5 @@ open class GraphRulesExtension {
   var maxHeight: Int = 0
   var moduleLayersFromTheTop = emptyArray<String>()
   var restrictInLayerDependencies = emptyArray<String>()
+  var excludeFromLayersCheck = emptyArray<String>() // each exclusion in format ":module -> :other-module"
 }
