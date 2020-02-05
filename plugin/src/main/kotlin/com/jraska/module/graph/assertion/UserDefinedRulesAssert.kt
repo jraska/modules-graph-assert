@@ -22,8 +22,8 @@ class UserDefinedRulesAssert(
 
   private fun buildErrorMessage(failedDependencies: List<Pair<Pair<String, String>, List<DependencyMatcher>>>): String {
     return failedDependencies.map {
-      val violatedRules = it.second.joinToString { ", " }
-      "Dependency '${it.first.first}' -> '${it.first.second} violates rule(s): $violatedRules"
+      val violatedRules = it.second.map { "'$it'" }.joinToString(", ")
+      "Dependency '${it.first.first}' -> '${it.first.second}' violates: $violatedRules"
     }.joinToString("\n")
   }
 }
