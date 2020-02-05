@@ -22,7 +22,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
   }
 
-  private fun addModulesAssertions(project: Project, graphRules: GraphRulesExtension) {
+  internal fun addModulesAssertions(project: Project, graphRules: GraphRulesExtension) {
     project.addModuleGraphGeneration()
 
     val allAssertionsTask = project.tasks.create(Tasks.ASSERT_ALL)
