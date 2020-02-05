@@ -1,6 +1,6 @@
 package com.jraska.module.graph
 
-class RegexDependencyMatcher(
+class RegexpDependencyMatcher(
   private val parentRegex: Regex,
   private val childRegex: Regex
 ) : DependencyMatcher {
@@ -11,6 +11,6 @@ class RegexDependencyMatcher(
   }
 
   override fun toString(): String {
-    return "$parentRegex ${GraphParse.NO_DEPENDENCY_SIGN} $childRegex"
+    return "$parentRegex${RulesParse.NO_DEPENDENCY_SIGN_DIVIDER}$childRegex"
   }
 }

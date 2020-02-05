@@ -1,11 +1,9 @@
 package com.jraska.module.graph.assertion
 
-import com.jraska.module.graph.GraphParse
+import com.jraska.module.graph.DependencyMatcher
+import com.jraska.module.graph.RulesParse
 import com.jraska.module.graph.assertion.Api.Tasks
-import com.jraska.module.graph.assertion.tasks.AssertLayersOrderTask
-import com.jraska.module.graph.assertion.tasks.AssertModuleTreeHeightTask
-import com.jraska.module.graph.assertion.tasks.AssertNoInLayerDependencies
-import com.jraska.module.graph.assertion.tasks.GenerateModulesGraphTask
+import com.jraska.module.graph.assertion.tasks.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -34,6 +32,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     project.addMaxHeightTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }
     project.addModuleLayersTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }
     project.addInLayerDependencyTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }
+    project.addModuleUserRuleTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }
   }
 
   private fun Project.addModuleGraphGeneration() {
@@ -66,6 +65,20 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     return listOf(task)
   }
 
+
+  private fun Project.addModuleUserRuleTasks(graphRules: GraphRulesExtension): List<Task> {
+    if (graphRules.restricted.isEmpty()) {
+      return emptyList()
+    }
+
+    val task = tasks.create(Tasks.ASSERT_USER_RULES, AssertUserDefinedRulesTask::class.java)
+    task.matchers = graphRules.userRulesMatchers()
+    task.group = VERIFICATION_GROUP
+
+    return listOf(task)
+  }
+
+
   private fun Project.addInLayerDependencyTasks(graphRules: GraphRulesExtension): List<Task> {
     return graphRules.restrictInLayerDependencies.map { layerPrefix ->
       val taskNameSuffix = layerPrefix.replace(":", "").capitalizeFirst()
@@ -82,8 +95,11 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     return this.substring(0, 1).toUpperCase(Locale.US).plus(this.substring(1))
   }
 
+  private fun GraphRulesExtension.excludedFromLayers(): Set<Pair<String, String>> {
+    return excludeFromLayersCheck.map { RulesParse.parse(it) }.toSet()
+  }
 
-  private fun GraphRulesExtension.excludedFromLayers() : Set<Pair<String, String>> {
-    return excludeFromLayersCheck.map { GraphParse.parse(it) }.toSet()
+  private fun GraphRulesExtension.userRulesMatchers(): Collection<DependencyMatcher> {
+    return restricted.map { RulesParse.parseMatcher(it) }
   }
 }

@@ -24,6 +24,6 @@ class UserDefinedRulesAssert(
     return failedDependencies.map {
       val violatedRules = it.second.map { "'$it'" }.joinToString(", ")
       "Dependency '${it.first.first}' -> '${it.first.second}' violates: $violatedRules"
-    }.joinToString("\n")
+    }.joinToString("\n" )
   }
 }

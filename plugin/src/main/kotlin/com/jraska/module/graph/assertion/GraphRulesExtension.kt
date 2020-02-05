@@ -6,4 +6,5 @@ open class GraphRulesExtension {
   var moduleLayersFromTheTop = emptyArray<String>()
   var restrictInLayerDependencies = emptyArray<String>()
   var excludeFromLayersCheck = emptyArray<String>() // each exclusion in format ":module -> :other-module"
+  var restricted = emptyArray<String>() // each restriction in format "regexp -X> regexp" e.g.: ":feature-[a-z]* -X> :forbidden-lib"
 }
