@@ -3,7 +3,8 @@ package com.jraska.module.graph.assertion
 import com.jraska.module.graph.DependencyMatcher
 import com.jraska.module.graph.RulesParse
 import com.jraska.module.graph.assertion.Api.Tasks
-import com.jraska.module.graph.assertion.tasks.*
+import com.jraska.module.graph.assertion.tasks.AssertGraphTask
+import com.jraska.module.graph.assertion.tasks.GenerateModulesGraphTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -43,9 +44,8 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       return null
     }
 
-    val task = tasks.create(Tasks.ASSERT_MAX_HEIGHT, AssertModuleTreeHeightTask::class.java)
-    task.maxHeight = graphRules.maxHeight
-    task.moduleName = graphRules.appModuleName
+    val task = tasks.create(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java)
+    task.assertion = ModuleTreeHeightAssert(graphRules.appModuleName, graphRules.maxHeight)
     task.group = VERIFICATION_GROUP
 
     return task
@@ -56,9 +56,8 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       return null
     }
 
-    val task = tasks.create(Tasks.ASSERT_LAYER_ORDER, AssertLayersOrderTask::class.java)
-    task.layersFromTheTop = graphRules.moduleLayers
-    task.excludedForCheck = graphRules.excludedFromLayers()
+    val task = tasks.create(Tasks.ASSERT_LAYER_ORDER, AssertGraphTask::class.java)
+    task.assertion = LayersOrderAssert(graphRules.moduleLayers, graphRules.excludedFromLayers())
     task.group = VERIFICATION_GROUP
 
     return task
@@ -70,8 +69,8 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       return null
     }
 
-    val task = tasks.create(Tasks.ASSERT_USER_RULES, AssertUserDefinedRulesTask::class.java)
-    task.matchers = graphRules.userRulesMatchers()
+    val task = tasks.create(Tasks.ASSERT_USER_RULES, AssertGraphTask::class.java)
+    task.assertion = UserDefinedRulesAssert(graphRules.userRulesMatchers())
     task.group = VERIFICATION_GROUP
 
     return task

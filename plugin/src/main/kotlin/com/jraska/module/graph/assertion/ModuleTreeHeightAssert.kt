@@ -6,8 +6,8 @@ import org.gradle.api.GradleException
 class ModuleTreeHeightAssert(
   private val moduleName: String,
   private val maxHeight: Int
-) {
-  fun assert(dependencyGraph: DependencyGraph) {
+) : GraphAssert {
+  override fun assert(dependencyGraph: DependencyGraph) {
     val height = dependencyGraph.heightOf(moduleName)
     if (height > maxHeight) {
       val longestPath = dependencyGraph.longestPath(moduleName)

@@ -6,9 +6,9 @@ import org.gradle.api.GradleException
 class LayersOrderAssert(
   private val layersFromTheTop: Array<String>,
   private val excludedForCheck: Set<Pair<String, String>> = emptySet()
-) {
+) : GraphAssert {
 
-  fun assert(dependencyGraph: DependencyGraph) {
+  override fun assert(dependencyGraph: DependencyGraph) {
     verifyAllLayersHaveModule(dependencyGraph)
 
     val againstLayerDependencies = dependencyGraph.dependencyPairs()
