@@ -6,8 +6,8 @@ import org.gradle.api.GradleException
 
 class UserDefinedRulesAssert(
   private val errorMatchers: Collection<DependencyMatcher>
-) {
-  fun assert(dependencyGraph: DependencyGraph) {
+) : GraphAssert {
+  override fun assert(dependencyGraph: DependencyGraph) {
 
     val failedDependencies = dependencyGraph.dependencyPairs()
       .map { dependency ->
@@ -24,6 +24,6 @@ class UserDefinedRulesAssert(
     return failedDependencies.map {
       val violatedRules = it.second.map { "'$it'" }.joinToString(", ")
       "Dependency '${it.first.first}' -> '${it.first.second}' violates: $violatedRules"
-    }.joinToString("\n" )
+    }.joinToString("\n")
   }
 }

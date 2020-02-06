@@ -2,7 +2,8 @@ package com.jraska.module.graph
 
 class RegexpDependencyMatcher(
   private val parentRegex: Regex,
-  private val childRegex: Regex
+  private val childRegex: Regex,
+  private val divider: String
 ) : DependencyMatcher {
 
   override fun matches(dependency: Pair<String, String>): Boolean {
@@ -11,6 +12,6 @@ class RegexpDependencyMatcher(
   }
 
   override fun toString(): String {
-    return "$parentRegex${RulesParse.NO_DEPENDENCY_SIGN_DIVIDER}$childRegex"
+    return "$parentRegex$divider$childRegex"
   }
 }

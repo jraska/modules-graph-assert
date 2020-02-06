@@ -1,19 +1,20 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
+import com.jraska.module.graph.DependencyMatcher
 import org.gradle.api.GradleException
 
 class LayersOrderAssert(
   private val layersFromTheTop: Array<String>,
-  private val excludedForCheck: Set<Pair<String, String>> = emptySet()
-) {
+  private val excludedForCheck: Collection<DependencyMatcher> = emptySet()
+) : GraphAssert {
 
-  fun assert(dependencyGraph: DependencyGraph) {
+  override fun assert(dependencyGraph: DependencyGraph) {
     verifyAllLayersHaveModule(dependencyGraph)
 
     val againstLayerDependencies = dependencyGraph.dependencyPairs()
-      .filter { isRestrictedDependency(it) }
-      .filterNot { excludedForCheck.contains(it) }
+      .filter { isRestrictedCrossLayerDependency(it) }
+      .filterNot { dependency -> excludedForCheck.any {it.matches(dependency)} }
 
     if (againstLayerDependencies.isNotEmpty()) {
       throw GradleException(buildErrorMessage(againstLayerDependencies))
@@ -39,11 +40,11 @@ class LayersOrderAssert(
     }
   }
 
-  private fun isRestrictedDependency(dependency: Pair<String, String>): Boolean {
+  private fun isRestrictedCrossLayerDependency(dependency: Pair<String, String>): Boolean {
     val higherLayerIndex = layerIndex(dependency.first) ?: return false
     val lowerLayerIndex = layerIndex(dependency.second) ?: return false
 
-    return higherLayerIndex > lowerLayerIndex
+    return higherLayerIndex >= lowerLayerIndex // for == : "Dependencies within '$layerPrefix' are not allowed
   }
 
   private fun layerIndex(moduleName: String): Int? {
