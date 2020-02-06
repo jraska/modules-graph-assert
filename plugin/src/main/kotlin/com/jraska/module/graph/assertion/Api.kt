@@ -8,6 +8,7 @@ object Api {
     const val ASSERT_MAX_HEIGHT = "assertMaxHeight"
     const val ASSERT_LAYER_ORDER = "assertModuleLayersOrder"
     const val ASSERT_NO_IN_LAYER_PREFIX = "assertNoDependenciesWithin"
+    const val ASSERT_USER_RULES = "assertRestricted"
   }
 
   object Parameters {

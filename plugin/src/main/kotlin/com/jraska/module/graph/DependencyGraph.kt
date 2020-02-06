@@ -17,6 +17,14 @@ class DependencyGraph() {
 
   fun nodes(): Collection<Node> = nodes.values
 
+  fun dependencyPairs(): List<Pair<String, String>> {
+    return nodes()
+      .flatMap { parent ->
+        parent.dependsOn.map { dependency -> parent to dependency }
+      }
+      .map { it.first.key to it.second.key }
+  }
+
   fun longestPath(): LongestPath {
     return longestPath(findRoot().key)
   }

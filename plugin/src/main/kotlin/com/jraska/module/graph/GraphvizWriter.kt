@@ -18,7 +18,7 @@ object GraphvizWriter {
       stringBuilder.append(generateGroup(dependencyGraph, it))
     }
 
-    dependencyGraph.nodes().flatMap { node -> node.dependsOn.map { node.key to it.key } }
+    dependencyGraph.dependencyPairs()
       .forEach { connection ->
         stringBuilder.append("\"${connection.first}\"")
           .append(" -> ")

@@ -18,4 +18,8 @@ moduleGraphAssert {
   moduleLayersFromTheTop = [":feature", ":lib", ":core"]
   restrictInLayerDependencies = [":feature", ":lib"]
   excludeFromLayersCheck = [':feature-one -> :feature-exclusion-test']
+  restricted = [':feature-[a-z]* -X> :feature-[a-z]*']
+  //  restricted = [':feature-one -X> :feature-exclusion-test',
+//                ':feature-[a-z]* -X> :feature-[a-z-]*',
+//                ':feature-[a-z]* -X> :lib[a-z-]*']
 }

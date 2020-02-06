@@ -11,12 +11,9 @@ class LayersOrderAssert(
   fun assert(dependencyGraph: DependencyGraph) {
     verifyAllLayersHaveModule(dependencyGraph)
 
-    val againstLayerDependencies = dependencyGraph.nodes()
-      .flatMap { parent -> parent.dependsOn.map { dependency -> parent to dependency } }
-      .map { it.first.key to it.second.key }
+    val againstLayerDependencies = dependencyGraph.dependencyPairs()
       .filter { isRestrictedDependency(it) }
       .filterNot { excludedForCheck.contains(it) }
-
 
     if (againstLayerDependencies.isNotEmpty()) {
       throw GradleException(buildErrorMessage(againstLayerDependencies))
