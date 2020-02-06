@@ -26,6 +26,25 @@ class LayersOrderAssertTest {
     LayersOrderAssert(arrayOf("lib", "feature")).assert(dependencyGraph)
   }
 
+  @Test
+  fun passesOnLibLayer() {
+    val dependencyGraph = testGraph()
+
+    LayersOrderAssert(arrayOf("lib"), emptySet()).assert(dependencyGraph)
+  }
+
+  @Test
+  fun passesOnCoreLayer() {
+    val dependencyGraph = testGraph()
+
+    LayersOrderAssert(arrayOf("core"), setOf("core-android" to "core")).assert(dependencyGraph)
+  }
+
+  @Test(expected = GradleException::class)
+  fun failsOnFeatureLayer() {
+    LayersOrderAssert(arrayOf("feature"), emptySet()).assert(DependencyGraph.create("feature" to "feature2"))
+  }
+
   private fun testGraph(): DependencyGraph {
     return DependencyGraph.create(
       "app" to "feature",

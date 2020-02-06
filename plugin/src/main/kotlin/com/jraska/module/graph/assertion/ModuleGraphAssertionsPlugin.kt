@@ -29,19 +29,18 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     allAssertionsTask.group = VERIFICATION_GROUP
     project.tasks.find { it.name == CHECK_TASK_NAME }?.dependsOn(allAssertionsTask)
 
-    project.addMaxHeightTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }
-    project.addModuleLayersTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }
-    project.addInLayerDependencyTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }
-    project.addModuleUserRuleTasks(graphRules).forEach { allAssertionsTask.dependsOn(it) }
+    project.addMaxHeightTask(graphRules)?.also { allAssertionsTask.dependsOn(it) }
+    project.addModuleLayersTask(graphRules)?.also { allAssertionsTask.dependsOn(it) }
+    project.addModuleUserRuleTask(graphRules)?.also { allAssertionsTask.dependsOn(it) }
   }
 
   private fun Project.addModuleGraphGeneration() {
     tasks.create(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java)
   }
 
-  private fun Project.addMaxHeightTasks(graphRules: GraphRulesExtension): List<Task> {
+  private fun Project.addMaxHeightTask(graphRules: GraphRulesExtension): Task? {
     if (graphRules.maxHeight <= 0) {
-      return emptyList()
+      return null
     }
 
     val task = tasks.create(Tasks.ASSERT_MAX_HEIGHT, AssertModuleTreeHeightTask::class.java)
@@ -49,12 +48,12 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     task.moduleName = graphRules.appModuleName
     task.group = VERIFICATION_GROUP
 
-    return listOf(task)
+    return task
   }
 
-  private fun Project.addModuleLayersTasks(graphRules: GraphRulesExtension): List<Task> {
+  private fun Project.addModuleLayersTask(graphRules: GraphRulesExtension): Task? {
     if (graphRules.moduleLayersFromTheTop.isEmpty()) {
-      return emptyList()
+      return null
     }
 
     val task = tasks.create(Tasks.ASSERT_LAYER_ORDER, AssertLayersOrderTask::class.java)
@@ -62,33 +61,20 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     task.excludedForCheck = graphRules.excludedFromLayers()
     task.group = VERIFICATION_GROUP
 
-    return listOf(task)
+    return task
   }
 
 
-  private fun Project.addModuleUserRuleTasks(graphRules: GraphRulesExtension): List<Task> {
+  private fun Project.addModuleUserRuleTask(graphRules: GraphRulesExtension): Task? {
     if (graphRules.restricted.isEmpty()) {
-      return emptyList()
+      return null
     }
 
     val task = tasks.create(Tasks.ASSERT_USER_RULES, AssertUserDefinedRulesTask::class.java)
     task.matchers = graphRules.userRulesMatchers()
     task.group = VERIFICATION_GROUP
 
-    return listOf(task)
-  }
-
-
-  private fun Project.addInLayerDependencyTasks(graphRules: GraphRulesExtension): List<Task> {
-    return graphRules.restrictInLayerDependencies.map { layerPrefix ->
-      val taskNameSuffix = layerPrefix.replace(":", "").capitalizeFirst()
-      val task = tasks.create("${Tasks.ASSERT_NO_IN_LAYER_PREFIX}$taskNameSuffix", AssertNoInLayerDependencies::class.java)
-      task.layerPrefix = layerPrefix
-      task.excludedForCheck = graphRules.excludedFromLayers()
-      task.group = VERIFICATION_GROUP
-
-      return@map task
-    }
+    return task
   }
 
   private fun String.capitalizeFirst(): String {

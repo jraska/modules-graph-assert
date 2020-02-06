@@ -12,7 +12,7 @@ class LayersOrderAssert(
     verifyAllLayersHaveModule(dependencyGraph)
 
     val againstLayerDependencies = dependencyGraph.dependencyPairs()
-      .filter { isRestrictedDependency(it) }
+      .filter { isRestrictedCrossLayerDependency(it) }
       .filterNot { excludedForCheck.contains(it) }
 
     if (againstLayerDependencies.isNotEmpty()) {
@@ -39,11 +39,11 @@ class LayersOrderAssert(
     }
   }
 
-  private fun isRestrictedDependency(dependency: Pair<String, String>): Boolean {
+  private fun isRestrictedCrossLayerDependency(dependency: Pair<String, String>): Boolean {
     val higherLayerIndex = layerIndex(dependency.first) ?: return false
     val lowerLayerIndex = layerIndex(dependency.second) ?: return false
 
-    return higherLayerIndex > lowerLayerIndex
+    return higherLayerIndex >= lowerLayerIndex // for == : "Dependencies within '$layerPrefix' are not allowed
   }
 
   private fun layerIndex(moduleName: String): Int? {
