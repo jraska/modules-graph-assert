@@ -1,11 +1,12 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
+import com.jraska.module.graph.DependencyMatcher
 import org.gradle.api.GradleException
 
 class LayersOrderAssert(
   private val layersFromTheTop: Array<String>,
-  private val excludedForCheck: Set<Pair<String, String>> = emptySet()
+  private val excludedForCheck: Collection<DependencyMatcher> = emptySet()
 ) : GraphAssert {
 
   override fun assert(dependencyGraph: DependencyGraph) {
@@ -13,7 +14,7 @@ class LayersOrderAssert(
 
     val againstLayerDependencies = dependencyGraph.dependencyPairs()
       .filter { isRestrictedCrossLayerDependency(it) }
-      .filterNot { excludedForCheck.contains(it) }
+      .filterNot { dependency -> excludedForCheck.any {it.matches(dependency)} }
 
     if (againstLayerDependencies.isNotEmpty()) {
       throw GradleException(buildErrorMessage(againstLayerDependencies))

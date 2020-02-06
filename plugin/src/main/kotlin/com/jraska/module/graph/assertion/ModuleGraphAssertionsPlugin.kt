@@ -1,7 +1,7 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyMatcher
-import com.jraska.module.graph.RulesParse
+import com.jraska.module.graph.Parse
 import com.jraska.module.graph.assertion.Api.Tasks
 import com.jraska.module.graph.assertion.tasks.AssertGraphTask
 import com.jraska.module.graph.assertion.tasks.GenerateModulesGraphTask
@@ -80,11 +80,11 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     return this.substring(0, 1).toUpperCase(Locale.US).plus(this.substring(1))
   }
 
-  private fun GraphRulesExtension.excludedFromLayers(): Set<Pair<String, String>> {
-    return excludeLayersCheck.map { RulesParse.parse(it) }.toSet()
+  private fun GraphRulesExtension.excludedFromLayers(): Collection<DependencyMatcher> {
+    return excludeLayersCheck.map { Parse.matcher(it) }
   }
 
   private fun GraphRulesExtension.userRulesMatchers(): Collection<DependencyMatcher> {
-    return restricted.map { RulesParse.parseMatcher(it) }
+    return restricted.map { Parse.restrictiveMatcher(it) }
   }
 }

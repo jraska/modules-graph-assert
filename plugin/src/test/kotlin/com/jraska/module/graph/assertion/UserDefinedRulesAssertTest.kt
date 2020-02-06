@@ -1,7 +1,7 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
-import com.jraska.module.graph.RegexpDependencyMatcher
+import com.jraska.module.graph.Parse
 import org.gradle.api.GradleException
 import org.junit.Test
 
@@ -17,14 +17,14 @@ class UserDefinedRulesAssertTest {
   fun failsWhenFeatureCannotDependOnLib() {
     val dependencyGraph = testGraph()
 
-    UserDefinedRulesAssert(setOf(RegexpDependencyMatcher("feature".toRegex(), "lib2".toRegex()))).assert(dependencyGraph)
+    UserDefinedRulesAssert(setOf(Parse.restrictiveMatcher("feature -X> lib2"))).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
   fun failsWhenLibCannotDependOnAndroid() {
     val dependencyGraph = testGraph()
 
-    UserDefinedRulesAssert(setOf(RegexpDependencyMatcher("lib[0-9]*".toRegex(), "[a-z]*-android".toRegex()))).assert(dependencyGraph)
+    UserDefinedRulesAssert(setOf(Parse.restrictiveMatcher("lib[0-9]* -X> [a-z]*-android"))).assert(dependencyGraph)
   }
 
   private fun testGraph(): DependencyGraph {
