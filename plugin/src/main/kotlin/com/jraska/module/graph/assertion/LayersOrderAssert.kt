@@ -3,9 +3,10 @@ package com.jraska.module.graph.assertion
 import com.jraska.module.graph.DependencyGraph
 import com.jraska.module.graph.DependencyMatcher
 import org.gradle.api.GradleException
+import java.util.function.Predicate
 
 class LayersOrderAssert(
-  private val layersFromTheTop: Array<String>,
+  private val layersFromTheTop: Array<Predicate<String>>,
   private val excludedForCheck: Collection<DependencyMatcher> = emptySet()
 ) : GraphAssert {
 
@@ -14,7 +15,7 @@ class LayersOrderAssert(
 
     val againstLayerDependencies = dependencyGraph.dependencyPairs()
       .filter { isRestrictedCrossLayerDependency(it) }
-      .filterNot { dependency -> excludedForCheck.any {it.matches(dependency)} }
+      .filterNot { dependency -> excludedForCheck.any { it.matches(dependency) } }
 
     if (againstLayerDependencies.isNotEmpty()) {
       throw GradleException(buildErrorMessage(againstLayerDependencies))
@@ -34,9 +35,9 @@ class LayersOrderAssert(
   private fun verifyAllLayersHaveModule(modulesTree: DependencyGraph) {
     val nodes = modulesTree.nodes()
 
-    for (layerPrefix in layersFromTheTop) {
-      nodes.find { it.key.startsWith(layerPrefix) }
-        ?: throw GradleException("There is no module, which belongs to layer '$layerPrefix'")
+    for (layerMatcher in layersFromTheTop) {
+      nodes.find { layerMatcher.test(it.key) }
+        ?: throw GradleException("There is no module, which belongs to layer described: $layerMatcher")
     }
   }
 
@@ -48,8 +49,8 @@ class LayersOrderAssert(
   }
 
   private fun layerIndex(moduleName: String): Int? {
-    for ((index, layerPrefix) in layersFromTheTop.withIndex()) {
-      if (moduleName.startsWith(layerPrefix)) {
+    for ((index, layerMatcher) in layersFromTheTop.withIndex()) {
+      if (layerMatcher.test(moduleName)) {
         return index
       }
     }
