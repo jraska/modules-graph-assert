@@ -24,8 +24,9 @@ apply plugin: 'com.jraska.module.graph.assertion'
 ```groovy
 moduleGraphAssert {
   maxHeight = 4
-  moduleLayersFromTheTop = [":feature", ":lib", ":core"]
-  restrictInLayerDependencies = [":feature", ":lib"]
+  moduleLayers = [":feature", ":lib", ":core"]
+  excludeLayersCheck = [":feature-about -> :lib-legacy-about"]
+  restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on'] //regex to match module names
 }
 ```
 

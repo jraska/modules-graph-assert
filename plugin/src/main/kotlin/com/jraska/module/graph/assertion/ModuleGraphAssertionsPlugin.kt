@@ -52,12 +52,12 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   }
 
   private fun Project.addModuleLayersTask(graphRules: GraphRulesExtension): Task? {
-    if (graphRules.moduleLayersFromTheTop.isEmpty()) {
+    if (graphRules.moduleLayers.isEmpty()) {
       return null
     }
 
     val task = tasks.create(Tasks.ASSERT_LAYER_ORDER, AssertLayersOrderTask::class.java)
-    task.layersFromTheTop = graphRules.moduleLayersFromTheTop
+    task.layersFromTheTop = graphRules.moduleLayers
     task.excludedForCheck = graphRules.excludedFromLayers()
     task.group = VERIFICATION_GROUP
 
@@ -82,7 +82,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   }
 
   private fun GraphRulesExtension.excludedFromLayers(): Set<Pair<String, String>> {
-    return excludeFromLayersCheck.map { RulesParse.parse(it) }.toSet()
+    return excludeLayersCheck.map { RulesParse.parse(it) }.toSet()
   }
 
   private fun GraphRulesExtension.userRulesMatchers(): Collection<DependencyMatcher> {
