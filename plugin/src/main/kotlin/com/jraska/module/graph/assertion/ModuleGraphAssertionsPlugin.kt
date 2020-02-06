@@ -1,6 +1,7 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyMatcher
+import com.jraska.module.graph.ModuleNameRegexMatcher
 import com.jraska.module.graph.Parse
 import com.jraska.module.graph.assertion.Api.Tasks
 import com.jraska.module.graph.assertion.tasks.AssertGraphTask
@@ -11,6 +12,7 @@ import org.gradle.api.Task
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 import java.util.*
+import java.util.function.Predicate
 
 @Suppress("unused", "UnstableApiUsage") // Used as plugin
 class ModuleGraphAssertionsPlugin : Plugin<Project> {
@@ -57,7 +59,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
 
     val task = tasks.create(Tasks.ASSERT_LAYER_ORDER, AssertGraphTask::class.java)
-    task.assertion = LayersOrderAssert(graphRules.moduleLayers, graphRules.excludedFromLayers())
+    task.assertion = LayersOrderAssert(graphRules.layerMatchers(), graphRules.excludedFromLayers())
     task.group = VERIFICATION_GROUP
 
     return task
@@ -86,5 +88,9 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
   private fun GraphRulesExtension.userRulesMatchers(): Collection<DependencyMatcher> {
     return restricted.map { Parse.restrictiveMatcher(it) }
+  }
+
+  private fun GraphRulesExtension.layerMatchers(): Array<Predicate<String>> {
+    return moduleLayers.map { ModuleNameRegexMatcher(it.toRegex()) }.toTypedArray()
   }
 }

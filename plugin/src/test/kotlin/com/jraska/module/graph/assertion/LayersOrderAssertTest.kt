@@ -1,9 +1,11 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
+import com.jraska.module.graph.ModuleNameRegexMatcher
 import com.jraska.module.graph.Parse
 import org.gradle.api.GradleException
 import org.junit.Test
+import java.util.function.Predicate
 
 class LayersOrderAssertTest {
   @Test
@@ -11,7 +13,7 @@ class LayersOrderAssertTest {
     val dependencyGraph = testGraph()
 
     LayersOrderAssert(
-      arrayOf("feature", "lib", "core"),
+      arrayOf("feature\\S*", "lib\\S*", "core\\S*").toMatchers(),
       setOf(Parse.matcher("lib -> feature2"))
     ).assert(dependencyGraph)
   }
@@ -20,21 +22,21 @@ class LayersOrderAssertTest {
   fun failsOnUnknownLayer() {
     val dependencyGraph = testGraph()
 
-    LayersOrderAssert(arrayOf("feature", "lib", "corex")).assert(dependencyGraph)
+    LayersOrderAssert(arrayOf("feature\\S*", "lib\\S*", "corex\\S*").toMatchers()).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
   fun failsOnWrongLayerOrder() {
     val dependencyGraph = testGraph()
 
-    LayersOrderAssert(arrayOf("lib", "feature")).assert(dependencyGraph)
+    LayersOrderAssert(arrayOf("lib\\S*", "feature\\S*").toMatchers()).assert(dependencyGraph)
   }
 
   @Test
   fun passesOnLibLayer() {
     val dependencyGraph = testGraph()
 
-    LayersOrderAssert(arrayOf("lib")).assert(dependencyGraph)
+    LayersOrderAssert(arrayOf("lib\\S*").toMatchers()).assert(dependencyGraph)
   }
 
   @Test
@@ -42,14 +44,14 @@ class LayersOrderAssertTest {
     val dependencyGraph = testGraph()
 
     LayersOrderAssert(
-      arrayOf("core"),
+      arrayOf("core\\S*").toMatchers(),
       setOf(Parse.matcher("core-android -> core"))
     ).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
   fun failsOnFeatureLayer() {
-    LayersOrderAssert(arrayOf("feature")).assert(DependencyGraph.create("feature" to "feature2"))
+    LayersOrderAssert(arrayOf("feature\\S*").toMatchers()).assert(DependencyGraph.create("feature" to "feature2"))
   }
 
   private fun testGraph(): DependencyGraph {
@@ -61,5 +63,9 @@ class LayersOrderAssertTest {
       "lib" to "core",
       "lib" to "feature2"
     )
+  }
+
+  private fun Array<String>.toMatchers(): Array<Predicate<String>> {
+    return map { ModuleNameRegexMatcher(it.toRegex()) }.toTypedArray()
   }
 }
