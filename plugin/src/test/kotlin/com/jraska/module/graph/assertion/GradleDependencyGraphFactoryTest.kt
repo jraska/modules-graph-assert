@@ -15,7 +15,6 @@ class GradleDependencyGraphFactoryTest {
 ":lib" -> ":core" [color=red style=bold]
 ":feature" -> ":lib" [color=red style=bold]
 ":feature" -> ":core"
-":core-testing" -> ":core"
 }"""
 
   private lateinit var appProject: DefaultProject

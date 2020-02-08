@@ -2,8 +2,4 @@ apply plugin: 'java-library'
 
 dependencies {
   implementation project(':core')
-
-  api project(':lib')
-
-  testImplementation project(':core-testing')
 }

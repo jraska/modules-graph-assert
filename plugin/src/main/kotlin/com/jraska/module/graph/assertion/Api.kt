@@ -2,7 +2,7 @@ package com.jraska.module.graph.assertion
 
 object Api {
   object Tasks {
-    const val GENERATE_GRAPHVIZ = "generateModulesGrapvizText"
+    const val GENERATE_GRAPHVIZ = "generateModulesGraphvizText"
 
     const val ASSERT_ALL = "assertModulesGraph"
     const val ASSERT_MAX_HEIGHT = "assertMaxHeight"
