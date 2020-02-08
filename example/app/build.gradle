@@ -1,5 +1,5 @@
 plugins {
-  id('com.jraska.module.graph.assertion') version "0.3.0"
+  id('com.jraska.module.graph.assertion')
 }
 
 apply plugin: 'java-library'
@@ -18,7 +18,7 @@ moduleGraphAssert {
   moduleLayers = [":feature-\\S*", ":lib\\S*", ":core\\S*"]
   excludeLayersCheck = [':feature-one -> :feature-exclusion-test']
   restricted = [':feature-[a-z]* -X> :feature-[a-z]*']
-  //  restricted = [':feature-one -X> :feature-exclusion-test',
+//    restricted = [':feature-one -X> :feature-exclusion-test',
 //                ':feature-[a-z]* -X> :feature-[a-z-]*',
 //                ':feature-[a-z]* -X> :lib[a-z-]*']
 }

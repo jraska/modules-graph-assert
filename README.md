@@ -31,15 +31,15 @@ moduleGraphAssert {
 ```
 
 ### Helper Graphviz Graph Export
-- Visualising graph could be useful to see the dependency problem, therefore helper `generateModulesGrapvizText` is included.
+- Visualising graph could be useful to see the dependency problem, therefore helper `generateModulesGraphvizText` is included.
 - By default it generates graph of all modules in a project.
 - Longest path of the project is in red.
 - Adding parameter `modules.graph.print.statistics` prints also information about the graph.
 - You can set `modules.graph.of.module` parameter if you want only subgraph of total graph.
 ```
-./gradlew generateModulesGrapvizText -Pmodules.graph.print.statistics=true -Pmodules.graph.of.module=:feature-one
+./gradlew generateModulesGraphvizText -Pmodules.graph.print.statistics=true -Pmodules.graph.of.module=:feature-one
 ```
 - Adding parameter `modules.graph.output.gv` saves the graphViz file to specified path
 ```
-./gradlew generateModulesGrapvizText -Pmodules.graph.output.gv=all_modules
+./gradlew generateModulesGraphvizText -Pmodules.graph.output.gv=all_modules
 ```

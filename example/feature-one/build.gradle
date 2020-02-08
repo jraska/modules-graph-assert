@@ -1,7 +1,17 @@
+plugins {
+  id('com.jraska.module.graph.assertion')
+}
+
 apply plugin: 'java-library'
 
 dependencies {
   implementation project(':core')
   implementation project(':lib')
   implementation project(':feature-exclusion-test')
+}
+
+moduleGraphAssert {
+  maxHeight = 3
+  moduleLayers = [":feature-\\S*", ":lib\\S*", ":core\\S*"]
+  excludeLayersCheck = [':feature-one -> :feature-exclusion-test']
 }

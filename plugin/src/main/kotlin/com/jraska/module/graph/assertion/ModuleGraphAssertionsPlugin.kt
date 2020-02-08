@@ -47,7 +47,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
 
     val task = tasks.create(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java)
-    task.assertion = ModuleTreeHeightAssert(graphRules.appModuleName, graphRules.maxHeight)
+    task.assertion = ModuleTreeHeightAssert(moduleDisplayName(), graphRules.maxHeight)
     task.group = VERIFICATION_GROUP
 
     return task
@@ -93,4 +93,10 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   private fun GraphRulesExtension.layerMatchers(): Array<Predicate<String>> {
     return moduleLayers.map { ModuleNameRegexMatcher(it.toRegex()) }.toTypedArray()
   }
+}
+
+fun Project.moduleDisplayName(): String {
+  return displayName.replace("project", "")
+    .replace("'", "")
+    .trim()
 }

@@ -1,7 +1,6 @@
 package com.jraska.module.graph.assertion
 
 open class GraphRulesExtension {
-  var appModuleName = ":app"
   var maxHeight: Int = 0
   var moduleLayers = emptyArray<String>()
   var excludeLayersCheck = emptyArray<String>() // each exclusion in format ":module -> :other-module"

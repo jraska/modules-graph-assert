@@ -8,7 +8,14 @@ object GradleDependencyGraphFactory {
 
   fun create(project: Project): DependencyGraph {
     val dependencies = project.listDependencyPairs()
-    return DependencyGraph.create(dependencies)
+
+    val fullDependencyGraph = DependencyGraph.create(dependencies)
+
+    return if (project == project.rootProject) {
+      fullDependencyGraph
+    } else {
+      fullDependencyGraph.subTree(project.moduleDisplayName())
+    }
   }
 
   private fun Project.listDependencyPairs(): List<Pair<String, String>> {
@@ -23,11 +30,5 @@ object GradleDependencyGraphFactory {
           }
           .map { project.moduleDisplayName() to it.moduleDisplayName() }
       }
-  }
-
-  private fun Project.moduleDisplayName(): String {
-    return displayName.replace("project", "")
-      .replace("'", "")
-      .trim()
   }
 }
