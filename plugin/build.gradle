@@ -34,7 +34,7 @@ gradlePlugin {
   plugins {
     modulesGraphAssert {
       id = 'com.jraska.module.graph.assertion'
-      version = '0.3.0'
+      version = '0.4.0'
       displayName = 'Modules Graph Assert'
       description = 'Gradle plugin to keep your modules graph healthy and lean.'
       implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsPlugin'
