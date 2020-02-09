@@ -13,7 +13,7 @@ buildscript {
     maven { url "https://plugins.gradle.org/m2/" }
   }
   dependencies {
-    classpath 'gradle.plugin.project:plugin:0.4.0'
+    classpath 'gradle.plugin.project:plugin:0.4.1'
   }
 }
 
@@ -25,7 +25,7 @@ apply plugin: 'com.jraska.module.graph.assertion'
 moduleGraphAssert {
   maxHeight = 4
   moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"] // modules prefixed with ":feature:" -> prefix ":lib:" -> prefix :core:
-  excludeLayersCheck = [":feature-about -> :lib-legacy-about"]
+  moduleLayersExclude = [":feature-about -> :lib-legacy-about"]
   restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on'] //regex to match module names
 }
 ```
