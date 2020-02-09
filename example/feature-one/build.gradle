@@ -13,5 +13,5 @@ dependencies {
 moduleGraphAssert {
   maxHeight = 3
   moduleLayers = [":feature-\\S*", ":lib\\S*", ":core\\S*"]
-  excludeLayersCheck = [':feature-one -> :feature-exclusion-test']
+  moduleLayersExclude = [':feature-one -> :feature-exclusion-test']
 }

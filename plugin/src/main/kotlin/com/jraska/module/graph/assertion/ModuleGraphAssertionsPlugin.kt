@@ -83,7 +83,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   }
 
   private fun GraphRulesExtension.excludedFromLayers(): Collection<DependencyMatcher> {
-    return excludeLayersCheck.map { Parse.matcher(it) }
+    return moduleLayersExclude.map { Parse.matcher(it) }
   }
 
   private fun GraphRulesExtension.userRulesMatchers(): Collection<DependencyMatcher> {

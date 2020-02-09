@@ -31,7 +31,7 @@ class ModuleGraphAssertionsPluginTest {
     val extension = GraphRulesExtension().apply {
       maxHeight = 3
       moduleLayers = arrayOf(":feature", ":lib", ":core")
-      excludeLayersCheck = arrayOf(":feature-one -> :feature-two")
+      moduleLayersExclude = arrayOf(":feature-one -> :feature-two")
       restricted = arrayOf(":feature-one -X> :feature-two")
     }
 
