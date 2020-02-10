@@ -28,6 +28,8 @@ plugins {
 }
 ```
 
+You can run `./gradlew assertModulesGraph` to execute configured checks or `./gradlew check` where `assertModulesGraph` will be included.
+
 ### Configuration
 - Rules are applied on the applied Gradle module and its `api` and `implementation` dependencies. Typically you would like to apply this in your final `:app` module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
 
