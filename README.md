@@ -29,7 +29,7 @@ plugins {
 ```
 
 ### Configuration
-- Rules are applied on the applied Gradle module and its dependencies. Typically you would like to apply this in your final `:app` module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
+- Rules are applied on the applied Gradle module and its `api` and `implementation` dependencies. Typically you would like to apply this in your final `:app` module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
 
 ```groovy
 moduleGraphAssert {
@@ -42,10 +42,10 @@ moduleGraphAssert {
 
 ### Helper Graphviz Graph Export
 - Visualising graph could be useful to see the dependency problem, therefore helper `generateModulesGraphvizText` is included.
-- By default it generates graph of all modules in a project.
+- Generates graph of dependent modules when the plugin is applied.
 - Longest path of the project is in red.
 - Adding parameter `modules.graph.print.statistics` prints also information about the graph.
-- You can set `modules.graph.of.module` parameter if you want only sub-graph of total graph.
+- You can set `modules.graph.of.module` parameter if you want only sub-graph of the module graph.
 ```
 ./gradlew generateModulesGraphvizText -Pmodules.graph.print.statistics=true -Pmodules.graph.of.module=:feature-one
 ```
