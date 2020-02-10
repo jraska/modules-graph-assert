@@ -2,25 +2,35 @@
 Gradle plugin to keep your modules graph healthy and lean.
 
 [![CircleCI](https://circleci.com/gh/jraska/modules-graph-assert.svg?style=svg)](https://circleci.com/gh/jraska/modules-graph-assert)
+[![Gradle Pugin](https://img.shields.io/badge/Gradle-Plugin-green)](https://plugins.gradle.org/plugin/com.jraska.module.graph.assertion)
 
 ## Assert your modules graph
 <img width="1281" alt="example_graph" src="https://user-images.githubusercontent.com/6277721/70832705-18980e00-1df6-11ea-8b78-fc07ba570a2b.png">
 
+## Why to care about project modules structure
+- Module dependency structure highly affects build speeds.
+- Modules separate logical units and enforce proper dependencies. 
+- Murphy's law of dependencies: "Whetever they can access, they will access" - Unless enforced, unwanted module dependencies will appear.
+- Module graph can silently degenerate into structure similar to list.
+- Breaking problematic module dependencies can be very difficult, it is cheaper to prevent them.
+
+## What we can enforce
+- This plugin allows simple way how to define rules, which will be verified as part of `check` Gradle task.
+- **Regex** on module names is used for matching **module names**.
+- `moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"]` can define order of layers from the top. 
+Modules cannot be dependent within layer and dependencies cannot go against the direction of layers. Any module with `:feature:` prefix cannot depend on other with `:feature:` prefix. `:lib` prefixed module cannot depend on `:feature:` etc.
+- `restricted [':feature-[a-z]* -X> :forbidden-to-depend-on']` helps us to define custom rules by using `regex -X> regex` signature.
+
 ## Usage
 ```groovy
-buildscript {
-  repositories {
-    maven { url "https://plugins.gradle.org/m2/" }
-  }
-  dependencies {
-    classpath 'gradle.plugin.project:plugin:0.4.1'
-  }
+plugins {
+  id "com.jraska.module.graph.assertion" version "0.4.1"
 }
-
-apply plugin: 'com.jraska.module.graph.assertion'
 ```
 
-#### Configuration
+### Configuration
+- Rules are applied on the applied Gradle module and its dependencies. Typically you would like to apply this in your final `:app` module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L137)
+
 ```groovy
 moduleGraphAssert {
   maxHeight = 4
