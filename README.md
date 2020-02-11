@@ -1,25 +1,29 @@
 # Module Graph Assert
-Gradle plugin to keep your modules graph healthy and lean.
+A Gradle plugin that helps keep your module graph healthy and lean.
 
 [![CircleCI](https://circleci.com/gh/jraska/modules-graph-assert.svg?style=svg)](https://circleci.com/gh/jraska/modules-graph-assert)
 [![Gradle Pugin](https://img.shields.io/badge/Gradle-Plugin-green)](https://plugins.gradle.org/plugin/com.jraska.module.graph.assertion)
 
 <img width="1281" alt="example_graph" src="https://user-images.githubusercontent.com/6277721/70832705-18980e00-1df6-11ea-8b78-fc07ba570a2b.png">
 
-## Why modules dependency structure matters
-- Modules structure highly affects build speeds.
+## Why the module dependency structure matters
+- Build speeds can be very dependent on the structure of your module graph.
 - Modules separate logical units and enforce proper dependencies.
-- Module graph can silently degenerate into structure similar to list.
+- The module graph can silently degenerate into a list-like structure.
 - Breaking problematic module dependencies can be very difficult, it is cheaper to prevent them.
-- Murphy's law of dependencies: "Whetever they can access, they will access." - If not enforced, undesirable module dependencies will appear.
+- If not enforced, undesirable module dependencies will appear. Murphy's law of dependencies: "Whatever they can access, they will access."
 
 ## What we can enforce
-- This plugin allows simple way how to define rules, which will be verified with task `assertModulesGraph` as part of `check` Gradle task.
-- **Regex** on module names is used for matching **module names**.
-- `moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"]` can define order of layers from the top. 
-Modules cannot be dependent within layer and dependencies cannot go against the direction of layers. Any module with `:feature:` prefix cannot depend on other with `:feature:` prefix. `:lib` prefixed module cannot depend on `:feature:` etc. If there are allowed exceptions you can use `moduleLayersExclude = [":feature-about -> :feature-legacy-about"]`
+- The plugin provides a simple way for defining rules, which will be verified with the task `assertModulesGraph` as part of the `check` task.
+- Match module names using regular expressions.
+- Define the order of layers from the top.
+  - `moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"]`
+  - Modules cannot be dependent within a layer and dependencies cannot go against the direction of the layers. 
+  - Any module with `:feature:` prefix cannot depend on another with `:feature:` prefix. 
+  - `:lib` prefixed module cannot depend on a `:feature:` etc. 
+  - If there are allowed exceptions you can use `moduleLayersExclude = [":feature-about -> :feature-legacy-about"]`
 - `restricted [':feature-[a-z]* -X> :forbidden-to-depend-on']` helps us to define custom rules by using `regex -X> regex` signature.
-- `maxHeight = 4` Can verify that [height of modules tree](https://stackoverflow.com/questions/2603692/what-is-the-difference-between-tree-depth-and-height) with a root in the module will not exceed 4. Tree height is a good metric to prevent module tree degeneration into list. 
+- `maxHeight = 4` can verify that the [height of the modules tree](https://stackoverflow.com/questions/2603692/what-is-the-difference-between-tree-depth-and-height) with a root in the module will not exceed 4. Tree height is a good metric to prevent module tree degeneration into a list. 
 
 ## Usage
 ```groovy
@@ -31,7 +35,7 @@ plugins {
 You can run `./gradlew assertModulesGraph` to execute configured checks or `./gradlew check` where `assertModulesGraph` will be included.
 
 ### Configuration
-- Rules are applied on the applied Gradle module and its `api` and `implementation` dependencies. Typically you would like to apply this in your final `:app` module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
+Rules are applied on the Gradle module and its `api` and `implementation` dependencies. Typically you would want to apply this in your final app module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
 
 ```groovy
 moduleGraphAssert {
@@ -42,16 +46,16 @@ moduleGraphAssert {
 }
 ```
 
-### Helper Graphviz Graph Export
-- Visualising graph could be useful to see the dependency problem, therefore helper `generateModulesGraphvizText` is included.
-- Generates graph of dependent modules when the plugin is applied.
-- Longest path of the project is in red.
-- Adding parameter `modules.graph.print.statistics` prints also information about the graph.
-- You can set `modules.graph.of.module` parameter if you want only sub-graph of the module graph.
+### Graphviz Graph Export
+- Visualising the graph could be useful to help find your dependency issues, therefore a helper `generateModulesGraphvizText` task is included.
+- This generates a graph of dependent modules when the plugin is applied.
+- The longest path of the project is in red.
+- Adding the parameter `modules.graph.print.statistics` causes information about the graph to be included.
+- You can set the `modules.graph.of.module` parameter if you are only interested in a sub-graph of the module graph.
 ```
 ./gradlew generateModulesGraphvizText -Pmodules.graph.print.statistics=true -Pmodules.graph.of.module=:feature-one
 ```
-- Adding parameter `modules.graph.output.gv` saves the graphViz file to specified path
+- Adding the parameter `modules.graph.output.gv` saves the graphViz file to the specified path
 ```
 ./gradlew generateModulesGraphvizText -Pmodules.graph.output.gv=all_modules
 ```
