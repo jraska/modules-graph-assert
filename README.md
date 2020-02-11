@@ -14,7 +14,7 @@ A Gradle plugin that helps keep your module graph healthy and lean.
 - If not enforced, undesirable module dependencies will appear. Murphy's law of dependencies: "Whatever they can access, they will access."
 
 ## What we can enforce
-- The plugin provides a simple way for defining rules, which will be verified with the task `assertModulesGraph` as part of the `check` task.
+- The plugin provides a simple way for defining rules, which will be verified with the task `assertModuleGraph` as part of the `check` task.
 - Match module names using regular expressions.
 - Define the order of layers from the top.
   - `moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"]`
@@ -28,11 +28,11 @@ A Gradle plugin that helps keep your module graph healthy and lean.
 ## Usage
 ```groovy
 plugins {
-  id "com.jraska.module.graph.assertion" version "0.4.1"
+  id "com.jraska.module.graph.assertion" version "0.5.0"
 }
 ```
 
-You can run `./gradlew assertModulesGraph` to execute configured checks or `./gradlew check` where `assertModulesGraph` will be included.
+You can run `./gradlew assertModuleGraph` to execute configured checks or `./gradlew check` where `assertModuleGraph` will be included.
 
 ### Configuration
 Rules are applied on the Gradle module and its `api` and `implementation` dependencies. Typically you would want to apply this in your final app module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)

@@ -4,7 +4,7 @@ object Api {
   object Tasks {
     const val GENERATE_GRAPHVIZ = "generateModulesGraphvizText"
 
-    const val ASSERT_ALL = "assertModulesGraph"
+    const val ASSERT_ALL = "assertModuleGraph"
     const val ASSERT_MAX_HEIGHT = "assertMaxHeight"
     const val ASSERT_LAYER_ORDER = "assertModuleLayers"
     const val ASSERT_USER_RULES = "assertRestrictions"
