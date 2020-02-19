@@ -28,7 +28,7 @@ A Gradle plugin that helps keep your module graph healthy and lean.
 ## Usage
 ```groovy
 plugins {
-  id "com.jraska.module.graph.assertion" version "0.5.0"
+  id "com.jraska.module.graph.assertion" version "1.0.0"
 }
 ```
 
