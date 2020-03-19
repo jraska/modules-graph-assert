@@ -26,6 +26,7 @@ A Gradle plugin that helps keep your module graph healthy and lean.
 - `maxHeight = 4` can verify that the [height of the modules tree](https://stackoverflow.com/questions/2603692/what-is-the-difference-between-tree-depth-and-height) with a root in the module will not exceed 4. Tree height is a good metric to prevent module tree degeneration into a list. 
 
 ## Usage
+Apply the plugin to a module, which dependencies graph you want to assert.
 ```groovy
 plugins {
   id "com.jraska.module.graph.assertion" version "1.0.0"
