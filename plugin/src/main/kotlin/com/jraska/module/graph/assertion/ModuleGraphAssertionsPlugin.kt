@@ -8,7 +8,8 @@ import com.jraska.module.graph.assertion.tasks.AssertGraphTask
 import com.jraska.module.graph.assertion.tasks.GenerateModulesGraphTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.api.UnknownTaskException
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 import java.util.*
@@ -28,52 +29,66 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   internal fun addModulesAssertions(project: Project, graphRules: GraphRulesExtension) {
     project.addModuleGraphGeneration()
 
-    val allAssertionsTask = project.tasks.create(Tasks.ASSERT_ALL)
-    allAssertionsTask.group = VERIFICATION_GROUP
-    project.tasks.find { it.name == CHECK_TASK_NAME }?.dependsOn(allAssertionsTask)
+    val allAssertionsTask = project.tasks.register(Tasks.ASSERT_ALL) { it.group = VERIFICATION_GROUP }
 
-    project.addMaxHeightTask(graphRules)?.also { allAssertionsTask.dependsOn(it) }
-    project.addModuleLayersTask(graphRules)?.also { allAssertionsTask.dependsOn(it) }
-    project.addModuleUserRuleTask(graphRules)?.also { allAssertionsTask.dependsOn(it) }
+    try {
+      project.tasks.named(CHECK_TASK_NAME).configure { it.dependsOn(allAssertionsTask) }
+    } catch (checkNotFound: UnknownTaskException) {
+      // We register other tasks, but we don't add a dependency to 'check' task
+    }
+
+    val childTasks = mutableListOf<TaskProvider<AssertGraphTask>>()
+    project.addMaxHeightTask(graphRules)?.also { childTasks.add(it) }
+    project.addModuleLayersTask(graphRules)?.also { childTasks.add(it) }
+    project.addModuleUserRuleTask(graphRules)?.also { childTasks.add(it) }
+
+    allAssertionsTask.configure { allTask ->
+      childTasks.forEach {
+        allTask.dependsOn(it)
+      }
+    }
   }
 
   private fun Project.addModuleGraphGeneration() {
-    tasks.create(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java)
+    tasks.register(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java)
   }
 
-  private fun Project.addMaxHeightTask(graphRules: GraphRulesExtension): Task? {
+  private fun Project.addMaxHeightTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
     if (graphRules.maxHeight <= 0) {
       return null
     }
 
-    val task = tasks.create(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java)
-    task.assertion = ModuleTreeHeightAssert(moduleDisplayName(), graphRules.maxHeight)
-    task.group = VERIFICATION_GROUP
+    val task = tasks.register(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java) {
+      it.assertion = ModuleTreeHeightAssert(moduleDisplayName(), graphRules.maxHeight)
+      it.group = VERIFICATION_GROUP
+    }
 
     return task
   }
 
-  private fun Project.addModuleLayersTask(graphRules: GraphRulesExtension): Task? {
+  private fun Project.addModuleLayersTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
     if (graphRules.moduleLayers.isEmpty()) {
       return null
     }
 
-    val task = tasks.create(Tasks.ASSERT_LAYER_ORDER, AssertGraphTask::class.java)
-    task.assertion = LayersOrderAssert(graphRules.layerMatchers(), graphRules.excludedFromLayers())
-    task.group = VERIFICATION_GROUP
+    val task = tasks.register(Tasks.ASSERT_LAYER_ORDER, AssertGraphTask::class.java) {
+      it.assertion = LayersOrderAssert(graphRules.layerMatchers(), graphRules.excludedFromLayers())
+      it.group = VERIFICATION_GROUP
+    }
 
     return task
   }
 
 
-  private fun Project.addModuleUserRuleTask(graphRules: GraphRulesExtension): Task? {
+  private fun Project.addModuleUserRuleTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
     if (graphRules.restricted.isEmpty()) {
       return null
     }
 
-    val task = tasks.create(Tasks.ASSERT_USER_RULES, AssertGraphTask::class.java)
-    task.assertion = UserDefinedRulesAssert(graphRules.userRulesMatchers())
-    task.group = VERIFICATION_GROUP
+    val task = tasks.register(Tasks.ASSERT_USER_RULES, AssertGraphTask::class.java) {
+      it.assertion = UserDefinedRulesAssert(graphRules.userRulesMatchers())
+      it.group = VERIFICATION_GROUP
+    }
 
     return task
   }
