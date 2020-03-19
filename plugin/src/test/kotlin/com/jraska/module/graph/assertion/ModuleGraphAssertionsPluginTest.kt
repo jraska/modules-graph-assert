@@ -2,6 +2,7 @@ package com.jraska.module.graph.assertion
 
 import org.gradle.api.internal.project.DefaultProject
 import org.gradle.api.plugins.JavaLibraryPlugin
+import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
@@ -17,11 +18,14 @@ class ModuleGraphAssertionsPluginTest {
 
   @Test
   fun testAddsOnlyOneTaskWhenApplied() {
+    val checkDependsOnSize = project.tasks.findByName(CHECK_TASK_NAME)!!.dependsOn.size
+
     project.plugins.apply(ModuleGraphAssertionsPlugin::class.java)
     project.evaluate()
 
     assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL) != null)
     assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL)!!.dependsOn.isEmpty())
+    assert(project.tasks.findByName(CHECK_TASK_NAME)!!.dependsOn.size == checkDependsOnSize + 1)
   }
 
   @Test
