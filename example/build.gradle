@@ -12,3 +12,7 @@ allprojects {
 task clean(type: Delete) {
   delete rootProject.buildDir
 }
+
+moduleGraphAssert {
+  configurations = ['api', 'implementation', 'testImplementation']
+}

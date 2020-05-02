@@ -6,8 +6,8 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 
 object GradleDependencyGraphFactory {
 
-  fun create(project: Project): DependencyGraph {
-    val dependencies = project.listDependencyPairs()
+  fun create(project: Project, configurationsToLook: Set<String>): DependencyGraph {
+    val dependencies = project.listDependencyPairs(configurationsToLook)
 
     val fullDependencyGraph = DependencyGraph.create(dependencies)
 
@@ -18,12 +18,11 @@ object GradleDependencyGraphFactory {
     }
   }
 
-  private fun Project.listDependencyPairs(): List<Pair<String, String>> {
-    val configurationToLook = setOf("implementation", "api")
+  private fun Project.listDependencyPairs(configurationsToLook: Set<String>): List<Pair<String, String>> {
     return rootProject.subprojects
       .flatMap { project ->
         project.configurations
-          .filter { configurationToLook.contains(it.name) }
+          .filter { configurationsToLook.contains(it.name) }
           .flatMap { configuration ->
             configuration.dependencies.filterIsInstance(DefaultProjectDependency::class.java)
               .map { it.dependencyProject }

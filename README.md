@@ -38,14 +38,15 @@ plugins {
 You can run `./gradlew assertModuleGraph` to execute configured checks or `./gradlew check` where `assertModuleGraph` will be included.
 
 ### Configuration
-Rules are applied on the Gradle module and its `api` and `implementation` dependencies. Typically you would want to apply this in your final app module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
+Rules are applied on the Gradle module and its `api` and `implementation` dependencies by default. Typically you would want to apply this in your final app module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
 
 ```groovy
 moduleGraphAssert {
   maxHeight = 4
   moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"] // modules prefixed with ":feature:" -> prefix ":lib:" -> prefix :core:
   moduleLayersExclude = [":feature-about -> :feature-legacy-about"]
-  restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on'] //regex to match module names
+  restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on'] // regex to match module names
+  configurations = ['api', 'implementation'] // Dependency configurations to look. ['api', 'implementation'] is the default
 }
 ```
 

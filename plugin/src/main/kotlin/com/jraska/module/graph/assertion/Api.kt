@@ -15,7 +15,9 @@ object Api {
     const val PRINT_ONLY_MODULE = "modules.graph.of.module"
     const val OUTPUT_PATH = "modules.graph.output.gv"
   }
-  
+
   const val EXTENSION_ROOT = "moduleGraphAssert"
+
+  val API_IMPLEMENTATON_CONFIGURATIONS = setOf("api", "implementation")
 }
 

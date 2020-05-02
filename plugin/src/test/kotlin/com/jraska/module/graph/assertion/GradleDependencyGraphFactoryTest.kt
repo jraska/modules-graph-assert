@@ -13,8 +13,16 @@ class GradleDependencyGraphFactoryTest {
 ":app" -> ":lib"
 ":app" -> ":feature" [color=red style=bold]
 ":lib" -> ":core" [color=red style=bold]
-":feature" -> ":lib" [color=red style=bold]
 ":feature" -> ":core"
+":feature" -> ":lib" [color=red style=bold]
+}"""
+
+  private val EXPECTED_TEST_IMPLEMENTATION = """digraph G {
+":app" -> ":feature" [color=red style=bold]
+":feature" -> ":lib" [color=red style=bold]
+":feature" -> ":core-testing"
+":lib" -> ":core" [color=red style=bold]
+":core-testing" -> ":core"
 }"""
 
   private lateinit var appProject: DefaultProject
@@ -30,7 +38,7 @@ class GradleDependencyGraphFactoryTest {
 
     val featureProject = createProject("feature")
     appProject.dependencies.add("implementation", featureProject)
-    featureProject.dependencies.add("api", libProject)
+    featureProject.dependencies.add("implementation", libProject)
 
     val coreProject = createProject("core")
     featureProject.dependencies.add("api", coreProject)
@@ -43,10 +51,18 @@ class GradleDependencyGraphFactoryTest {
 
   @Test
   fun generatesProperGraph() {
-    val dependencyGraph = GradleDependencyGraphFactory.create(appProject)
+    val dependencyGraph = GradleDependencyGraphFactory.create(appProject, Api.API_IMPLEMENTATON_CONFIGURATIONS)
 
     val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
     assert(EXPECTED_GRAPHVIZ == graphvizText)
+  }
+
+  @Test
+  fun generatesWithTestImplementatinoGraph() {
+    val dependencyGraph = GradleDependencyGraphFactory.create(appProject, setOf("implementation", "testImplementation"))
+
+    val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
+    assert(EXPECTED_TEST_IMPLEMENTATION == graphvizText)
   }
 
   private fun createProject(name: String): DefaultProject {

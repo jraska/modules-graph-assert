@@ -12,9 +12,12 @@ open class AssertGraphTask : DefaultTask() {
   @Input
   lateinit var assertion: GraphAssert
 
+  @Input
+  lateinit var configurationsToLook: Set<String>
+
   @TaskAction
   fun run() {
-    val modulesTree = GradleDependencyGraphFactory.create(project)
+    val modulesTree = GradleDependencyGraphFactory.create(project, configurationsToLook)
 
     assertion.assert(modulesTree)
   }

@@ -1,5 +1,6 @@
 package com.jraska.module.graph.assertion
 
+import com.jraska.module.graph.assertion.tasks.AssertGraphTask
 import org.gradle.api.internal.project.DefaultProject
 import org.gradle.api.plugins.JavaLibraryPlugin
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
@@ -44,8 +45,12 @@ class ModuleGraphAssertionsPluginTest {
     assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL) != null)
     assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL)!!.dependsOn.size == 3)
 
-    assert(project.tasks.findByName(Api.Tasks.ASSERT_MAX_HEIGHT) != null)
-    assert(project.tasks.findByName(Api.Tasks.ASSERT_LAYER_ORDER) != null)
-    assert(project.tasks.findByName(Api.Tasks.ASSERT_USER_RULES) != null)
+    setOf(
+      project.tasks.findByName(Api.Tasks.ASSERT_MAX_HEIGHT) as AssertGraphTask,
+      project.tasks.findByName(Api.Tasks.ASSERT_LAYER_ORDER) as AssertGraphTask,
+      project.tasks.findByName(Api.Tasks.ASSERT_USER_RULES) as AssertGraphTask
+    ).forEach {
+      assert(it.configurationsToLook == Api.API_IMPLEMENTATON_CONFIGURATIONS)
+    }
   }
 }
