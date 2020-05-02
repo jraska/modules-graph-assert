@@ -10,8 +10,6 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 open class GenerateModulesGraphTask : DefaultTask() {
-  @Input
-  var layers: Array<String> = emptyArray()
 
   @TaskAction
   fun run() {
@@ -20,7 +18,7 @@ open class GenerateModulesGraphTask : DefaultTask() {
     if (shouldPrintStatistics()) {
       println(dependencyGraph.statistics())
     }
-    val graphviz = GraphvizWriter.toGraphviz(dependencyGraph, layers.toSet())
+    val graphviz = GraphvizWriter.toGraphviz(dependencyGraph)
 
     if (shouldOutputFile()) {
       getOutputFile().apply {
