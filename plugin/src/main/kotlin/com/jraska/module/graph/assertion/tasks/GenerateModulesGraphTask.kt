@@ -10,6 +10,8 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 open class GenerateModulesGraphTask : DefaultTask() {
+  @Input
+  lateinit var configurationsToLook: Set<String>
 
   @TaskAction
   fun run() {
@@ -22,16 +24,16 @@ open class GenerateModulesGraphTask : DefaultTask() {
 
     if (shouldOutputFile()) {
       getOutputFile().apply {
-          println("GraphViz saved to $path")
-          writeText(graphviz)
-        }
+        println("GraphViz saved to $path")
+        writeText(graphviz)
+      }
     } else {
       println(graphviz)
     }
   }
 
   private fun createDependencyGraph(): DependencyGraph {
-    val dependencyGraph = GradleDependencyGraphFactory.create(project)
+    val dependencyGraph = GradleDependencyGraphFactory.create(project, configurationsToLook)
 
     if (project.hasProperty(Api.Parameters.PRINT_ONLY_MODULE)) {
       val moduleName = project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
@@ -46,6 +48,7 @@ open class GenerateModulesGraphTask : DefaultTask() {
   private fun shouldPrintStatistics(): Boolean {
     return project.hasProperty(Api.Parameters.PRINT_STATISTICS) && project.property(Api.Parameters.PRINT_STATISTICS) == "true"
   }
+
   private fun shouldOutputFile(): Boolean {
     return project.hasProperty(Api.Parameters.OUTPUT_PATH)
   }

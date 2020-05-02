@@ -27,7 +27,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   }
 
   internal fun addModulesAssertions(project: Project, graphRules: GraphRulesExtension) {
-    project.addModuleGraphGeneration()
+    project.addModuleGraphGeneration(graphRules)
 
     val allAssertionsTask = project.tasks.register(Tasks.ASSERT_ALL) { it.group = VERIFICATION_GROUP }
 
@@ -49,8 +49,10 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
   }
 
-  private fun Project.addModuleGraphGeneration() {
-    tasks.register(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java)
+  private fun Project.addModuleGraphGeneration(graphRules: GraphRulesExtension) {
+    tasks.register(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java) {
+      it.configurationsToLook = graphRules.configurations
+    }
   }
 
   private fun Project.addMaxHeightTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
@@ -60,6 +62,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
     val task = tasks.register(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java) {
       it.assertion = ModuleTreeHeightAssert(moduleDisplayName(), graphRules.maxHeight)
+      it.configurationsToLook = graphRules.configurations
       it.group = VERIFICATION_GROUP
     }
 
@@ -73,6 +76,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
     val task = tasks.register(Tasks.ASSERT_LAYER_ORDER, AssertGraphTask::class.java) {
       it.assertion = LayersOrderAssert(graphRules.layerMatchers(), graphRules.excludedFromLayers())
+      it.configurationsToLook = graphRules.configurations
       it.group = VERIFICATION_GROUP
     }
 
@@ -87,6 +91,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
     val task = tasks.register(Tasks.ASSERT_USER_RULES, AssertGraphTask::class.java) {
       it.assertion = UserDefinedRulesAssert(graphRules.userRulesMatchers())
+      it.configurationsToLook = graphRules.configurations
       it.group = VERIFICATION_GROUP
     }
 
