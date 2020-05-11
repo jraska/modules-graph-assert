@@ -62,6 +62,39 @@ class DependencyGraphTest {
   }
 
   @Test
+  fun subtreeOfLeafModuleIsNotEmpty() {
+    val dependencyTree = DependencyGraph.create(
+      "feature" to "lib",
+      "lib" to "core",
+      "app" to "feature",
+      "feature" to "core",
+      "app" to "core"
+    )
+
+    assert(dependencyTree.subTree("core").findRoot().key == "core")
+  }
+
+  @Test
+  fun singleModuleTreeWorks() {
+    val dependencyGraph = DependencyGraph.createSingular(":app")
+
+    assert(dependencyGraph.dependencyPairs().isEmpty())
+    assert(dependencyGraph.height() == 0)
+    assert(dependencyGraph.statistics().modulesCount == 1)
+    assert(dependencyGraph.statistics().edgesCount == 0)
+    assert(dependencyGraph.statistics().height == 0)
+    assert(dependencyGraph.statistics().height == 0)
+    assert(dependencyGraph.findRoot().key == ":app")
+    assert(dependencyGraph.heightOf(":app") == 0)
+    assert(dependencyGraph.longestPath().nodeNames.equals(listOf(":app")))
+  }
+
+  @Test(expected = IllegalArgumentException::class)
+  fun cannotCreateEmptyGraph() {
+    DependencyGraph.create()
+  }
+
+  @Test
   fun countsStatisticsWell() {
     val dependencyTree = DependencyGraph.create(
       ":app" to ":core",

@@ -9,6 +9,10 @@ import org.junit.Test
 
 class GradleDependencyGraphFactoryTest {
 
+  private val EXPECTED_SINGLE_MODULE = """digraph G {
+":core"
+}"""
+
   private val EXPECTED_GRAPHVIZ = """digraph G {
 ":app" -> ":lib"
 ":app" -> ":feature" [color=red style=bold]
@@ -26,6 +30,7 @@ class GradleDependencyGraphFactoryTest {
 }"""
 
   private lateinit var appProject: DefaultProject
+  private lateinit var coreProject: DefaultProject
   private var rootProject: DefaultProject? = null
 
   @Before
@@ -40,7 +45,7 @@ class GradleDependencyGraphFactoryTest {
     appProject.dependencies.add("implementation", featureProject)
     featureProject.dependencies.add("implementation", libProject)
 
-    val coreProject = createProject("core")
+    coreProject = createProject("core")
     featureProject.dependencies.add("api", coreProject)
     libProject.dependencies.add("implementation", coreProject)
 
@@ -63,6 +68,14 @@ class GradleDependencyGraphFactoryTest {
 
     val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
     assert(EXPECTED_TEST_IMPLEMENTATION == graphvizText)
+  }
+
+  @Test
+  fun generatesSingleModuleGraphOnNoDependencyModule() {
+    val dependencyGraph = GradleDependencyGraphFactory.create(coreProject, Api.API_IMPLEMENTATON_CONFIGURATIONS)
+
+    val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
+    assert(EXPECTED_SINGLE_MODULE == graphvizText)
   }
 
   private fun createProject(name: String): DefaultProject {

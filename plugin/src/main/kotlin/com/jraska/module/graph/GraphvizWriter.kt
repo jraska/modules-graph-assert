@@ -11,7 +11,13 @@ object GraphvizWriter {
 
     stringBuilder.append("digraph G {\n")
 
-    dependencyGraph.dependencyPairs()
+    val dependencyPairs = dependencyGraph.dependencyPairs()
+    if(dependencyPairs.isEmpty()) {
+      stringBuilder.append("\"${dependencyGraph.findRoot().key}\"")
+        .append("\n")
+    }
+
+    dependencyPairs
       .forEach { connection ->
         stringBuilder.append("\"${connection.first}\"")
           .append(" -> ")

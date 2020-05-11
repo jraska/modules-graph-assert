@@ -1,4 +1,12 @@
+plugins {
+  id('com.jraska.module.graph.assertion')
+}
+
 apply plugin: 'java-library'
 
 dependencies {
+}
+
+moduleGraphAssert {
+  maxHeight = 0
 }

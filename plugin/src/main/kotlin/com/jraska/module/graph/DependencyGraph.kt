@@ -1,6 +1,6 @@
 package com.jraska.module.graph
 
-class DependencyGraph() {
+class DependencyGraph private constructor() {
   private val nodes = mutableMapOf<String, Node>()
 
   fun findRoot(): Node {
@@ -56,7 +56,9 @@ class DependencyGraph() {
   }
 
   fun subTree(key: String): DependencyGraph {
-    val dependencyTree = DependencyGraph()
+    require(nodes.contains(key)) { "Dependency Tree doesn't contain module: $key" }
+
+    val dependencyTree = createSingular(key)
 
     addConnections(nodes.getValue(key), dependencyTree)
 
@@ -110,7 +112,19 @@ class DependencyGraph() {
   }
 
   companion object {
+    fun createSingular(singleModule: String): DependencyGraph {
+      val dependencyGraph = DependencyGraph()
+
+      dependencyGraph.getOrCreate(singleModule)
+
+      return dependencyGraph
+    }
+
     fun create(dependencies: List<Pair<String, String>>): DependencyGraph {
+      if (dependencies.isEmpty()) {
+        throw IllegalArgumentException("Graph cannot be empty. Use createSingular for cases with no dependencies")
+      }
+
       val graph = DependencyGraph()
       dependencies.forEach { graph.addEdge(it.first, it.second) }
       return graph

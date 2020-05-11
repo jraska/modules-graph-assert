@@ -7,7 +7,11 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 object GradleDependencyGraphFactory {
 
   fun create(project: Project, configurationsToLook: Set<String>): DependencyGraph {
-    val dependencies = project.listDependencyPairs(configurationsToLook)
+    val dependencies = project.listAllDependencyPairs(configurationsToLook)
+
+    if (dependencies.isEmpty()) {
+      return DependencyGraph.createSingular(project.moduleDisplayName())
+    }
 
     val fullDependencyGraph = DependencyGraph.create(dependencies)
 
@@ -18,7 +22,7 @@ object GradleDependencyGraphFactory {
     }
   }
 
-  private fun Project.listDependencyPairs(configurationsToLook: Set<String>): List<Pair<String, String>> {
+  private fun Project.listAllDependencyPairs(configurationsToLook: Set<String>): List<Pair<String, String>> {
     return rootProject.subprojects
       .flatMap { project ->
         project.configurations
