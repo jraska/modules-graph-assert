@@ -17,10 +17,6 @@ object Parse {
       throw IllegalArgumentException("Incorrect format. Expected: 'regexp${divider}regexp', found $matcherText")
     }
 
-    val regexes = matcherText.split(divider, limit = 2).map { it.toRegex() }
-    val parent = regexes[0]
-    val child = regexes[1]
-
-    return RegexpDependencyMatcher(parent, child, divider)
+    return RegexpDependencyMatcher(matcherText.toRegex(), divider)
   }
 }
