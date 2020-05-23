@@ -54,6 +54,7 @@ moduleGraphAssert {
 - Visualising the graph could be useful to help find your dependency issues, therefore a helper `generateModulesGraphvizText` task is included.
 - This generates a graph of dependent modules when the plugin is applied.
 - The longest path of the project is in red.
+- If you utilise [Configuration on demand](https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:configuration_on_demand) Gradle feature, please use `--no-configure-on-demand` flag along the `generateModulesGraphvizText` task.
 - Adding the parameter `modules.graph.print.statistics` causes information about the graph to be included.
 - You can set the `modules.graph.of.module` parameter if you are only interested in a sub-graph of the module graph.
 ```
