@@ -13,7 +13,7 @@ class ModuleTreeHeightAssertTest {
   }
 
   @Test(expected = GradleException::class)
-  fun failsOnTooLargeheight() {
+  fun failsOnTooLargeHeight() {
     val dependencyGraph = testGraph()
 
     ModuleTreeHeightAssert("app", 2).assert(dependencyGraph)
