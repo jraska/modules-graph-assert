@@ -13,10 +13,24 @@ class ModuleTreeHeightAssertTest {
   }
 
   @Test(expected = GradleException::class)
-  fun failsOnUnknownLayer() {
+  fun failsOnTooLargeHeight() {
     val dependencyGraph = testGraph()
 
     ModuleTreeHeightAssert("app", 2).assert(dependencyGraph)
+  }
+
+  @Test
+  fun passesOnCorrectRoot() {
+    val dependencyGraph = testGraph()
+
+    ModuleTreeHeightAssert(null, 3).assert(dependencyGraph)
+  }
+
+  @Test(expected = GradleException::class)
+  fun failsOnTooHighGraphHeight() {
+    val dependencyGraph = testGraph()
+
+    ModuleTreeHeightAssert(null, 2).assert(dependencyGraph)
   }
 
   @Test(expected = NoSuchElementException::class)

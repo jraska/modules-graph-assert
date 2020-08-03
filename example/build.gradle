@@ -14,5 +14,6 @@ task clean(type: Delete) {
 }
 
 moduleGraphAssert {
+  maxHeight = 3
   configurations = ['api', 'implementation', 'testImplementation']
 }
