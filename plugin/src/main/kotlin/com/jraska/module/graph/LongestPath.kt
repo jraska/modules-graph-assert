@@ -6,4 +6,6 @@ class LongestPath(
   fun pathString(): String {
     return nodeNames.joinToString(" -> ")
   }
+
+  override fun toString() = "'${pathString()}'"
 }

@@ -87,6 +87,7 @@ class DependencyGraphTest {
     assert(dependencyGraph.findRoot().key == ":app")
     assert(dependencyGraph.heightOf(":app") == 0)
     assert(dependencyGraph.longestPath().nodeNames.equals(listOf(":app")))
+    assert(dependencyGraph.longestPath().nodeNames.equals(dependencyGraph.statistics().longestPath.nodeNames))
   }
 
   @Test(expected = IllegalArgumentException::class)
@@ -149,5 +150,12 @@ class DependencyGraphTest {
     assert(statistics.height == 5)
     assert(statistics.modulesCount == 16)
     assert(statistics.edgesCount == 45)
+    assert(statistics.longestPath.nodeNames == listOf(
+      ":feature:settings",
+      ":app",
+      ":feature:settings_entrance",
+      ":lib:dynamic-features",
+      ":core-android",
+      ":core"))
   }
 }

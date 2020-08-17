@@ -51,7 +51,8 @@ class DependencyGraph private constructor() {
     return GraphStatistics(
       modulesCount = nodes.size,
       edgesCount = edgesCount,
-      height = height
+      height = height,
+      longestPath = longestPath()
     )
   }
 
