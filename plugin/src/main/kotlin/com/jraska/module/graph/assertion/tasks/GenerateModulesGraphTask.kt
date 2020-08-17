@@ -5,6 +5,7 @@ import com.jraska.module.graph.GraphvizWriter
 import com.jraska.module.graph.assertion.Api
 import com.jraska.module.graph.assertion.GradleDependencyGraphFactory
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -15,9 +16,11 @@ open class GenerateModulesGraphTask : DefaultTask() {
 
   @TaskAction
   fun run() {
-    val dependencyGraph = createDependencyGraph()
+    val dependencyGraph = project.createDependencyGraph(configurationsToLook)
 
     if (shouldPrintStatistics()) {
+      println("*Deprecation*: ${Api.Parameters.PRINT_STATISTICS} parameter is deprecated and will be removed in version 2.0. \n" +
+        "Please use ${Api.Tasks.GENERATE_GRAPH_STATISTICS} task instead.")
       println(dependencyGraph.statistics())
     }
     val graphviz = GraphvizWriter.toGraphviz(dependencyGraph)
@@ -32,19 +35,6 @@ open class GenerateModulesGraphTask : DefaultTask() {
     }
   }
 
-  private fun createDependencyGraph(): DependencyGraph {
-    val dependencyGraph = GradleDependencyGraphFactory.create(project, configurationsToLook)
-
-    if (project.hasProperty(Api.Parameters.PRINT_ONLY_MODULE)) {
-      val moduleName = project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
-      if (moduleName != null) {
-        return dependencyGraph.subTree(moduleName)
-      }
-    }
-
-    return dependencyGraph
-  }
-
   private fun shouldPrintStatistics(): Boolean {
     return project.hasProperty(Api.Parameters.PRINT_STATISTICS) && project.property(Api.Parameters.PRINT_STATISTICS) == "true"
   }
@@ -56,4 +46,17 @@ open class GenerateModulesGraphTask : DefaultTask() {
   private fun getOutputFile(): File {
     return File(project.property(Api.Parameters.OUTPUT_PATH).toString())
   }
+}
+
+internal fun Project.createDependencyGraph(configurationsToLook: Set<String>): DependencyGraph {
+  val dependencyGraph = GradleDependencyGraphFactory.create(this, configurationsToLook)
+
+  if (project.hasProperty(Api.Parameters.PRINT_ONLY_MODULE)) {
+    val moduleName = project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
+    if (moduleName != null) {
+      return dependencyGraph.subTree(moduleName)
+    }
+  }
+
+  return dependencyGraph
 }

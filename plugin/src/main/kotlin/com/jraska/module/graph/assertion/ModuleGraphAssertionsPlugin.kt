@@ -5,6 +5,7 @@ import com.jraska.module.graph.ModuleNameRegexMatcher
 import com.jraska.module.graph.Parse
 import com.jraska.module.graph.assertion.Api.Tasks
 import com.jraska.module.graph.assertion.tasks.AssertGraphTask
+import com.jraska.module.graph.assertion.tasks.GenerateModulesGraphStatisticsTask
 import com.jraska.module.graph.assertion.tasks.GenerateModulesGraphTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -28,6 +29,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
   internal fun addModulesAssertions(project: Project, graphRules: GraphRulesExtension) {
     project.addModuleGraphGeneration(graphRules)
+    project.addModuleGraphStatisticsGeneration(graphRules)
 
     val allAssertionsTask = project.tasks.register(Tasks.ASSERT_ALL) { it.group = VERIFICATION_GROUP }
 
@@ -51,6 +53,12 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
   private fun Project.addModuleGraphGeneration(graphRules: GraphRulesExtension) {
     tasks.register(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java) {
+      it.configurationsToLook = graphRules.configurations
+    }
+  }
+
+  private fun Project.addModuleGraphStatisticsGeneration(graphRules: GraphRulesExtension) {
+    tasks.register(Tasks.GENERATE_GRAPH_STATISTICS, GenerateModulesGraphStatisticsTask::class.java) {
       it.configurationsToLook = graphRules.configurations
     }
   }
