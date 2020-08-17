@@ -55,12 +55,19 @@ moduleGraphAssert {
 - This generates a graph of dependent modules when the plugin is applied.
 - The longest path of the project is in red.
 - If you utilise [Configuration on demand](https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:configuration_on_demand) Gradle feature, please use `--no-configure-on-demand` flag along the `generateModulesGraphvizText` task.
-- Adding the parameter `modules.graph.print.statistics` causes information about the graph to be included.
 - You can set the `modules.graph.of.module` parameter if you are only interested in a sub-graph of the module graph.
 ```
-./gradlew generateModulesGraphvizText -Pmodules.graph.print.statistics=true -Pmodules.graph.of.module=:feature-one
+./gradlew generateModulesGraphvizText -Pmodules.graph.of.module=:feature-one
 ```
 - Adding the parameter `modules.graph.output.gv` saves the graphViz file to the specified path
 ```
 ./gradlew generateModulesGraphvizText -Pmodules.graph.output.gv=all_modules
+```
+
+### Graph statistics
+- Executing the task `generateModulesGraphStatistics` prints the information about the graph.
+- Statistics printed: Modules Count, [Edges Count](https://en.wikipedia.org/wiki/Glossary_of_graph_theory_terms#edge), [Height](https://en.wikipedia.org/wiki/Glossary_of_graph_theory_terms#height) and [Longest Path](https://en.wikipedia.org/wiki/Longest_path_problem) 
+- Parameter `-Pmodules.graph.of.module` is supported as well.
+```
+./gradlew generateModulesGraphStatistics -Pmodules.graph.of.module=:feature-one
 ```

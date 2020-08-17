@@ -53,4 +53,20 @@ class ModuleGraphAssertionsPluginTest {
       assert(it.configurationsToLook == Api.API_IMPLEMENTATON_CONFIGURATIONS)
     }
   }
+
+  @Test
+  fun testPrintGraphvizTextsIsAdded() {
+    project.plugins.apply(ModuleGraphAssertionsPlugin::class.java)
+    project.evaluate()
+
+    assert(project.tasks.findByName("generateModulesGraphvizText") != null)
+  }
+
+  @Test
+  fun testPrintTaskStatisticsIsAdded() {
+    project.plugins.apply(ModuleGraphAssertionsPlugin::class.java)
+    project.evaluate()
+
+    assert(project.tasks.findByName("generateModulesGraphStatistics") != null)
+  }
 }
