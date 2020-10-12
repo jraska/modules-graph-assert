@@ -10,7 +10,7 @@ dependencies {
   implementation gradleApi()
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
 
-  testImplementation 'junit:junit:4.13'
+  testImplementation 'junit:junit:4.13.1'
 }
 
 compileKotlin {
