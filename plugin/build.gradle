@@ -30,11 +30,13 @@ pluginBundle {
   tags = ['gradle', 'plugin', 'graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module']
 }
 
+group = 'com.jraska.module.graph.assertion'
+
 gradlePlugin {
   plugins {
     modulesGraphAssert {
       id = 'com.jraska.module.graph.assertion'
-      version = '1.4.0'
+      version = '1.5.0'
       displayName = 'Modules Graph Assert'
       description = 'Gradle plugin to keep your modules graph healthy and lean.'
       implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsPlugin'
