@@ -3,7 +3,7 @@ apply plugin: 'java-gradle-plugin'
 apply plugin: 'com.gradle.plugin-publish'
 
 repositories {
-  jcenter()
+  mavenCentral()
 }
 
 dependencies {
