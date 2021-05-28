@@ -1,6 +1,9 @@
+plugins {
+  id "com.gradle.plugin-publish" version "0.15.0"
+  id "java-gradle-plugin"
+}
+
 apply plugin: 'kotlin'
-apply plugin: 'java-gradle-plugin'
-apply plugin: 'com.gradle.plugin-publish'
 
 repositories {
   mavenCentral()
@@ -28,9 +31,13 @@ pluginBundle {
   website = 'https://github.com/jraska/modules-graph-assert'
   vcsUrl = 'https://github.com/jraska/modules-graph-assert'
   tags = ['gradle', 'plugin', 'graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module']
-}
 
-group = 'com.jraska.module.graph.assertion'
+  mavenCoordinates {
+    groupId = 'com.jraska.module.graph.assertion'
+    artifactId = 'plugin'
+    version = "1.5.0"
+  }
+}
 
 gradlePlugin {
   plugins {
