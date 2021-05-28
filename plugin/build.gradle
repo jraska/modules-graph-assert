@@ -30,8 +30,6 @@ pluginBundle {
   tags = ['gradle', 'plugin', 'graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module']
 }
 
-group = 'com.jraska.module.graph.assertion'
-
 gradlePlugin {
   plugins {
     modulesGraphAssert {
@@ -42,4 +40,11 @@ gradlePlugin {
       implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsPlugin'
     }
   }
+}
+
+
+mavenCoordinates {
+  groupId = 'com.jraska.module.graph.assertion'
+  artifactId = 'com.jraska.module.graph.assertion'
+  version = "1.5.0"
 }
