@@ -3,7 +3,7 @@ A Gradle plugin that helps keep your module graph healthy and lean.
 
 [Medium Article](https://proandroiddev.com/module-rules-protect-your-build-time-and-architecture-d1194c7cc6bc) with complete context.
 
-[![CircleCI](https://circleci.com/gh/jraska/modules-graph-assert.svg?style=svg)](https://circleci.com/gh/jraska/modules-graph-assert)
+[![Build](https://github.com/jraska/modules-graph-assert/actions/workflows/build.yml/badge.svg)](https://github.com/jraska/modules-graph-assert/actions/workflows/build.yml)
 [![Gradle Pugin](https://img.shields.io/badge/Gradle-Plugin-green)](https://plugins.gradle.org/plugin/com.jraska.module.graph.assertion)
 
 <img width="1281" alt="example_graph" src="https://user-images.githubusercontent.com/6277721/70832705-18980e00-1df6-11ea-8b78-fc07ba570a2b.png">
