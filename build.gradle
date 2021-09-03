@@ -1,18 +1,17 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         gradlePluginPortal()
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
-        classpath 'com.gradle.publish:plugin-publish-plugin:0.11.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30"
     }
 }
 
 allprojects {
   repositories {
     google()
-    jcenter()
+    mavenCentral()
   }
 }
 

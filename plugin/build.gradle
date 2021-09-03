@@ -1,16 +1,19 @@
+plugins {
+  id "com.gradle.plugin-publish" version "0.15.0"
+  id "java-gradle-plugin"
+}
+
 apply plugin: 'kotlin'
-apply plugin: 'java-gradle-plugin'
-apply plugin: 'com.gradle.plugin-publish'
 
 repositories {
-  jcenter()
+  mavenCentral()
 }
 
 dependencies {
   implementation gradleApi()
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30"
 
-  testImplementation 'junit:junit:4.13'
+  testImplementation 'junit:junit:4.13.2'
 }
 
 compileKotlin {
@@ -28,13 +31,19 @@ pluginBundle {
   website = 'https://github.com/jraska/modules-graph-assert'
   vcsUrl = 'https://github.com/jraska/modules-graph-assert'
   tags = ['gradle', 'plugin', 'graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module']
+
+  mavenCoordinates {
+    groupId = 'com.jraska.module.graph.assertion'
+    artifactId = 'plugin'
+    version = "1.5.1"
+  }
 }
 
 gradlePlugin {
   plugins {
     modulesGraphAssert {
       id = 'com.jraska.module.graph.assertion'
-      version = '1.4.0'
+      version = '1.5.1'
       displayName = 'Modules Graph Assert'
       description = 'Gradle plugin to keep your modules graph healthy and lean.'
       implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsPlugin'
