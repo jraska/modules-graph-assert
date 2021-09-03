@@ -12,7 +12,7 @@ class DependencyGraph private constructor() {
       .forEach { rootCandidates.remove(it) }
 
     return rootCandidates.associateBy { heightOf(it.key) }
-      .maxBy { it.key }!!.value
+      .maxByOrNull { it.key }!!.value
   }
 
   fun nodes(): Collection<Node> = nodes.values
@@ -94,7 +94,7 @@ class DependencyGraph private constructor() {
       if (isLeaf()) {
         return 0
       } else {
-        return 1 + dependsOn.map { it.height() }.max()!!
+        return 1 + dependsOn.map { it.height() }.maxOrNull()!!
       }
     }
 
@@ -104,7 +104,7 @@ class DependencyGraph private constructor() {
       } else {
         val path = mutableListOf<Node>(this)
 
-        val maxHeightNode = dependsOn.maxBy { it.height() }!!
+        val maxHeightNode = dependsOn.maxByOrNull { it.height() }!!
         path.addAll(maxHeightNode.longestPath())
 
         return path
