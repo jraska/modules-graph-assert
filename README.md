@@ -71,3 +71,25 @@ moduleGraphAssert {
 ```
 ./gradlew generateModulesGraphStatistics -Pmodules.graph.of.module=:feature-one
 ```
+
+### Contributing
+
+#### Debugging
+
+**Setting up a composite build:**
+
+This case is helpful when you need to debug in a real project.
+Composite builds are consumed directly without publishing a snapshot version.  
+This is done already in `example` project, but you can do the same in any other project:
+
+settings.gradle:
+```groovy
+includeBuild("relative/path/to/modules-graph-assert")
+```
+
+Root build.gradle:
+```groovy
+plugins {
+  id 'com.autonomousapps.dependency-analysis'
+}
+```
