@@ -1,8 +1,8 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
+import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.Project
-import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 
 object GradleDependencyGraphFactory {
 
@@ -28,7 +28,7 @@ object GradleDependencyGraphFactory {
         project.configurations
           .filter { configurationsToLook.contains(it.name) }
           .flatMap { configuration ->
-            configuration.dependencies.filterIsInstance(DefaultProjectDependency::class.java)
+            configuration.dependencies.filterIsInstance(ProjectDependency::class.java)
               .map { it.dependencyProject }
           }
           .map { project.moduleDisplayName() to it.moduleDisplayName() }
