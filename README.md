@@ -72,9 +72,11 @@ moduleGraphAssert {
 ./gradlew generateModulesGraphStatistics -Pmodules.graph.of.module=:feature-one
 ```
 
-### Contributing
+## Contributing
 
-#### Debugging
+Please feel free to create PR or issue with any suggestions or ideas. No special format required, just common sense.
+
+### Debugging
 
 **Setting up a composite build:**
 
@@ -84,12 +86,12 @@ This is done already in `example` project, but you can do the same in any other 
 
 settings.gradle:
 ```groovy
-includeBuild("relative/path/to/modules-graph-assert")
+includeBuild("path/to/modules-graph-assert")
 ```
 
 Root build.gradle:
 ```groovy
 plugins {
-  id 'com.autonomousapps.dependency-analysis'
+  id('com.jraska.module.graph.assertion')
 }
 ```
