@@ -1,9 +1,9 @@
 apply plugin: 'java-library'
 
 dependencies {
-  implementation project(':core')
+  implementation projects.core
 
-  api project(':lib')
+  api projects.lib
 
   testImplementation project(':core-testing')
 }
