@@ -8,7 +8,7 @@ dependencies {
   implementation project(':feature-one')
   implementation project(':feature-two')
   implementation project(':feature-exclusion-test')
-  implementation project(':lib')
+  implementation projects.lib
 
   implementation 'javax.inject:javax.inject:1'
 }

@@ -5,8 +5,8 @@ plugins {
 apply plugin: 'java-library'
 
 dependencies {
-  implementation project(':core')
-  implementation project(':lib')
+  implementation projects.core
+  implementation projects.lib
   implementation project(':feature-one:nested')
   implementation project(':feature-exclusion-test')
 }

@@ -1,5 +1,5 @@
 apply plugin: 'java-library'
 
 dependencies {
-  implementation project(':core')
+  implementation projects.core
 }

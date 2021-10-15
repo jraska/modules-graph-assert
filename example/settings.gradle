@@ -1,3 +1,4 @@
 includeBuild("../")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include ':app', ':lib', ':core', ':feature-one', ':feature-two', ':feature-one:nested', ':feature-exclusion-test', 'core-testing'
