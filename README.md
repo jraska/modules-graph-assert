@@ -1,7 +1,8 @@
 # Module Graph Assert
 A Gradle plugin that helps keep your module graph healthy and lean.
 
-[Medium Article](https://proandroiddev.com/module-rules-protect-your-build-time-and-architecture-d1194c7cc6bc) with complete context.
+- [Medium Article](https://proandroiddev.com/module-rules-protect-your-build-time-and-architecture-d1194c7cc6bc) with complete context.
+- [Changelog](https://github.com/jraska/modules-graph-assert/releases)
 
 [![Build](https://github.com/jraska/modules-graph-assert/actions/workflows/build.yml/badge.svg)](https://github.com/jraska/modules-graph-assert/actions/workflows/build.yml)
 [![Gradle Pugin](https://img.shields.io/badge/Gradle-Plugin-green)](https://plugins.gradle.org/plugin/com.jraska.module.graph.assertion)
