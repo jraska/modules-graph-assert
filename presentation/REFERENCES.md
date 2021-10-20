@@ -1,0 +1,4 @@
+- [Collecting build Data from Gradle](https://git.io/JKjUB)
+- [About module rules](https://proandroiddev.com/module-rules-protect-your-build-time-and-architecture-d1194c7cc6bc)
+- [On BuildSrc](https://proandroiddev.com/stop-using-gradle-buildsrc-use-composite-builds-instead-3c38ac7a2ab3)
+- [Modules graph assert plugin](https://github.com/jraska/modules-graph-assert)
