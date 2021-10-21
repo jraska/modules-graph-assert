@@ -9,3 +9,4 @@
 - [About Gradle scans](https://scans.gradle.com/)
 - [Example Gradle scan to play around](https://scans.gradle.com/s/ydg7r3qbmoieq/timeline?details=odfxjrm7pa5ps)
 - [Example Gradle scan with Remote cache hits](https://scans.gradle.com/s/owqoklhlsd7ds/performance/build-cache?anchor=eyJpZCI6InJlbW90ZS1oaXQifQ&cacheDetails=remote-hit)
+- [Display a dialog from Gradle](https://stackoverflow.com/a/42225803/3080924)
