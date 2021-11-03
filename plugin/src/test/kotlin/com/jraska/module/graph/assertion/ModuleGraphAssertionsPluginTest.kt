@@ -55,6 +55,28 @@ class ModuleGraphAssertionsPluginTest {
   }
 
   @Test
+  fun testAddsOnlyOneTaskWhenApplied3() {
+    val plugin = ModuleGraphAssertionsPlugin()
+
+    val extension = GraphRulesExtension().apply {
+      maxHeight = 3
+      allowed = arrayOf(":feature-one -> :lib")
+    }
+
+    plugin.addModulesAssertions(project, extension)
+
+    assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL) != null)
+    assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL)!!.dependsOn.size == 2)
+
+    setOf(
+      project.tasks.findByName(Api.Tasks.ASSERT_MAX_HEIGHT) as AssertGraphTask,
+      project.tasks.findByName(Api.Tasks.ASSERT_ALLOWED) as AssertGraphTask,
+    ).forEach {
+      assert(it.configurationsToLook == Api.API_IMPLEMENTATON_CONFIGURATIONS)
+    }
+  }
+
+  @Test
   fun testPrintGraphvizTextsIsAdded() {
     project.plugins.apply(ModuleGraphAssertionsPlugin::class.java)
     project.evaluate()

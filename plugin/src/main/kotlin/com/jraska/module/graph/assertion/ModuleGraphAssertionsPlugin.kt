@@ -13,7 +13,7 @@ import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
-import java.util.*
+import java.util.Locale
 import java.util.function.Predicate
 
 @Suppress("unused", "UnstableApiUsage") // Used as plugin
@@ -43,6 +43,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     project.addMaxHeightTask(graphRules)?.also { childTasks.add(it) }
     project.addModuleLayersTask(graphRules)?.also { childTasks.add(it) }
     project.addModuleUserRuleTask(graphRules)?.also { childTasks.add(it) }
+    project.addModuleAllowedRulesTask(graphRules)?.also { childTasks.add(it) }
 
     allAssertionsTask.configure { allTask ->
       childTasks.forEach {
@@ -77,12 +78,18 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     return task
   }
 
+  @Deprecated("Will be removed with version 2.0")
   private fun Project.addModuleLayersTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
     if (graphRules.moduleLayers.isEmpty()) {
       return null
     }
 
     val task = tasks.register(Tasks.ASSERT_LAYER_ORDER, AssertGraphTask::class.java) {
+      println(
+        "*Deprecation*: '${Tasks.ASSERT_LAYER_ORDER}' task is deprecated and will be removed in version 2.0. \n" +
+          "Please use '${Tasks.ASSERT_ALLOWED}' task instead."
+      )
+
       it.assertion = LayersOrderAssert(graphRules.layerMatchers(), graphRules.excludedFromLayers())
       it.configurationsToLook = graphRules.configurations
       it.group = VERIFICATION_GROUP
@@ -90,7 +97,6 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
     return task
   }
-
 
   private fun Project.addModuleUserRuleTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
     if (graphRules.restricted.isEmpty()) {
@@ -106,12 +112,34 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     return task
   }
 
+  private fun Project.addModuleAllowedRulesTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
+    if (graphRules.allowed.isEmpty()) {
+      return null
+    }
+
+    val task = tasks.register(Tasks.ASSERT_ALLOWED, AssertGraphTask::class.java) {
+      println(
+        "*Notice*: 'allowed' property is experimental, unstable and open for feedback - https://github.com/jraska/modules-graph-assert/issues/129. You can expect final API in version 2.0."
+      )
+
+      it.assertion = OnlyAllowedAssert(graphRules.allowedRulesMatchers())
+      it.configurationsToLook = graphRules.configurations
+      it.group = VERIFICATION_GROUP
+    }
+
+    return task
+  }
+
   private fun String.capitalizeFirst(): String {
-    return this.substring(0, 1).toUpperCase(Locale.US).plus(this.substring(1))
+    return this.substring(0, 1).uppercase(Locale.US).plus(this.substring(1))
   }
 
   private fun GraphRulesExtension.excludedFromLayers(): Collection<DependencyMatcher> {
     return moduleLayersExclude.map { Parse.matcher(it) }
+  }
+
+  private fun GraphRulesExtension.allowedRulesMatchers(): Collection<DependencyMatcher> {
+    return allowed.map { Parse.matcher(it) }
   }
 
   private fun GraphRulesExtension.userRulesMatchers(): Collection<DependencyMatcher> {
