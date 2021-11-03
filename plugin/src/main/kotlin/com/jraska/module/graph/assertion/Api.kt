@@ -7,8 +7,12 @@ object Api {
 
     const val ASSERT_ALL = "assertModuleGraph"
     const val ASSERT_MAX_HEIGHT = "assertMaxHeight"
+
+    @Deprecated("Will be removed in version 2.0")
     const val ASSERT_LAYER_ORDER = "assertModuleLayers"
+
     const val ASSERT_USER_RULES = "assertRestrictions"
+    const val ASSERT_ALLOWED = "assertAllowedModuleDependencies"
   }
 
   object Parameters {
