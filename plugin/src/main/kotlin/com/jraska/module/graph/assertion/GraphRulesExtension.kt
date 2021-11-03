@@ -10,6 +10,6 @@ open class GraphRulesExtension {
   var moduleLayersExclude = emptyArray<String>() // each exclusion in format ":module -> :other-module"
 
   var restricted = emptyArray<String>() // each restriction in format "regexp -X> regexp" e.g.: ":feature-[a-z]* -X> :forbidden-lib"
-  var allowed = emptyArray<String>() // each allowance in format "regexp -X> regexp" e.g.: ":feature-[a-z]* -> :forbidden-lib"
+  var allowed = emptyArray<String>() // each allowance in format "regexp -> regexp" e.g.: ":feature-[a-z]* -> :forbidden-lib"
   var configurations: Set<String> = Api.API_IMPLEMENTATON_CONFIGURATIONS
 }
