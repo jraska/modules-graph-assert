@@ -2,10 +2,11 @@
 A Gradle plugin that helps keep your module graph healthy and lean.
 
 - [Medium Article](https://proandroiddev.com/module-rules-protect-your-build-time-and-architecture-d1194c7cc6bc) with complete context.
+- [Talk about module graph and build times](https://www.droidcon.com/2021/11/10/nail-your-gradle-build-time/) - *Modularization part starts at 11:39 🕑*
 - [Changelog](https://github.com/jraska/modules-graph-assert/releases)
 
 [![Build](https://github.com/jraska/modules-graph-assert/actions/workflows/build.yml/badge.svg)](https://github.com/jraska/modules-graph-assert/actions/workflows/build.yml)
-[![Gradle Pugin](https://img.shields.io/badge/Gradle-Plugin-green)](https://plugins.gradle.org/plugin/com.jraska.module.graph.assertion)
+[![Gradle Plugin](https://img.shields.io/badge/Gradle-Plugin-green)](https://plugins.gradle.org/plugin/com.jraska.module.graph.assertion)
 
 <img width="1281" alt="example_graph" src="https://user-images.githubusercontent.com/6277721/70832705-18980e00-1df6-11ea-8b78-fc07ba570a2b.png">
 
@@ -19,15 +20,14 @@ A Gradle plugin that helps keep your module graph healthy and lean.
 ## What we can enforce
 - The plugin provides a simple way for defining rules, which will be verified with the task `assertModuleGraph` as part of the `check` task.
 - Match module names using regular expressions.
-- Define the order of layers from the top.
-  - `moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"]`
-  - Modules cannot be dependent within a layer and dependencies cannot go against the direction of the layers. 
-  - Any module with `:feature:` prefix cannot depend on another with `:feature:` prefix. 
-  - `:lib` prefixed module cannot depend on a `:feature:` etc. 
-  - If there are allowed exceptions you can use `moduleLayersExclude = [":feature-about -> :feature-legacy-about"]`
+- Define the only allowed dependencies between modules
+  - `allowed = [':feature-one -> :feature-[a-z-:]*', ':.* -> :core', ':feature.* -> :lib.*']` define rules by using `regex -> regex` signature.
+  - Dependency, which will not match any of those rules will fail the assertion.
 - `restricted [':feature-[a-z]* -X> :forbidden-to-depend-on']` helps us to define custom rules by using `regex -X> regex` signature.
-- `maxHeight = 4` can verify that the [height of the modules tree](https://stackoverflow.com/questions/2603692/what-is-the-difference-between-tree-depth-and-height) with a root in the module will not exceed 4. Tree height is a good metric to prevent module tree degeneration into a list. 
-
+- `maxHeight = 4` can verify that the [height of the modules tree](https://stackoverflow.com/questions/2603692/what-is-the-difference-between-tree-depth-and-height) with a root in the module will not exceed 4. Tree height is a good metric to prevent module tree degeneration into a list.
+- ~~`moduleLayers`~~ are now deprecated in favor of `allowed` syntax. 
+  - Example of migration: `moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"]` -> `allowed = [":feature:\\S* -> :lib\\S*", ":feature:\\S* -> :core\\S*", :lib\\S* -> :core\\S*"]`
+ 
 ## Usage
 Apply the plugin to a module, which dependencies graph you want to assert.
 ```groovy
@@ -44,9 +44,10 @@ Rules are applied on the Gradle module and its `api` and `implementation` depend
 ```groovy
 moduleGraphAssert {
   maxHeight = 4
-  moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"] // modules prefixed with ":feature:" -> prefix ":lib:" -> prefix :core:
-  moduleLayersExclude = [":feature-about -> :feature-legacy-about"]
+  allowed = [':.* -> :core', ':feature.* -> :lib.*'] // regex to match module names
   restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on'] // regex to match module names
+  moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"] // DEPRECATED - modules prefixed with ":feature:" -> prefix ":lib:" -> prefix :core:
+  moduleLayersExclude = [":feature-about -> :feature-legacy-about"] // DEPRECATED
   configurations = ['api', 'implementation'] // Dependency configurations to look. ['api', 'implementation'] is the default
 }
 ```
