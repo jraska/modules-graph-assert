@@ -35,8 +35,7 @@ class ModuleGraphAssertionsPluginTest {
 
     val extension = GraphRulesExtension().apply {
       maxHeight = 3
-      moduleLayers = arrayOf(":feature", ":lib", ":core")
-      moduleLayersExclude = arrayOf(":feature-one -> :feature-two")
+      allowed = arrayOf(":feature-\\S* -> :lib\\S*", ".* -> :core")
       restricted = arrayOf(":feature-one -X> :feature-two")
     }
 
@@ -47,8 +46,8 @@ class ModuleGraphAssertionsPluginTest {
 
     setOf(
       project.tasks.findByName(Api.Tasks.ASSERT_MAX_HEIGHT) as AssertGraphTask,
-      project.tasks.findByName(Api.Tasks.ASSERT_LAYER_ORDER) as AssertGraphTask,
-      project.tasks.findByName(Api.Tasks.ASSERT_USER_RULES) as AssertGraphTask
+      project.tasks.findByName(Api.Tasks.ASSERT_ALLOWED) as AssertGraphTask,
+      project.tasks.findByName(Api.Tasks.ASSERT_RESTRICTIONS) as AssertGraphTask
     ).forEach {
       assert(it.configurationsToLook == Api.API_IMPLEMENTATON_CONFIGURATIONS)
     }

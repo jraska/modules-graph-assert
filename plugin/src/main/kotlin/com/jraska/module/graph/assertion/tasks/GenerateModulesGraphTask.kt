@@ -18,11 +18,6 @@ open class GenerateModulesGraphTask : DefaultTask() {
   fun run() {
     val dependencyGraph = project.createDependencyGraph(configurationsToLook)
 
-    if (shouldPrintStatistics()) {
-      println("*Deprecation*: ${Api.Parameters.PRINT_STATISTICS} parameter is deprecated and will be removed in version 2.0. \n" +
-        "Please use ${Api.Tasks.GENERATE_GRAPH_STATISTICS} task instead.")
-      println(dependencyGraph.statistics())
-    }
     val graphviz = GraphvizWriter.toGraphviz(dependencyGraph)
 
     if (shouldOutputFile()) {
@@ -33,10 +28,6 @@ open class GenerateModulesGraphTask : DefaultTask() {
     } else {
       println(graphviz)
     }
-  }
-
-  private fun shouldPrintStatistics(): Boolean {
-    return project.hasProperty(Api.Parameters.PRINT_STATISTICS) && project.property(Api.Parameters.PRINT_STATISTICS) == "true"
   }
 
   private fun shouldOutputFile(): Boolean {

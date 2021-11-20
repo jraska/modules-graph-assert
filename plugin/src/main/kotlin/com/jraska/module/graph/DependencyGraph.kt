@@ -102,7 +102,7 @@ class DependencyGraph private constructor() {
       if (isLeaf()) {
         return listOf(this)
       } else {
-        val path = mutableListOf<Node>(this)
+        val path = mutableListOf(this)
 
         val maxHeightNode = dependsOn.maxByOrNull { it.height() }!!
         path.addAll(maxHeightNode.longestPath())

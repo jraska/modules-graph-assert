@@ -8,17 +8,11 @@ object Api {
     const val ASSERT_ALL = "assertModuleGraph"
     const val ASSERT_MAX_HEIGHT = "assertMaxHeight"
 
-    @Deprecated("Will be removed in version 2.0")
-    const val ASSERT_LAYER_ORDER = "assertModuleLayers"
-
-    const val ASSERT_USER_RULES = "assertRestrictions"
+    const val ASSERT_RESTRICTIONS = "assertRestrictions"
     const val ASSERT_ALLOWED = "assertAllowedModuleDependencies"
   }
 
   object Parameters {
-    @Deprecated("Will be removed in version 2.0")
-    const val PRINT_STATISTICS = "modules.graph.print.statistics"
-
     const val PRINT_ONLY_MODULE = "modules.graph.of.module"
     const val OUTPUT_PATH = "modules.graph.output.gv"
   }
