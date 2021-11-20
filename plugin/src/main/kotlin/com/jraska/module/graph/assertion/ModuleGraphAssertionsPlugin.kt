@@ -1,7 +1,6 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyMatcher
-import com.jraska.module.graph.ModuleNameRegexMatcher
 import com.jraska.module.graph.Parse
 import com.jraska.module.graph.assertion.Api.Tasks
 import com.jraska.module.graph.assertion.tasks.AssertGraphTask
@@ -13,8 +12,6 @@ import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
-import java.util.Locale
-import java.util.function.Predicate
 
 @Suppress("unused", "UnstableApiUsage") // Used as plugin
 class ModuleGraphAssertionsPlugin : Plugin<Project> {
@@ -41,7 +38,6 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
     val childTasks = mutableListOf<TaskProvider<AssertGraphTask>>()
     project.addMaxHeightTask(graphRules)?.also { childTasks.add(it) }
-    project.addModuleLayersTask(graphRules)?.also { childTasks.add(it) }
     project.addModuleUserRuleTask(graphRules)?.also { childTasks.add(it) }
     project.addModuleAllowedRulesTask(graphRules)?.also { childTasks.add(it) }
 
@@ -69,33 +65,11 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       return null
     }
 
-    val task = tasks.register(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java) {
+    return tasks.register(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java) {
       it.assertion = ModuleTreeHeightAssert(moduleNameForHeightAssert(), graphRules.maxHeight)
       it.configurationsToLook = graphRules.configurations
       it.group = VERIFICATION_GROUP
     }
-
-    return task
-  }
-
-  @Deprecated("Will be removed with version 2.0")
-  private fun Project.addModuleLayersTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
-    if (graphRules.moduleLayers.isEmpty()) {
-      return null
-    }
-
-    val task = tasks.register(Tasks.ASSERT_LAYER_ORDER, AssertGraphTask::class.java) {
-      println(
-        "*Deprecation*: '${Tasks.ASSERT_LAYER_ORDER}' task is deprecated and will be removed in version 2.0. \n" +
-          "Please use '${Tasks.ASSERT_ALLOWED}' task instead."
-      )
-
-      it.assertion = LayersOrderAssert(graphRules.layerMatchers(), graphRules.excludedFromLayers())
-      it.configurationsToLook = graphRules.configurations
-      it.group = VERIFICATION_GROUP
-    }
-
-    return task
   }
 
   private fun Project.addModuleUserRuleTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
@@ -103,13 +77,11 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       return null
     }
 
-    val task = tasks.register(Tasks.ASSERT_USER_RULES, AssertGraphTask::class.java) {
+    return tasks.register(Tasks.ASSERT_RESTRICTIONS, AssertGraphTask::class.java) {
       it.assertion = UserDefinedRulesAssert(graphRules.userRulesMatchers())
       it.configurationsToLook = graphRules.configurations
       it.group = VERIFICATION_GROUP
     }
-
-    return task
   }
 
   private fun Project.addModuleAllowedRulesTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
@@ -117,7 +89,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       return null
     }
 
-    val task = tasks.register(Tasks.ASSERT_ALLOWED, AssertGraphTask::class.java) {
+    return tasks.register(Tasks.ASSERT_ALLOWED, AssertGraphTask::class.java) {
       println(
         "*Notice*: 'allowed' property is experimental, unstable and open for feedback - https://github.com/jraska/modules-graph-assert/issues/129. You can expect final API in version 2.0."
       )
@@ -126,16 +98,6 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       it.configurationsToLook = graphRules.configurations
       it.group = VERIFICATION_GROUP
     }
-
-    return task
-  }
-
-  private fun String.capitalizeFirst(): String {
-    return this.substring(0, 1).uppercase(Locale.US).plus(this.substring(1))
-  }
-
-  private fun GraphRulesExtension.excludedFromLayers(): Collection<DependencyMatcher> {
-    return moduleLayersExclude.map { Parse.matcher(it) }
   }
 
   private fun GraphRulesExtension.allowedRulesMatchers(): Collection<DependencyMatcher> {
@@ -144,10 +106,6 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
   private fun GraphRulesExtension.userRulesMatchers(): Collection<DependencyMatcher> {
     return restricted.map { Parse.restrictiveMatcher(it) }
-  }
-
-  private fun GraphRulesExtension.layerMatchers(): Array<Predicate<String>> {
-    return moduleLayers.map { ModuleNameRegexMatcher(it.toRegex()) }.toTypedArray()
   }
 }
 
