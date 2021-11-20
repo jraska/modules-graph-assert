@@ -30,7 +30,7 @@ compileTestKotlin {
 pluginBundle {
   website = 'https://github.com/jraska/modules-graph-assert'
   vcsUrl = 'https://github.com/jraska/modules-graph-assert'
-  tags = ['gradle', 'plugin', 'graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module']
+  tags = ['graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module']
 
   mavenCoordinates {
     groupId = 'com.jraska.module.graph.assertion'
