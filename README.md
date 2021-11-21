@@ -25,8 +25,6 @@ A Gradle plugin that helps keep your module graph healthy and lean.
   - Dependency, which will not match any of those rules will fail the assertion.
 - `restricted [':feature-[a-z]* -X> :forbidden-to-depend-on']` helps us to define custom rules by using `regex -X> regex` signature.
 - `maxHeight = 4` can verify that the [height of the modules tree](https://stackoverflow.com/questions/2603692/what-is-the-difference-between-tree-depth-and-height) with a root in the module will not exceed 4. Tree height is a good metric to prevent module tree degeneration into a list.
-- ~~`moduleLayers`~~ are now deprecated in favor of `allowed` syntax. 
-  - Example of migration: `moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"]` -> `allowed = [":feature:\\S* -> :lib\\S*", ":feature:\\S* -> :core\\S*", :lib\\S* -> :core\\S*"]`
  
 ## Usage
 Apply the plugin to a module, which dependencies graph you want to assert.
@@ -46,11 +44,20 @@ moduleGraphAssert {
   maxHeight = 4
   allowed = [':.* -> :core', ':feature.* -> :lib.*'] // regex to match module names
   restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on'] // regex to match module names
-  moduleLayers = [":feature:\\S*", ":lib\\S*", ":core\\S*"] // DEPRECATED - modules prefixed with ":feature:" -> prefix ":lib:" -> prefix :core:
-  moduleLayersExclude = [":feature-about -> :feature-legacy-about"] // DEPRECATED
   configurations = ['api', 'implementation'] // Dependency configurations to look. ['api', 'implementation'] is the default
 }
 ```
+
+### Module name alias
+- You don't have to rely on module names and set a property `ext.moduleNameAssertAlias = "ThisWillBeAssertedOn"
+- This can be set on any module and the `allowed`/`restricted` rules would use the alias instead of module name for asserting.
+- This is useful for example if you want to use "module types" where eaach module has a type regardless the name and you want to manage only dependnecies of different types.
+- It is recommended to use either module names or `moduleNameAssertAlias` everywhere. Mixing both is not recommended.
+- Example of module rules you could implement for flat module graph:
+
+<img src="https://user-images.githubusercontent.com/6277721/142781792-752f39ce-1525-4f59-8a25-94b236476117.png" width="300" />`
+  - Each module would have set `ext.moduleNameAssertAlias = "Api|Implementation|App"`
+  - Module rules example for such case: `allowed = ['Implementation -> Api', 'App -> .*']`
 
 ### Graphviz Graph Export
 - Visualising the graph could be useful to help find your dependency issues, therefore a helper `generateModulesGraphvizText` task is included.
