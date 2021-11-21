@@ -16,7 +16,7 @@ class DependencyGraphSerializationTest {
   }
 
   @Test
-  fun grapIsSerializable() {
+  fun graphIsSerializable() {
     val originalGraph = DependencyGraph.create(
       "feature" to "lib",
       "lib" to "core",

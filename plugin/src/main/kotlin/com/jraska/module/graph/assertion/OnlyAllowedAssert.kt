@@ -17,7 +17,7 @@ class OnlyAllowedAssert(
       .map { it.displayText() }
 
     if (disallowedDependencies.isNotEmpty()) {
-      val allowedRules = allowedDependencies.map { "'$it'" }.joinToString(", ")
+      val allowedRules = allowedDependencies.joinToString(", ") { "'$it'" }
       throw GradleException("$disallowedDependencies not allowed by any of [$allowedRules]")
     }
   }

@@ -86,8 +86,8 @@ class DependencyGraphTest {
     assert(dependencyGraph.statistics().height == 0)
     assert(dependencyGraph.findRoot().key == ":app")
     assert(dependencyGraph.heightOf(":app") == 0)
-    assert(dependencyGraph.longestPath().nodeNames.equals(listOf(":app")))
-    assert(dependencyGraph.longestPath().nodeNames.equals(dependencyGraph.statistics().longestPath.nodeNames))
+    assert(dependencyGraph.longestPath().nodeNames == listOf(":app"))
+    assert(dependencyGraph.longestPath().nodeNames == dependencyGraph.statistics().longestPath.nodeNames)
   }
 
   @Test(expected = IllegalArgumentException::class)
