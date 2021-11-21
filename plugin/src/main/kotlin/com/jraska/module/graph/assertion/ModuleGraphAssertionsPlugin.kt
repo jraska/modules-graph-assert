@@ -1,7 +1,5 @@
 package com.jraska.module.graph.assertion
 
-import com.jraska.module.graph.DependencyMatcher
-import com.jraska.module.graph.Parse
 import com.jraska.module.graph.assertion.Api.Tasks
 import com.jraska.module.graph.assertion.tasks.AssertGraphTask
 import com.jraska.module.graph.assertion.tasks.GenerateModulesGraphStatisticsTask
@@ -16,6 +14,13 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 @Suppress("unused", "UnstableApiUsage") // Used as plugin
 class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
+  private val moduleGraph by lazy {
+    GradleDependencyGraphFactory.create(evaluatedProject, configrationsToLook).serializableGraph()
+  }
+
+  private lateinit var evaluatedProject: Project
+  private lateinit var configrationsToLook: Set<String>
+
   override fun apply(project: Project) {
     val graphRules = project.extensions.create(GraphRulesExtension::class.java, Api.EXTENSION_ROOT, GraphRulesExtension::class.java)
 
@@ -25,6 +30,9 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   }
 
   internal fun addModulesAssertions(project: Project, graphRules: GraphRulesExtension) {
+    evaluatedProject = project
+    configrationsToLook = graphRules.configurations
+
     project.addModuleGraphGeneration(graphRules)
     project.addModuleGraphStatisticsGeneration(graphRules)
 
@@ -38,7 +46,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
     val childTasks = mutableListOf<TaskProvider<AssertGraphTask>>()
     project.addMaxHeightTask(graphRules)?.also { childTasks.add(it) }
-    project.addModuleUserRuleTask(graphRules)?.also { childTasks.add(it) }
+    project.addModuleRestrictionsTask(graphRules)?.also { childTasks.add(it) }
     project.addModuleAllowedRulesTask(graphRules)?.also { childTasks.add(it) }
 
     allAssertionsTask.configure { allTask ->
@@ -67,19 +75,21 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
     return tasks.register(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java) {
       it.assertion = ModuleTreeHeightAssert(moduleNameForHeightAssert(), graphRules.maxHeight)
-      it.configurationsToLook = graphRules.configurations
+      it.dependencyGraph = moduleGraph
+      it.outputs.upToDateWhen { true }
       it.group = VERIFICATION_GROUP
     }
   }
 
-  private fun Project.addModuleUserRuleTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
+  private fun Project.addModuleRestrictionsTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
     if (graphRules.restricted.isEmpty()) {
       return null
     }
 
     return tasks.register(Tasks.ASSERT_RESTRICTIONS, AssertGraphTask::class.java) {
-      it.assertion = UserDefinedRulesAssert(graphRules.userRulesMatchers())
-      it.configurationsToLook = graphRules.configurations
+      it.assertion = UserDefinedRulesAssert(graphRules.restricted)
+      it.dependencyGraph = moduleGraph
+      it.outputs.upToDateWhen { true }
       it.group = VERIFICATION_GROUP
     }
   }
@@ -94,18 +104,11 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
         "*Notice*: 'allowed' property is experimental, unstable and open for feedback - https://github.com/jraska/modules-graph-assert/issues/129. You can expect final API in version 2.0."
       )
 
-      it.assertion = OnlyAllowedAssert(graphRules.allowedRulesMatchers())
-      it.configurationsToLook = graphRules.configurations
+      it.assertion = OnlyAllowedAssert(graphRules.allowed)
+      it.dependencyGraph = moduleGraph
+      it.outputs.upToDateWhen { true }
       it.group = VERIFICATION_GROUP
     }
-  }
-
-  private fun GraphRulesExtension.allowedRulesMatchers(): Collection<DependencyMatcher> {
-    return allowed.map { Parse.matcher(it) }
-  }
-
-  private fun GraphRulesExtension.userRulesMatchers(): Collection<DependencyMatcher> {
-    return restricted.map { Parse.restrictiveMatcher(it) }
   }
 }
 

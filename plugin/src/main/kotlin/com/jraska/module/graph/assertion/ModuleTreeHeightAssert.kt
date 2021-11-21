@@ -2,11 +2,12 @@ package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
 import org.gradle.api.GradleException
+import java.io.Serializable
 
 class ModuleTreeHeightAssert(
   private val moduleName: String?,
   private val maxHeight: Int
-) : GraphAssert {
+) : GraphAssert, Serializable {
   override fun assert(dependencyGraph: DependencyGraph) {
     if (moduleName == null) {
       assertWholeGraphHeight(dependencyGraph)

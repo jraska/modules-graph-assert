@@ -1,6 +1,6 @@
 package com.jraska.module.graph.assertion.tasks
 
-import com.jraska.module.graph.assertion.GradleDependencyGraphFactory
+import com.jraska.module.graph.DependencyGraph
 import com.jraska.module.graph.assertion.GraphAssert
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -12,11 +12,11 @@ open class AssertGraphTask : DefaultTask() {
   lateinit var assertion: GraphAssert
 
   @Input
-  lateinit var configurationsToLook: Set<String>
+  lateinit var dependencyGraph: DependencyGraph.SerializableGraph
 
   @TaskAction
   fun run() {
-    val modulesTree = GradleDependencyGraphFactory.create(project, configurationsToLook)
+    val modulesTree = DependencyGraph.create(dependencyGraph)
 
     assertion.assert(modulesTree)
   }
