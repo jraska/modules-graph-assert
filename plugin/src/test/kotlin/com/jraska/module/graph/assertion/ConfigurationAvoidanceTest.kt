@@ -1,5 +1,6 @@
 package com.jraska.module.graph.assertion
 
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Before
 import org.junit.Rule
@@ -11,18 +12,9 @@ class ConfigurationAvoidanceTest {
   @get:Rule
   val testProjectDir: TemporaryFolder = TemporaryFolder()
 
-  private lateinit var buildFile: File
-
   @Before
   fun setup() {
-    println(testProjectDir.root)
-
-    buildFile = testProjectDir.newFile("build.gradle")
-  }
-
-  @Test
-  fun supportsConfigurationCache() {
-    buildFile.writeText(
+    testProjectDir.newFile("build.gradle").writeText(
       """
           plugins {
               id 'com.jraska.module.graph.assertion'
@@ -32,26 +24,27 @@ class ConfigurationAvoidanceTest {
             maxHeight = 3
             allowed = [':app -> .*', ':feature-\\S* -> :lib\\S*', '.* -> :core', ':feature-one -> :feature-exclusion-test', ':feature-one -> :feature-one:nested']
             restricted = [':feature-[a-z]* -X> :feature-[a-z]*']
-       }
+          }
+
+          ext.moduleNameAssertAlias = "Alias"
       """
     )
+  }
 
-    GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withPluginClasspath()
-      .withArguments("--configuration-cache", "assertModuleGraph")
-      .build()
+  @Test
+  fun tasksAreUpToDate() {
+    runGradleAssertModuleGraph(testProjectDir.root)
+    val secondRunResult = runGradleAssertModuleGraph(testProjectDir.root)
 
-    val result = GradleRunner.create()
-      .withProjectDir(testProjectDir.root)
-      .withPluginClasspath()
-      .withArguments("--configuration-cache", "assertModuleGraph")
-      .build()
-
-    println(result.output)
-    require(result.output.contains("Reusing configuration cache."))
-
-    val findAll = Regex("UP-TO-DATE").findAll(result.output)
+    val findAll = Regex("UP-TO-DATE").findAll(secondRunResult.output)
     assert(findAll.count() == 4)
   }
+}
+
+fun runGradleAssertModuleGraph(dir: File, vararg arguments: String = arrayOf("--configuration-cache", "assertModuleGraph")): BuildResult {
+  return GradleRunner.create()
+    .withProjectDir(dir)
+    .withPluginClasspath()
+    .withArguments(arguments.asList())
+    .build()
 }

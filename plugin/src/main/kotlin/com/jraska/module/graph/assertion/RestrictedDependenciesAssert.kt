@@ -5,15 +5,17 @@ import com.jraska.module.graph.DependencyMatcher
 import com.jraska.module.graph.Parse
 import org.gradle.api.GradleException
 
-class UserDefinedRulesAssert(
-  private val errorMatchers: Array<String>
+class RestrictedDependenciesAssert(
+  private val errorMatchers: Array<String>,
+  private val aliasMap: Map<String, String> = emptyMap()
 ) : GraphAssert {
   override fun assert(dependencyGraph: DependencyGraph) {
     val matchers = errorMatchers.map { Parse.restrictiveMatcher(it) }
 
     val failedDependencies = dependencyGraph.dependencyPairs()
+      .map { aliasMap.mapAlias(it) }
       .map { dependency ->
-        val violations = matchers.filter { it.matches(dependency) }.toList()
+        val violations = matchers.filter { it.matches(dependency.pairToAssert()) }.toList()
         dependency to violations
       }.filter { it.second.isNotEmpty() }
 
@@ -22,10 +24,10 @@ class UserDefinedRulesAssert(
     }
   }
 
-  private fun buildErrorMessage(failedDependencies: List<Pair<Pair<String, String>, List<DependencyMatcher>>>): String {
+  private fun buildErrorMessage(failedDependencies: List<Pair<DependencyToAssert, List<DependencyMatcher>>>): String {
     return failedDependencies.map {
       val violatedRules = it.second.map { "'$it'" }.joinToString(", ")
-      "Dependency '${it.first.first}' -> '${it.first.second}' violates: $violatedRules"
+      "Dependency '${it.first.displayText()} violates: $violatedRules"
     }.joinToString("\n")
   }
 }
