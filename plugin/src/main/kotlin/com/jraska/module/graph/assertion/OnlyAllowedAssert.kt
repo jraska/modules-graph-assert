@@ -1,21 +1,31 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
-import com.jraska.module.graph.DependencyMatcher
 import com.jraska.module.graph.Parse
 import org.gradle.api.GradleException
 
 class OnlyAllowedAssert(
-  private val allowedDependencies: Array<String>
+  private val allowedDependencies: Array<String>,
+  private val aliasMap: Map<String, String> = emptyMap(),
 ) : GraphAssert {
   override fun assert(dependencyGraph: DependencyGraph) {
     val matchers = allowedDependencies.map { Parse.matcher(it) }
 
     val disallowedDependencies = dependencyGraph.dependencyPairs()
-      .filterNot { dependency -> matchers.any { it.matches(dependency) } }
+      .map { aliasMap.mapAlias(it) }
+      .filterNot { dependency -> matchers.any { it.matches(dependency.pairToAssert()) } }
+      .map { it.displayText() }
 
     if (disallowedDependencies.isNotEmpty()) {
-      throw GradleException("$disallowedDependencies not allowed")
+      val allowedRules = allowedDependencies.map { "'$it'" }.joinToString(", ")
+      throw GradleException("$disallowedDependencies not allowed by any of [$allowedRules]")
     }
   }
+}
+
+fun Map<String, String>.mapAlias(dependencyPair: Pair<String, String>): DependencyToAssert {
+  val fromAlias = this[dependencyPair.first]
+  val toAlias = this[dependencyPair.second]
+
+  return DependencyToAssert(dependencyPair, fromAlias, toAlias)
 }

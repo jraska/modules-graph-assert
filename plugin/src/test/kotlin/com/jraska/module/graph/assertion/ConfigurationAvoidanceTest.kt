@@ -32,7 +32,9 @@ class ConfigurationAvoidanceTest {
             maxHeight = 3
             allowed = [':app -> .*', ':feature-\\S* -> :lib\\S*', '.* -> :core', ':feature-one -> :feature-exclusion-test', ':feature-one -> :feature-one:nested']
             restricted = [':feature-[a-z]* -X> :feature-[a-z]*']
-       }
+          }
+          
+          ext.moduleNameAssertAlias = "Alias"
       """
     )
 

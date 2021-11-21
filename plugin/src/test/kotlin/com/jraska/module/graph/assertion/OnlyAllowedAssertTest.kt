@@ -1,7 +1,6 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
-import com.jraska.module.graph.Parse
 import org.gradle.api.GradleException
 import org.junit.Test
 
@@ -47,6 +46,28 @@ class OnlyAllowedAssertTest {
     )
 
     OnlyAllowedAssert(allowedDependencies).assert(dependencyGraph)
+  }
+
+  @Test
+  fun passesWhenAllowedWithAlias() {
+    val dependencyGraph = testGraph()
+
+    val allowedDependencies = arrayOf(
+      "App -> .*",
+      "Impl -> Api",
+      "Api -> Api"
+    )
+    val aliases = mapOf(
+      "app" to "App",
+      "feature" to "Impl",
+      "feature2" to "Impl",
+      "api" to "Api",
+      "api2" to "Api",
+      "lib" to "Api",
+      "lib2" to "Api",
+    )
+
+    OnlyAllowedAssert(allowedDependencies, aliases).assert(dependencyGraph)
   }
 
   private fun testGraph(): DependencyGraph {

@@ -11,15 +11,19 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 
-@Suppress("unused", "UnstableApiUsage") // Used as plugin
+@Suppress("unused") // Used as plugin
 class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
   private val moduleGraph by lazy {
-    GradleDependencyGraphFactory.create(evaluatedProject, configrationsToLook).serializableGraph()
+    GradleDependencyGraphFactory.create(evaluatedProject, configurationsToLook).serializableGraph()
+  }
+
+  private val aliases by lazy {
+    GradleModuleAliasExtractor.extractModuleAliases(evaluatedProject)
   }
 
   private lateinit var evaluatedProject: Project
-  private lateinit var configrationsToLook: Set<String>
+  private lateinit var configurationsToLook: Set<String>
 
   override fun apply(project: Project) {
     val graphRules = project.extensions.create(GraphRulesExtension::class.java, Api.EXTENSION_ROOT, GraphRulesExtension::class.java)
@@ -31,7 +35,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
   internal fun addModulesAssertions(project: Project, graphRules: GraphRulesExtension) {
     evaluatedProject = project
-    configrationsToLook = graphRules.configurations
+    configurationsToLook = graphRules.configurations
 
     project.addModuleGraphGeneration(graphRules)
     project.addModuleGraphStatisticsGeneration(graphRules)
@@ -87,7 +91,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
 
     return tasks.register(Tasks.ASSERT_RESTRICTIONS, AssertGraphTask::class.java) {
-      it.assertion = UserDefinedRulesAssert(graphRules.restricted)
+      it.assertion = RestrictedDependenciesAssert(graphRules.restricted, aliases)
       it.dependencyGraph = moduleGraph
       it.outputs.upToDateWhen { true }
       it.group = VERIFICATION_GROUP
@@ -100,11 +104,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
 
     return tasks.register(Tasks.ASSERT_ALLOWED, AssertGraphTask::class.java) {
-      println(
-        "*Notice*: 'allowed' property is experimental, unstable and open for feedback - https://github.com/jraska/modules-graph-assert/issues/129. You can expect final API in version 2.0."
-      )
-
-      it.assertion = OnlyAllowedAssert(graphRules.allowed)
+      it.assertion = OnlyAllowedAssert(graphRules.allowed, aliases)
       it.dependencyGraph = moduleGraph
       it.outputs.upToDateWhen { true }
       it.group = VERIFICATION_GROUP
