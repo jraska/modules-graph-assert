@@ -48,9 +48,7 @@ class ModuleGraphAssertionsPluginTest {
       project.tasks.findByName(Api.Tasks.ASSERT_MAX_HEIGHT) as AssertGraphTask,
       project.tasks.findByName(Api.Tasks.ASSERT_ALLOWED) as AssertGraphTask,
       project.tasks.findByName(Api.Tasks.ASSERT_RESTRICTIONS) as AssertGraphTask
-    ).forEach {
-      assert(it.configurationsToLook == Api.API_IMPLEMENTATON_CONFIGURATIONS)
-    }
+    )
   }
 
   @Test
@@ -70,9 +68,7 @@ class ModuleGraphAssertionsPluginTest {
     setOf(
       project.tasks.findByName(Api.Tasks.ASSERT_MAX_HEIGHT) as AssertGraphTask,
       project.tasks.findByName(Api.Tasks.ASSERT_ALLOWED) as AssertGraphTask,
-    ).forEach {
-      assert(it.configurationsToLook == Api.API_IMPLEMENTATON_CONFIGURATIONS)
-    }
+    )
   }
 
   @Test

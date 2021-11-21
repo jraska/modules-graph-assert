@@ -10,26 +10,26 @@ class OnlyAllowedAssertTest {
   fun failsWithNoMatchingMatchers() {
     val dependencyGraph = testGraph()
 
-    OnlyAllowedAssert(emptySet()).assert(dependencyGraph)
+    OnlyAllowedAssert(emptyArray()).assert(dependencyGraph)
   }
 
   @Test
   fun passesWhenAllAllowed() {
     val dependencyGraph = testGraph()
 
-    OnlyAllowedAssert(setOf(Parse.matcher(".* -> .*"))).assert(dependencyGraph)
+    OnlyAllowedAssert(arrayOf(".* -> .*")).assert(dependencyGraph)
   }
 
   @Test
   fun passesWhenAllowed() {
     val dependencyGraph = testGraph()
 
-    val allowedDependencies = setOf(
+    val allowedDependencies = arrayOf(
       "app -> .*",
       "feature[a-z]* -> lib[0-9]*",
       "feature[a-z]* -> api[0-9]*",
       "api[0-9]* -> lib",
-    ).map { Parse.matcher(it) }
+    )
 
     OnlyAllowedAssert(allowedDependencies).assert(dependencyGraph)
   }
@@ -39,12 +39,12 @@ class OnlyAllowedAssertTest {
     val dependencies = testGraph().dependencyPairs().toMutableList().apply { add("api" to "lib2") }
     val dependencyGraph = DependencyGraph.create(dependencies)
 
-    val allowedDependencies = setOf(
+    val allowedDependencies = arrayOf(
       "app -> .*",
       "feature[a-z]* -> lib[0-9]*",
       "feature[a-z]* -> api[0-9]*",
       "api[0-9]* -> lib",
-    ).map { Parse.matcher(it) }
+    )
 
     OnlyAllowedAssert(allowedDependencies).assert(dependencyGraph)
   }

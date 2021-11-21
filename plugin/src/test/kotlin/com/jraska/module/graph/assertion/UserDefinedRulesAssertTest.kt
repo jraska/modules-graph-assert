@@ -10,21 +10,21 @@ class UserDefinedRulesAssertTest {
   fun passesWithNoMatchingMatchers() {
     val dependencyGraph = testGraph()
 
-    UserDefinedRulesAssert(emptySet()).assert(dependencyGraph)
+    UserDefinedRulesAssert(emptyArray()).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
   fun failsWhenFeatureCannotDependOnLib() {
     val dependencyGraph = testGraph()
 
-    UserDefinedRulesAssert(setOf(Parse.restrictiveMatcher("feature -X> lib2"))).assert(dependencyGraph)
+    UserDefinedRulesAssert(arrayOf("feature -X> lib2")).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
   fun failsWhenLibCannotDependOnAndroid() {
     val dependencyGraph = testGraph()
 
-    UserDefinedRulesAssert(setOf(Parse.restrictiveMatcher("lib[0-9]* -X> [a-z]*-android"))).assert(dependencyGraph)
+    UserDefinedRulesAssert(arrayOf("lib[0-9]* -X> [a-z]*-android")).assert(dependencyGraph)
   }
 
   private fun testGraph(): DependencyGraph {

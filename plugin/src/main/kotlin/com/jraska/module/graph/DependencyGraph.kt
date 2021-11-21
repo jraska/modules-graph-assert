@@ -1,5 +1,7 @@
 package com.jraska.module.graph
 
+import java.io.Serializable
+
 class DependencyGraph private constructor() {
   private val nodes = mutableMapOf<String, Node>()
 
@@ -66,6 +68,13 @@ class DependencyGraph private constructor() {
     return dependencyTree
   }
 
+  fun serializableGraph(): SerializableGraph {
+    return SerializableGraph(
+      ArrayList(dependencyPairs()),
+      nodes.keys.first()
+    )
+  }
+
   private fun addConnections(node: Node, into: DependencyGraph) {
     node.dependsOn.forEach {
       into.addEdge(node.key, it.key)
@@ -84,6 +93,11 @@ class DependencyGraph private constructor() {
   private fun getOrCreate(key: String): Node {
     return nodes[key] ?: Node(key).also { nodes[key] = it }
   }
+
+  class SerializableGraph(
+    val dependencyPairs: ArrayList<Pair<String, String>>,
+    val firstModule: String
+  ) : Serializable
 
   class Node(val key: String) {
     val dependsOn = mutableSetOf<Node>()
@@ -133,6 +147,14 @@ class DependencyGraph private constructor() {
 
     fun create(vararg dependencies: Pair<String, String>): DependencyGraph {
       return create(dependencies.asList())
+    }
+
+    fun create(graph: SerializableGraph): DependencyGraph {
+      if (graph.dependencyPairs.isEmpty()) {
+        return createSingular(graph.firstModule)
+      } else {
+        return create(graph.dependencyPairs)
+      }
     }
   }
 }

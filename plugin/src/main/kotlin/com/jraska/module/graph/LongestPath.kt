@@ -1,6 +1,6 @@
 package com.jraska.module.graph
 
-class LongestPath(
+data class LongestPath(
   val nodeNames: List<String>
 ) {
   fun pathString(): String {
