@@ -58,6 +58,7 @@ moduleGraphAssert {
 <img src="https://user-images.githubusercontent.com/6277721/142781792-752f39ce-1525-4f59-8a25-94b236476117.png" width="300" />`
   - Each module would have set `ext.moduleNameAssertAlias = "Api|Implementation|App"`
   - Module rules example for such case: `allowed = ['Implementation -> Api', 'App -> .*']`
+  - In case you want to migrate to this structure incrementally, you can set a separate module type like `ext.moduleNameAssertAlias = "NeedsMigration"` and setting `allowed = ['Implementation -> Api', 'App -> .*', 'NeedsToMigrate -> .*', '.* -> NeedsToMigrate']` and then tackling `"NeedsToMigrate"` modules one by one.
 
 ### Graphviz Graph Export
 - Visualising the graph could be useful to help find your dependency issues, therefore a helper `generateModulesGraphvizText` task is included.
