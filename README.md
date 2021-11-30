@@ -51,7 +51,7 @@ moduleGraphAssert {
 ### Module name alias
 - You don't have to rely on module names and set a property `ext.moduleNameAssertAlias = "ThisWillBeAssertedOn"`
 - This can be set on any module and the `allowed`/`restricted` rules would use the alias instead of module name for asserting.
-- This is useful for example if you want to use "module types" where eaach module has a type regardless the name and you want to manage only dependnecies of different types.
+- This is useful for example if you want to use "module types" where each module has a type regardless the name and you want to manage only dependnecies of different types.
 - It is recommended to use either module names or `moduleNameAssertAlias` everywhere. Mixing both is not recommended.
 - Example of module rules you could implement for a flat module graph:
 
