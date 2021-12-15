@@ -61,11 +61,14 @@ class DependencyGraph private constructor() {
   fun subTree(key: String): DependencyGraph {
     require(nodes.contains(key)) { "Dependency Tree doesn't contain module: $key" }
 
-    val dependencyTree = createSingular(key)
+    val connections = mutableListOf<Pair<String, String>>()
+    addConnections(nodes.getValue(key), connections)
 
-    addConnections(nodes.getValue(key), dependencyTree)
-
-    return dependencyTree
+    return if (connections.isEmpty()) {
+      createSingular(key)
+    } else {
+      create(connections)
+    }
   }
 
   fun serializableGraph(): SerializableGraph {
@@ -75,23 +78,15 @@ class DependencyGraph private constructor() {
     )
   }
 
-  private fun addConnections(node: Node, into: DependencyGraph) {
+  private fun addConnections(node: Node, into: MutableList<Pair<String, String>>) {
     node.dependsOn.forEach {
-      into.addEdge(node.key, it.key)
+      into.add(node.key to it.key)
       addConnections(it, into)
     }
   }
 
-  private fun addEdge(from: String, to: String) {
-    getOrCreate(from).dependsOn.add(getOrCreate(to))
-  }
-
   private fun countEdges(): Int {
     return nodes().flatMap { node -> node.dependsOn }.count()
-  }
-
-  private fun getOrCreate(key: String): Node {
-    return nodes[key] ?: Node(key).also { nodes[key] = it }
   }
 
   class SerializableGraph(
@@ -102,14 +97,18 @@ class DependencyGraph private constructor() {
   class Node(val key: String) {
     val dependsOn = mutableSetOf<Node>()
 
+    private val calculatedHeight by lazy {
+      if (isLeaf()) {
+        0
+      } else {
+        1 + dependsOn.map { it.height() }.maxOrNull()!!
+      }
+    }
+
     private fun isLeaf() = dependsOn.isEmpty()
 
     fun height(): Int {
-      if (isLeaf()) {
-        return 0
-      } else {
-        return 1 + dependsOn.map { it.height() }.maxOrNull()!!
-      }
+      return calculatedHeight
     }
 
     internal fun longestPath(): List<Node> {
@@ -155,6 +154,14 @@ class DependencyGraph private constructor() {
       } else {
         return create(graph.dependencyPairs)
       }
+    }
+
+    private fun DependencyGraph.addEdge(from: String, to: String) {
+      getOrCreate(from).dependsOn.add(getOrCreate(to))
+    }
+
+    private fun DependencyGraph.getOrCreate(key: String): Node {
+      return nodes[key] ?: Node(key).also { nodes[key] = it }
     }
   }
 }
