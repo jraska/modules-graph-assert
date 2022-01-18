@@ -14,7 +14,7 @@ class OnlyAllowedAssert(
     val disallowedDependencies = dependencyGraph.dependencyPairs()
       .map { aliasMap.mapAlias(it) }
       .filterNot { dependency -> matchers.any { it.matches(dependency.pairToAssert()) } }
-      .map { it.displayText() }
+      .map { it.assertDisplayText() }
 
     if (disallowedDependencies.isNotEmpty()) {
       val allowedRules = allowedDependencies.joinToString(", ") { "'$it'" }
@@ -23,9 +23,9 @@ class OnlyAllowedAssert(
   }
 }
 
-fun Map<String, String>.mapAlias(dependencyPair: Pair<String, String>): DependencyToAssert {
+fun Map<String, String>.mapAlias(dependencyPair: Pair<String, String>): ModuleDependency {
   val fromAlias = this[dependencyPair.first]
   val toAlias = this[dependencyPair.second]
 
-  return DependencyToAssert(dependencyPair, fromAlias, toAlias)
+  return ModuleDependency(dependencyPair, fromAlias, toAlias)
 }

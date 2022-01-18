@@ -24,10 +24,10 @@ class RestrictedDependenciesAssert(
     }
   }
 
-  private fun buildErrorMessage(failedDependencies: List<Pair<DependencyToAssert, List<DependencyMatcher>>>): String {
+  private fun buildErrorMessage(failedDependencies: List<Pair<ModuleDependency, List<DependencyMatcher>>>): String {
     return failedDependencies.map {
       val violatedRules = it.second.map { "'$it'" }.joinToString(", ")
-      "Dependency '${it.first.displayText()} violates: $violatedRules"
+      "Dependency '${it.first.assertDisplayText()} violates: $violatedRules"
     }.joinToString("\n")
   }
 }

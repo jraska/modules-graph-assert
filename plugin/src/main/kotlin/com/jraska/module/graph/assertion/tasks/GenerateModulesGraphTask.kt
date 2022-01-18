@@ -14,11 +14,14 @@ open class GenerateModulesGraphTask : DefaultTask() {
   @Input
   lateinit var configurationsToLook: Set<String>
 
+  @Input
+  lateinit var aliases: Map<String, String>
+
   @TaskAction
   fun run() {
     val dependencyGraph = project.createDependencyGraph(configurationsToLook)
 
-    val graphviz = GraphvizWriter.toGraphviz(dependencyGraph)
+    val graphviz = GraphvizWriter.toGraphviz(dependencyGraph, aliases)
 
     if (shouldOutputFile()) {
       getOutputFile().apply {

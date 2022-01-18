@@ -63,6 +63,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   private fun Project.addModuleGraphGeneration(graphRules: GraphRulesExtension) {
     tasks.register(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java) {
       it.configurationsToLook = graphRules.configurations
+      it.aliases = aliases
     }
   }
 
