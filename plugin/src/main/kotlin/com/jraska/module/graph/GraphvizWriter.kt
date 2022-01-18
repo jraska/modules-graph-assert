@@ -1,7 +1,9 @@
 package com.jraska.module.graph
 
+import com.jraska.module.graph.assertion.mapAlias
+
 object GraphvizWriter {
-  fun toGraphviz(dependencyGraph: DependencyGraph): String {
+  fun toGraphviz(dependencyGraph: DependencyGraph, aliases: Map<String, String> = emptyMap()): String {
 
     val longestPathConnections = dependencyGraph.longestPath()
       .nodeNames.zipWithNext()
@@ -18,12 +20,13 @@ object GraphvizWriter {
     }
 
     dependencyPairs
+      .map { aliases.mapAlias(it) }
       .forEach { connection ->
-        stringBuilder.append("\"${connection.first}\"")
+        stringBuilder.append("\"${connection.fromDocText()}\"")
           .append(" -> ")
-          .append("\"${connection.second}\"")
+          .append("\"${connection.toDocText()}\"")
 
-        if (longestPathConnections.contains(connection)) {
+        if (longestPathConnections.contains(connection.dependencyPair)) {
           stringBuilder.append(" [color=red style=bold]")
         }
 
