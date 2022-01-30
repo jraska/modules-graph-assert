@@ -92,7 +92,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
 
     return tasks.register(Tasks.ASSERT_RESTRICTIONS, AssertGraphTask::class.java) {
-      it.assertion = RestrictedDependenciesAssert(graphRules.restricted, aliases)
+      it.assertion = RestrictedDependenciesAssert(graphRules.restricted, aliases, graphRules.customMessageOnRestrictedFailure)
       it.dependencyGraph = moduleGraph
       it.outputs.upToDateWhen { true }
       it.group = VERIFICATION_GROUP

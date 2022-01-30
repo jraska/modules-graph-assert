@@ -7,7 +7,8 @@ import org.gradle.api.GradleException
 
 class RestrictedDependenciesAssert(
   private val errorMatchers: Array<String>,
-  private val aliasMap: Map<String, String> = emptyMap()
+  private val aliasMap: Map<String, String> = emptyMap(),
+  private val customMessageOnRestrictedFailure: String? = null
 ) : GraphAssert {
   override fun assert(dependencyGraph: DependencyGraph) {
     val matchers = errorMatchers.map { Parse.restrictiveMatcher(it) }
@@ -28,6 +29,6 @@ class RestrictedDependenciesAssert(
     return failedDependencies.map {
       val violatedRules = it.second.map { "'$it'" }.joinToString(", ")
       "Dependency '${it.first.assertDisplayText()} violates: $violatedRules"
-    }.joinToString("\n")
+    }.joinToString("\n") + customMessageOnRestrictedFailure?.let { "\n" + it }.orEmpty()
   }
 }
