@@ -1,5 +1,8 @@
 package com.jraska.module.graph
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class LongestPath(
   val nodeNames: List<String>
 ) {
