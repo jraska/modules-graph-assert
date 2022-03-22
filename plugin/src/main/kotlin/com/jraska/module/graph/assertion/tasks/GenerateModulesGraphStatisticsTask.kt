@@ -10,7 +10,7 @@ open class GenerateModulesGraphStatisticsTask : DefaultTask() {
 
   @TaskAction
   fun run() {
-    val dependencyGraph = project.createDependencyGraph(configurationsToLook)
-    println(dependencyGraph.statistics())
+    val dependencyGraph = project.createDependencyGraphs(configurationsToLook)
+    dependencyGraph.forEach { println(it.statistics()) }
   }
 }

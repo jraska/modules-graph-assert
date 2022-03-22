@@ -51,6 +51,7 @@ class DependencyGraph private constructor() {
     val height = height()
     val edgesCount = countEdges()
     return GraphStatistics(
+      module = findRoot().key,
       modulesCount = nodes.size,
       edgesCount = edgesCount,
       height = height,

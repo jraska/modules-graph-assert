@@ -54,3 +54,17 @@ internal fun Project.createDependencyGraph(configurationsToLook: Set<String>): D
 
   return dependencyGraph
 }
+
+internal fun Project.createDependencyGraphs(configurationsToLook: Set<String>): List<DependencyGraph> {
+  val dependencyGraph = GradleDependencyGraphFactory.create(this, configurationsToLook)
+
+  if (project.hasProperty(Api.Parameters.PRINT_ONLY_MODULE)) {
+    val moduleName = project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
+    val modules = moduleName?.split(",")?.map { it.trim() }
+    if (modules?.isNotEmpty() == true) {
+      return modules.map { dependencyGraph.subTree(it) }
+    }
+  }
+
+  return listOf(dependencyGraph)
+}
