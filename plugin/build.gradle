@@ -1,6 +1,7 @@
 plugins {
   id "com.gradle.plugin-publish" version "0.20.0"
   id "java-gradle-plugin"
+  id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
 }
 
 apply plugin: 'kotlin'
@@ -12,6 +13,7 @@ repositories {
 dependencies {
   implementation gradleApi()
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10"
+  implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
 
   testImplementation 'junit:junit:4.13.2'
 }
