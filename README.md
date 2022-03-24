@@ -87,8 +87,9 @@ moduleGraphAssert {
 
 ### Graph statistics
 - Executing the task `generateModulesGraphStatistics` prints the information about the graph.
-- Statistics printed: Modules Count, [Edges Count](https://en.wikipedia.org/wiki/Glossary_of_graph_theory_terms#edge), [Height](https://en.wikipedia.org/wiki/Glossary_of_graph_theory_terms#height) and [Longest Path](https://en.wikipedia.org/wiki/Longest_path_problem) 
-- Parameter `-Pmodules.graph.of.module` is supported as well.
+- Statistics printed: Modules Count, [Edges Count](https://en.wikipedia.org/wiki/Glossary_of_graph_theory_terms#edge), [Height](https://en.wikipedia.org/wiki/Glossary_of_graph_theory_terms#height) and [Longest Path](https://en.wikipedia.org/wiki/Longest_path_problem)
+- Statistics report: The `generateModulesGraphStatistics` task will generate a report in JSON format. The report can be found at `<root>/build/graph/statistics/report.json`
+- Parameter `-Pmodules.graph.of.module` is supported as well. You can pass multiple modules separating them by `,` (ex: `-Pmodules.graph.of.module=:feature-one,:feature-two`)
 ```
 ./gradlew generateModulesGraphStatistics -Pmodules.graph.of.module=:feature-one
 ```
