@@ -1,4 +1,5 @@
 plugins {
+  id 'maven-publish'
   id "com.gradle.plugin-publish" version "0.20.0"
   id "java-gradle-plugin"
   id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
@@ -8,6 +9,7 @@ apply plugin: 'kotlin'
 
 repositories {
   mavenCentral()
+  maven { url "https://jitpack.io" }
 }
 
 dependencies {
