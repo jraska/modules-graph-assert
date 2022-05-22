@@ -12,6 +12,7 @@ repositories {
 dependencies {
   implementation gradleApi()
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21"
+  implementation "org.jgrapht:jgrapht-core:1.5.1"
 
   testImplementation 'junit:junit:4.13.2'
 }
