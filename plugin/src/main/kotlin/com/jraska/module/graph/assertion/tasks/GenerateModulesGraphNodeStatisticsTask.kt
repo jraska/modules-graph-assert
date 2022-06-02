@@ -1,5 +1,7 @@
 package com.jraska.module.graph.assertion.tasks
 
+import com.jakewharton.picnic.renderText
+import com.jakewharton.picnic.table
 import com.jraska.module.graph.DependencyGraph
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -16,7 +18,32 @@ open class GenerateModulesGraphNodeStatisticsTask : DefaultTask() {
   fun run() {
     val dependencyGraph = project.createDependencyGraph(configurationsToLook)
     val nodeStatistics = dependencyGraph.nodeStatistics()
-    nodeStatistics.forEach(::println)
+    table {
+      cellStyle {
+        paddingLeft = 1
+        paddingRight = 1
+      }
+      header {
+        row(
+          "node",
+          "betweennessCentrality",
+          "degree",
+          "inDegree",
+          "outDegree",
+          "height"
+        )
+      }
+      nodeStatistics.forEach {
+        row(
+          it.node,
+          "%.2f".format(it.betweennessCentrality),
+          it.degree,
+          it.inDegree,
+          it.outDegree,
+          it.height
+        )
+      }
+    }.renderText().let(::println)
   }
 
   data class NodeStatistics(
