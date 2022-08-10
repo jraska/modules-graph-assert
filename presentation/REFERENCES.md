@@ -1,4 +1,4 @@
-### References to support the [Droidcon Berlin 2021 Gradle talk](https://www.berlin.droidcon.com/program/nail-your-gradle-build-time). ([Video Link](https://www.droidcon.com/2021/11/10/nail-your-gradle-build-time/))
+### References to support the Droidcon Berlin 2021 Gradle talk. ([Video Link](https://www.droidcon.com/2021/11/10/nail-your-gradle-build-time/))
 
 - [About module rules](https://proandroiddev.com/module-rules-protect-your-build-time-and-architecture-d1194c7cc6bc)
 - [Why not to use buildSrc](https://proandroiddev.com/stop-using-gradle-buildsrc-use-composite-builds-instead-3c38ac7a2ab3)
