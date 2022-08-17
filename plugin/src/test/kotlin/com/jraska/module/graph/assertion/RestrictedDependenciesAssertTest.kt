@@ -12,6 +12,15 @@ class RestrictedDependenciesAssertTest {
     RestrictedDependenciesAssert(emptyArray()).assert(dependencyGraph)
   }
 
+  @Test
+  fun passesWithWhitelistMatchers() {
+    val dependencyGraph = testGraph()
+
+    val restrictions = arrayOf("app -X> feature[0-9]*")
+    val whitelists = arrayOf("app -> feature", "app -> feature2")
+    RestrictedDependenciesAssert(restrictions, whitelists = whitelists).assert(dependencyGraph)
+  }
+
   @Test(expected = GradleException::class)
   fun failsWhenFeatureCannotDependOnLib() {
     val dependencyGraph = testGraph()

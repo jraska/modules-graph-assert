@@ -52,6 +52,30 @@ class ModuleGraphAssertionsPluginTest {
   }
 
   @Test
+  fun testAddsOnlyOneTaskWhenAppliedAllFields() {
+    val plugin = ModuleGraphAssertionsPlugin()
+
+    val extension = GraphRulesExtension().apply {
+      maxHeight = 3
+      allowed = arrayOf(":feature-\\S* -> :lib\\S*", ".* -> :core")
+      restricted = arrayOf(":feature-one -X> :feature-two")
+      whitelist = arrayOf(".* -> :core")
+    }
+
+    plugin.addModulesAssertions(project, extension)
+
+    assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL) != null)
+    assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL)!!.dependsOn.size == 4)
+
+    setOf(
+      project.tasks.findByName(Api.Tasks.ASSERT_MAX_HEIGHT) as AssertGraphTask,
+      project.tasks.findByName(Api.Tasks.ASSERT_ALLOWED) as AssertGraphTask,
+      project.tasks.findByName(Api.Tasks.ASSERT_RESTRICTIONS) as AssertGraphTask,
+      project.tasks.findByName(Api.Tasks.ASSERT_WHITELIST) as AssertGraphTask
+    )
+  }
+
+  @Test
   fun testAddsOnlyOneTaskWhenApplied3() {
     val plugin = ModuleGraphAssertionsPlugin()
 
