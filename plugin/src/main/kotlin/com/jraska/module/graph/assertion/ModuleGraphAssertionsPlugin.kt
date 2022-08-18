@@ -52,7 +52,6 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     val childTasks = mutableListOf<TaskProvider<AssertGraphTask>>()
     project.addMaxHeightTask(graphRules)?.also { childTasks.add(it) }
     project.addModuleRestrictionsTask(graphRules)?.also { childTasks.add(it) }
-    project.addModuleWhitelistTask(graphRules)?.also { childTasks.add(it) }
     project.addModuleAllowedRulesTask(graphRules)?.also { childTasks.add(it) }
 
     allAssertionsTask.configure { allTask ->
@@ -94,19 +93,6 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
 
     return tasks.register(Tasks.ASSERT_RESTRICTIONS, AssertGraphTask::class.java) {
-      it.assertion = RestrictedDependenciesAssert(graphRules.restricted, aliases)
-      it.dependencyGraph = moduleGraph
-      it.outputs.upToDateWhen { true }
-      it.group = VERIFICATION_GROUP
-    }
-  }
-
-  private fun Project.addModuleWhitelistTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
-    if (graphRules.whitelist.isEmpty()) {
-      return null
-    }
-
-    return tasks.register(Tasks.ASSERT_WHITELIST, AssertGraphTask::class.java) {
       it.assertion = RestrictedDependenciesAssert(
         errorMatchers = graphRules.restricted,
         aliasMap = aliases,
