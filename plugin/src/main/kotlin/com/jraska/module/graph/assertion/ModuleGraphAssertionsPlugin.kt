@@ -1,5 +1,6 @@
 package com.jraska.module.graph.assertion
 
+import com.jraska.module.graph.DependencyGraph
 import com.jraska.module.graph.assertion.Api.Tasks
 import com.jraska.module.graph.assertion.tasks.AssertGraphTask
 import com.jraska.module.graph.assertion.tasks.GenerateModulesGraphStatisticsTask
@@ -26,10 +27,20 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   private lateinit var configurationsToLook: Set<String>
 
   override fun apply(project: Project) {
-    val graphRules = project.extensions.create(GraphRulesExtension::class.java, Api.EXTENSION_ROOT, GraphRulesExtension::class.java)
+    val graphRules = project.extensions.create(
+      GraphRulesExtension::class.java,
+      Api.EXTENSION_ROOT,
+      GraphRulesExtension::class.java
+    )
 
     project.afterEvaluate {
       addModulesAssertions(project, graphRules)
+
+      if (graphRules.assertOnAnyBuild) {
+        project.gradle.projectsEvaluated {
+          project.runAssertionsDirectly(graphRules)
+        }
+      }
     }
   }
 
@@ -40,7 +51,8 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     project.addModuleGraphGeneration(graphRules)
     project.addModuleGraphStatisticsGeneration(graphRules)
 
-    val allAssertionsTask = project.tasks.register(Tasks.ASSERT_ALL) { it.group = VERIFICATION_GROUP }
+    val allAssertionsTask =
+      project.tasks.register(Tasks.ASSERT_ALL) { it.group = VERIFICATION_GROUP }
 
     try {
       project.tasks.named(CHECK_TASK_NAME).configure { it.dependsOn(allAssertionsTask) }
@@ -60,6 +72,22 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
   }
 
+  private fun Project.runAssertionsDirectly(graphRules: GraphRulesExtension) {
+    val dependencyGraph = DependencyGraph.create(moduleGraph)
+
+    if (graphRules.shouldAssertHeight()) {
+      moduleTreeHeightAssert(graphRules).assert(dependencyGraph)
+    }
+
+    if (graphRules.shouldAssertRestricted()) {
+      restrictedDependenciesAssert(graphRules).assert(dependencyGraph)
+    }
+
+    if (graphRules.shouldAssertAllowed()) {
+      onlyAllowedAssert(graphRules).assert(dependencyGraph)
+    }
+  }
+
   private fun Project.addModuleGraphGeneration(graphRules: GraphRulesExtension) {
     tasks.register(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java) {
       it.configurationsToLook = graphRules.configurations
@@ -68,49 +96,61 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   }
 
   private fun Project.addModuleGraphStatisticsGeneration(graphRules: GraphRulesExtension) {
-    tasks.register(Tasks.GENERATE_GRAPH_STATISTICS, GenerateModulesGraphStatisticsTask::class.java) {
+    tasks.register(
+      Tasks.GENERATE_GRAPH_STATISTICS,
+      GenerateModulesGraphStatisticsTask::class.java
+    ) {
       it.configurationsToLook = graphRules.configurations
     }
   }
 
   private fun Project.addMaxHeightTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
-    if (graphRules.maxHeight <= 0) {
+    if (!graphRules.shouldAssertHeight()) {
       return null
     }
 
     return tasks.register(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java) {
-      it.assertion = ModuleTreeHeightAssert(moduleNameForHeightAssert(), graphRules.maxHeight)
+      it.assertion = moduleTreeHeightAssert(graphRules)
       it.dependencyGraph = moduleGraph
       it.outputs.upToDateWhen { true }
       it.group = VERIFICATION_GROUP
     }
   }
 
+  private fun Project.moduleTreeHeightAssert(graphRules: GraphRulesExtension) =
+    ModuleTreeHeightAssert(moduleNameForHeightAssert(), graphRules.maxHeight)
+
   private fun Project.addModuleRestrictionsTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
-    if (graphRules.restricted.isEmpty()) {
+    if (!graphRules.shouldAssertRestricted()) {
       return null
     }
 
     return tasks.register(Tasks.ASSERT_RESTRICTIONS, AssertGraphTask::class.java) {
-      it.assertion = RestrictedDependenciesAssert(graphRules.restricted, aliases)
+      it.assertion = restrictedDependenciesAssert(graphRules)
       it.dependencyGraph = moduleGraph
       it.outputs.upToDateWhen { true }
       it.group = VERIFICATION_GROUP
     }
   }
 
+  private fun restrictedDependenciesAssert(graphRules: GraphRulesExtension) =
+    RestrictedDependenciesAssert(graphRules.restricted, aliases)
+
   private fun Project.addModuleAllowedRulesTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
-    if (graphRules.allowed.isEmpty()) {
+    if (!graphRules.shouldAssertAllowed()) {
       return null
     }
 
     return tasks.register(Tasks.ASSERT_ALLOWED, AssertGraphTask::class.java) {
-      it.assertion = OnlyAllowedAssert(graphRules.allowed, aliases)
+      it.assertion = onlyAllowedAssert(graphRules)
       it.dependencyGraph = moduleGraph
       it.outputs.upToDateWhen { true }
       it.group = VERIFICATION_GROUP
     }
   }
+
+  private fun onlyAllowedAssert(graphRules: GraphRulesExtension) =
+    OnlyAllowedAssert(graphRules.allowed, aliases)
 }
 
 private fun Project.moduleNameForHeightAssert(): String? {
