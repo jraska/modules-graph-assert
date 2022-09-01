@@ -105,15 +105,15 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   }
 
   private fun Project.addMaxHeightTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
-    if (!graphRules.shouldAssertHeight()) {
+    if (graphRules.shouldAssertHeight()) {
+      return tasks.register(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java) {
+        it.assertion = moduleTreeHeightAssert(graphRules)
+        it.dependencyGraph = moduleGraph
+        it.outputs.upToDateWhen { true }
+        it.group = VERIFICATION_GROUP
+      }
+    } else {
       return null
-    }
-
-    return tasks.register(Tasks.ASSERT_MAX_HEIGHT, AssertGraphTask::class.java) {
-      it.assertion = moduleTreeHeightAssert(graphRules)
-      it.dependencyGraph = moduleGraph
-      it.outputs.upToDateWhen { true }
-      it.group = VERIFICATION_GROUP
     }
   }
 
@@ -121,15 +121,15 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     ModuleTreeHeightAssert(moduleNameForHeightAssert(), graphRules.maxHeight)
 
   private fun Project.addModuleRestrictionsTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
-    if (!graphRules.shouldAssertRestricted()) {
+    if (graphRules.shouldAssertRestricted()) {
+      return tasks.register(Tasks.ASSERT_RESTRICTIONS, AssertGraphTask::class.java) {
+        it.assertion = restrictedDependenciesAssert(graphRules)
+        it.dependencyGraph = moduleGraph
+        it.outputs.upToDateWhen { true }
+        it.group = VERIFICATION_GROUP
+      }
+    } else {
       return null
-    }
-
-    return tasks.register(Tasks.ASSERT_RESTRICTIONS, AssertGraphTask::class.java) {
-      it.assertion = restrictedDependenciesAssert(graphRules)
-      it.dependencyGraph = moduleGraph
-      it.outputs.upToDateWhen { true }
-      it.group = VERIFICATION_GROUP
     }
   }
 
@@ -137,15 +137,15 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     RestrictedDependenciesAssert(graphRules.restricted, aliases)
 
   private fun Project.addModuleAllowedRulesTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
-    if (!graphRules.shouldAssertAllowed()) {
+    if (graphRules.shouldAssertAllowed()) {
+      return tasks.register(Tasks.ASSERT_ALLOWED, AssertGraphTask::class.java) {
+        it.assertion = onlyAllowedAssert(graphRules)
+        it.dependencyGraph = moduleGraph
+        it.outputs.upToDateWhen { true }
+        it.group = VERIFICATION_GROUP
+      }
+    } else {
       return null
-    }
-
-    return tasks.register(Tasks.ASSERT_ALLOWED, AssertGraphTask::class.java) {
-      it.assertion = onlyAllowedAssert(graphRules)
-      it.dependencyGraph = moduleGraph
-      it.outputs.upToDateWhen { true }
-      it.group = VERIFICATION_GROUP
     }
   }
 
