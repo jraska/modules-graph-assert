@@ -101,7 +101,7 @@ class DependencyGraph private constructor() {
       if (isLeaf()) {
         0
       } else {
-        1 + dependsOn.map { it.height() }.maxOrNull()!!
+        1 + dependsOn.maxOf { it.height() }
       }
     }
 
