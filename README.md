@@ -34,7 +34,8 @@ plugins {
 }
 ```
 
-You can run `./gradlew assertModuleGraph` to execute configured checks or `./gradlew check` where `assertModuleGraph` will be included.
+- You can run `./gradlew assertModuleGraph` to execute configured checks or `./gradlew check` where `assertModuleGraph` will be included.
+- Alternative option is using `assertOnAnyBuild = true` configuration to run the checks on every single Gradle build without need for running explicit tasks - see https://github.com/jraska/modules-graph-assert/pull/184 for more details.
 
 ### Configuration
 Rules are applied on the Gradle module and its `api` and `implementation` dependencies by default. Typically you would want to apply this in your final app module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
@@ -45,6 +46,7 @@ moduleGraphAssert {
   allowed = [':.* -> :core', ':feature.* -> :lib.*'] // regex to match module names
   restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on'] // regex to match module names
   configurations = ['api', 'implementation'] // Dependency configurations to look. ['api', 'implementation'] is the default
+  assertOnAnyBuild = false // true value will run the assertions as part of any build without need to run the assert* tasks, false is default
 }
 ```
 
