@@ -3,3 +3,4 @@
 - [About module rules](https://proandroiddev.com/module-rules-protect-your-build-time-and-architecture-d1194c7cc6bc)
 - [Modules graph assert plugin](https://github.com/jraska/modules-graph-assert)
 - [Modularization - Untangling the dependency graph by Siggi Jonsson](https://speakerdeck.com/siggijons/modularization-siggi-jonsson)
+- [Android modularization docs] (https://developer.android.com/topic/modularization)
