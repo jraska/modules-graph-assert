@@ -5,3 +5,6 @@
 - [Modularization - Untangling the dependency graph by Siggi Jonsson](https://speakerdeck.com/siggijons/modularization-siggi-jonsson)
 - [Android modularization docs](https://developer.android.com/topic/modularization)
 - [Gephi](https://gephi.org/)
+- [IntelliJ IDEA/Android Studio dependency analysis](https://www.jetbrains.com/help/idea/dependencies-analysis.html#analyze-dependencies)
+- [Longest path](https://en.wikipedia.org/wiki/Longest_path_problem)
+- [Node height](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#height)
