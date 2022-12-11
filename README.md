@@ -2,7 +2,7 @@
 A Gradle plugin that helps keep your module graph healthy and lean.
 
 - [Medium Article](https://proandroiddev.com/module-rules-protect-your-build-time-and-architecture-d1194c7cc6bc) with complete context.
-- [Talk about module graph and build times](https://www.droidcon.com/2021/11/10/nail-your-gradle-build-time/) - *Modularization part starts at 11:39 🕑*
+- [Talk about module graph and why it matters](https://www.droidcon.com/2022/11/15/modularization-flatten-your-graph-and-get-the-real-benefits/)
 - [Changelog](https://github.com/jraska/modules-graph-assert/releases)
 
 [![Build](https://github.com/jraska/modules-graph-assert/actions/workflows/build.yml/badge.svg)](https://github.com/jraska/modules-graph-assert/actions/workflows/build.yml)
