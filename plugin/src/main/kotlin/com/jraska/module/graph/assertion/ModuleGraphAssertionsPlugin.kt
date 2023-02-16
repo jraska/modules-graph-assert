@@ -44,8 +44,8 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     evaluatedProject = project
     configurationsToLook = graphRules.configurations
 
-    project.addModuleGraphGeneration(graphRules)
-    project.addModuleGraphStatisticsGeneration(graphRules)
+    project.addModuleGraphGeneration()
+    project.addModuleGraphStatisticsGeneration()
 
     val allAssertionsTask = project.tasks.register(Tasks.ASSERT_ALL) { it.group = VERIFICATION_GROUP }
 
@@ -83,19 +83,21 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
   }
 
-  private fun Project.addModuleGraphGeneration(graphRules: GraphRulesExtension) {
+  private fun Project.addModuleGraphGeneration() {
     tasks.register(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java) {
-      it.configurationsToLook = graphRules.configurations
+      it.dependencyGraph = moduleGraph
       it.aliases = aliases
+      it.outputFilePath = GenerateModulesGraphTask.outputFilePath(this)
+      it.onlyModuleToPrint = GenerateModulesGraphTask.onlyModuleToPrint(this)
     }
   }
 
-  private fun Project.addModuleGraphStatisticsGeneration(graphRules: GraphRulesExtension) {
+  private fun Project.addModuleGraphStatisticsGeneration() {
     tasks.register(
       Tasks.GENERATE_GRAPH_STATISTICS,
       GenerateModulesGraphStatisticsTask::class.java
     ) {
-      it.configurationsToLook = graphRules.configurations
+      it.dependencyGraph = moduleGraph
     }
   }
 
