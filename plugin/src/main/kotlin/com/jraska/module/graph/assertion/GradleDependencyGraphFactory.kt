@@ -7,31 +7,38 @@ import org.gradle.api.Project
 object GradleDependencyGraphFactory {
 
   fun create(project: Project, configurationsToLook: Set<String>): DependencyGraph {
-    val dependencies = project.listAllDependencyPairs(configurationsToLook)
+    val modulesWithDependencies = project.listAllDependencies(configurationsToLook)
+    val dependencies = modulesWithDependencies.flatMap { module ->
+      module.second.map { module.first to it }
+    }
 
-    if (dependencies.isEmpty()) {
-      return DependencyGraph.createSingular(project.moduleDisplayName())
+    val moduleDisplayName = project.moduleDisplayName()
+    if(dependencies.isEmpty()) {
+      return DependencyGraph.createSingular(moduleDisplayName)
     }
 
     val fullDependencyGraph = DependencyGraph.create(dependencies)
 
-    return if (project == project.rootProject) {
-      fullDependencyGraph
-    } else {
-      fullDependencyGraph.subTree(project.moduleDisplayName())
+    if (project == project.rootProject) {
+      return fullDependencyGraph
     }
+
+    modulesWithDependencies.find { it.first == moduleDisplayName && it.second.isNotEmpty() }
+      ?: return DependencyGraph.createSingular(moduleDisplayName)
+
+    return fullDependencyGraph.subTree(moduleDisplayName)
   }
 
-  private fun Project.listAllDependencyPairs(configurationsToLook: Set<String>): List<Pair<String, String>> {
+  private fun Project.listAllDependencies(configurationsToLook: Set<String>): List<Pair<String, List<String>>> {
     return rootProject.subprojects
-      .flatMap { project ->
-        project.configurations
+      .map { project ->
+        project.moduleDisplayName() to project.configurations
           .filter { configurationsToLook.contains(it.name) }
           .flatMap { configuration ->
             configuration.dependencies.filterIsInstance(ProjectDependency::class.java)
               .map { it.dependencyProject }
           }
-          .map { project.moduleDisplayName() to it.moduleDisplayName() }
+          .map { it.moduleDisplayName() }
       }
   }
 }
