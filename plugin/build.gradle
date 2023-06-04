@@ -35,7 +35,7 @@ pluginBundle {
   mavenCoordinates {
     groupId = 'com.jraska.module.graph.assertion'
     artifactId = 'plugin'
-    version = "2.3.1"
+    version = "2.3.2"
   }
 }
 
@@ -43,7 +43,7 @@ gradlePlugin {
   plugins {
     modulesGraphAssert {
       id = 'com.jraska.module.graph.assertion'
-      version = '2.3.1'
+      version = '2.3.2'
       displayName = 'Modules Graph Assert'
       description = 'Gradle plugin to keep your modules graph healthy and lean.'
       implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsPlugin'
