@@ -30,7 +30,7 @@ A Gradle plugin that helps keep your module graph healthy and lean.
 Apply the plugin to a module, which dependencies graph you want to assert.
 ```groovy
 plugins {
-  id "com.jraska.module.graph.assertion" version "2.3.2"
+  id "com.jraska.module.graph.assertion" version "2.4.0"
 }
 ```
 
