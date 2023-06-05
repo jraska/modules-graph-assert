@@ -27,19 +27,12 @@ compileTestKotlin {
   }
 }
 
-pluginBundle {
-  website = 'https://github.com/jraska/modules-graph-assert'
-  vcsUrl = 'https://github.com/jraska/modules-graph-assert'
-  tags = ['graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module']
-
-  mavenCoordinates {
-    groupId = 'com.jraska.module.graph.assertion'
-    artifactId = 'plugin'
-    version = "2.3.2"
-  }
-}
+group = 'com.jraska.module.graph.assertion'
 
 gradlePlugin {
+  website = 'https://github.com/jraska/modules-graph-assert'
+  vcsUrl = 'https://github.com/jraska/modules-graph-assert'
+
   plugins {
     modulesGraphAssert {
       id = 'com.jraska.module.graph.assertion'
@@ -47,6 +40,7 @@ gradlePlugin {
       displayName = 'Modules Graph Assert'
       description = 'Gradle plugin to keep your modules graph healthy and lean.'
       implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsPlugin'
+      tags.addAll('graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module')
     }
   }
 }
