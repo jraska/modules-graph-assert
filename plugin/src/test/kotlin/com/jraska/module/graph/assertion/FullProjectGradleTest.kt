@@ -110,6 +110,13 @@ class FullProjectGradleTest {
   }
 
   @Test
+  fun printsOnlyModuleStatistics() {
+    val output = runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphStatistics", "-Pmodules.graph.of.module=:feature").output
+
+    assert(output.contains("GraphStatistics(modulesCount=2, edgesCount=1, height=1, longestPath=':feature -> :core-api')"))
+  }
+
+  @Test
   fun savesGraphIntoFile() {
     val outputFile = File(testProjectDir.root, "all_modules.dot")
     val output = runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphvizText", "-Pmodules.graph.output.gv=${outputFile.absolutePath}").output

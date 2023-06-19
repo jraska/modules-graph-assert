@@ -62,7 +62,7 @@ open class GenerateModulesGraphTask : DefaultTask() {
       }
     }
 
-    internal fun onlyModuleToPrint(project: Project): String? {
+    internal fun onlyModule(project: Project): String? {
       if (project.hasProperty(Api.Parameters.PRINT_ONLY_MODULE)) {
         return project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
       } else {
