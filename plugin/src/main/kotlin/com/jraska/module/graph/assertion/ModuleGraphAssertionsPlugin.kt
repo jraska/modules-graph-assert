@@ -88,7 +88,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       it.dependencyGraph = moduleGraph
       it.aliases = aliases
       it.outputFilePath = GenerateModulesGraphTask.outputFilePath(this)
-      it.onlyModuleToPrint = GenerateModulesGraphTask.onlyModuleToPrint(this)
+      it.onlyModuleToPrint = GenerateModulesGraphTask.onlyModule(this)
     }
   }
 
@@ -98,6 +98,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       GenerateModulesGraphStatisticsTask::class.java
     ) {
       it.dependencyGraph = moduleGraph
+      it.onlyModuleStatistics = GenerateModulesGraphTask.onlyModule(this)
     }
   }
 
