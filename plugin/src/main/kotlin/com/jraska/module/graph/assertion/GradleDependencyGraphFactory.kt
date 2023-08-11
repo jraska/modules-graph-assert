@@ -30,7 +30,7 @@ object GradleDependencyGraphFactory {
   }
 
   private fun Project.listAllDependencies(configurationsToLook: Set<String>): List<Pair<String, List<String>>> {
-    return allprojects
+    return (rootProject.subprojects + rootProject)
       .map { project ->
         project.moduleDisplayName() to project.configurations
           .filter { configurationsToLook.contains(it.name) }
