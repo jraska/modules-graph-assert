@@ -4,7 +4,8 @@ import org.gradle.api.Project
 
 object GradleModuleAliasExtractor {
   fun extractModuleAliases(project: Project): Map<String, String> {
-    return project.rootProject.subprojects
+    val rootProject = project.rootProject
+    return (rootProject.subprojects + rootProject)
       .mapNotNull { alias(it) }
       .toMap()
   }
