@@ -19,9 +19,8 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     GradleDependencyGraphFactory.create(evaluatedProject, configurationsToLook).serializableGraph()
   }
 
-  private val aliases by lazy {
-    GradleModuleAliasExtractor.extractModuleAliases(evaluatedProject)
-  }
+  private val aliases : Map<String, String>
+    get() = GradleModuleAliasExtractor.extractModuleAliases(evaluatedProject)
 
   private lateinit var evaluatedProject: Project
   private lateinit var configurationsToLook: Set<String>
