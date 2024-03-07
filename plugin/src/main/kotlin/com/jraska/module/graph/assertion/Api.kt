@@ -22,6 +22,6 @@ object Api {
 
   const val EXTENSION_ROOT = "moduleGraphAssert"
 
-  val API_IMPLEMENTATON_CONFIGURATIONS = setOf("api", "implementation")
+  val API_IMPLEMENTATION_CONFIGURATIONS = setOf("api", "implementation")
 }
 
