@@ -14,7 +14,6 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 
 @Suppress("unused") // Used as plugin
 class ModuleGraphAssertionsPlugin : Plugin<Project> {
-
   private val moduleGraph by lazy {
     GradleDependencyGraphFactory.create(evaluatedProject, configurationsToLook).serializableGraph()
   }
@@ -25,6 +24,8 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
   private lateinit var evaluatedProject: Project
   private lateinit var configurationsToLook: Set<String>
+  private lateinit var outputFormat: OutputFormat
+  private var outputFilePath: String? = null
 
   override fun apply(project: Project) {
     val graphRules = project.extensions.create(GraphRulesExtension::class.java, Api.EXTENSION_ROOT, GraphRulesExtension::class.java)
@@ -40,11 +41,18 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
   }
 
-  internal fun addModulesAssertions(project: Project, graphRules: GraphRulesExtension) {
+  internal fun addModulesAssertions(
+    project: Project,
+    graphRules: GraphRulesExtension,
+  ) {
     evaluatedProject = project
     configurationsToLook = graphRules.configurations
 
-    project.addModuleGraphGeneration()
+    outputFormat = graphRules.outputFormat
+    outputFilePath = graphRules.outputFilePath
+
+    project.addModuleGraphwizGeneration()
+    project.addModuleMermaidGeneration()
     project.addModuleGraphStatisticsGeneration()
 
     val allAssertionsTask = project.tasks.register(Tasks.ASSERT_ALL) { it.group = VERIFICATION_GROUP }
@@ -81,24 +89,54 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     if (graphRules.shouldAssertAllowed()) {
       onlyAllowedAssert(graphRules).assert(dependencyGraph)
     }
+
+    outputFilePath?.let {
+      generateGraphToFile(it, outputFormat, this)
+    }
   }
 
-  private fun Project.addModuleGraphGeneration() {
+  private fun Project.addModuleGraphwizGeneration() {
     tasks.register(Tasks.GENERATE_GRAPHVIZ, GenerateModulesGraphTask::class.java) {
+      it.group = Tasks.GROUP
       it.dependencyGraph = moduleGraph
       it.aliases = aliases
-      it.outputFilePath = GenerateModulesGraphTask.outputFilePath(this)
-      it.onlyModuleToPrint = GenerateModulesGraphTask.onlyModule(this)
+      it.outputFilePath = GenerateModulesGraph.outputFilePath(this, OutputFormat.GRAPHVIZ)
+      it.onlyModuleToPrint = GenerateModulesGraph.onlyModule(this)
+    }
+  }
+
+  private fun generateGraphToFile(
+    outputFilePath: String,
+    outputFormat: OutputFormat,
+    project: Project,
+  ) {
+    GenerateModulesGraph(
+      dependencyGraph = moduleGraph,
+      aliases = emptyMap(),
+      outputFilePath = outputFilePath,
+      outputFormat = outputFormat,
+    ).run(project.path)
+  }
+
+  private fun Project.addModuleMermaidGeneration() {
+    tasks.register(Tasks.GENERATE_MERMAID, GenerateModulesGraphTask::class.java) {
+      it.group = Tasks.GROUP
+      it.dependencyGraph = moduleGraph
+      it.aliases = aliases
+      it.outputFormat = OutputFormat.MERMAID
+      it.outputFilePath = GenerateModulesGraph.outputFilePath(this, OutputFormat.MERMAID)
+      it.onlyModuleToPrint = GenerateModulesGraph.onlyModule(this)
     }
   }
 
   private fun Project.addModuleGraphStatisticsGeneration() {
     tasks.register(
       Tasks.GENERATE_GRAPH_STATISTICS,
-      GenerateModulesGraphStatisticsTask::class.java
+      GenerateModulesGraphStatisticsTask::class.java,
     ) {
+      it.group = Tasks.GROUP
       it.dependencyGraph = moduleGraph
-      it.onlyModuleStatistics = GenerateModulesGraphTask.onlyModule(this)
+      it.onlyModuleStatistics = GenerateModulesGraph.onlyModule(this)
     }
   }
 
@@ -131,8 +169,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
   }
 
-  private fun restrictedDependenciesAssert(graphRules: GraphRulesExtension) =
-    RestrictedDependenciesAssert(graphRules.restricted, aliases)
+  private fun restrictedDependenciesAssert(graphRules: GraphRulesExtension) = RestrictedDependenciesAssert(graphRules.restricted, aliases)
 
   private fun Project.addModuleAllowedRulesTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
     if (graphRules.shouldAssertAllowed()) {
@@ -147,8 +184,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
   }
 
-  private fun onlyAllowedAssert(graphRules: GraphRulesExtension) =
-    OnlyAllowedAssert(graphRules.allowed, aliases)
+  private fun onlyAllowedAssert(graphRules: GraphRulesExtension) = OnlyAllowedAssert(graphRules.allowed, aliases)
 }
 
 private fun Project.moduleNameForHeightAssert(): String? {

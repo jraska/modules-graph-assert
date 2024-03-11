@@ -5,16 +5,17 @@ import com.jraska.module.graph.Parse
 import org.gradle.api.GradleException
 
 class OnlyAllowedAssert(
-  private val allowedDependencies: Array<String>,
+  private val allowedDependencies: Set<String>,
   private val aliasMap: Map<String, String> = emptyMap(),
 ) : GraphAssert {
   override fun assert(dependencyGraph: DependencyGraph) {
     val matchers = allowedDependencies.map { Parse.matcher(it) }
 
-    val disallowedDependencies = dependencyGraph.dependencyPairs()
-      .map { aliasMap.mapAlias(it) }
-      .filterNot { dependency -> matchers.any { it.matches(dependency.pairToAssert()) } }
-      .map { it.assertDisplayText() }
+    val disallowedDependencies =
+      dependencyGraph.dependencyPairs()
+        .map { aliasMap.mapAlias(it) }
+        .filterNot { dependency -> matchers.any { it.matches(dependency.pairToAssert()) } }
+        .map { it.assertDisplayText() }
 
     if (disallowedDependencies.isNotEmpty()) {
       val allowedRules = allowedDependencies.joinToString(", ") { "'$it'" }

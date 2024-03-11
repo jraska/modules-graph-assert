@@ -40,15 +40,37 @@ plugins {
 ### Configuration
 Rules are applied on the Gradle module and its `api` and `implementation` dependencies by default. Typically you would want to apply this in your final app module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
 
-```groovy
+```kotlin
 moduleGraphAssert {
-  maxHeight = 4
-  allowed = [':.* -> :core', ':feature.* -> :lib.*'] // regex to match module names
-  restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on'] // regex to match module names
-  configurations = ['api', 'implementation'] // Dependency configurations to look. ['api', 'implementation'] is the default
-  assertOnAnyBuild = false // true value will run the assertions as part of any build without need to run the assert* tasks, false is default
+//    maxHeight = 4
+  // regex to match module names
+  allowed = setOf(".* -> :core", ":feature.* -> :lib.*")
+  // regex to match module names
+  restricted = setOf(":feature-[a-z]* -X> :forbidden-to-depend-on")
+  // Dependency configurations to look. ['api', 'implementation'] is the default
+  configurations = setOf("api", "implementation")
+  // true value will run the assertions as part of any build without need to run the assert* tasks, false is default
+  assertOnAnyBuild = true
+
+  // Output format for generated file (default is OutputFormat.GRAPHWIZ)
+  outputFormat = OutputFormat.MERMAID
+  // Output file path for generated graph file
+  outputFilePath = "$rootDir/dependency-graph.md"
 }
 ```
+<details>
+  <summary>Deprecated Groovy format</summary>
+
+  ```groovy
+  moduleGraphAssert {
+    maxHeight = 4
+    allowed = [':.* -> :core', ':feature.* -> :lib.*'] // regex to match module names
+    restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on'] // regex to match module names
+    configurations = ['api', 'implementation'] // Dependency configurations to look. ['api', 'implementation'] is the default
+    assertOnAnyBuild = false // true value will run the assertions as part of any build without need to run the assert* tasks, false is default
+  }
+  ```
+</details>
 
 ### Module name alias
 - You don't have to rely on module names and set a property `ext.moduleNameAssertAlias = "ThisWillBeAssertedOn"`
@@ -85,6 +107,20 @@ moduleGraphAssert {
 - Adding the parameter `modules.graph.output.gv` saves the graphViz file to the specified path
 ```
 ./gradlew generateModulesGraphvizText -Pmodules.graph.output.gv=all_modules
+```
+
+### Mermaid Graph Export
+- Visualising the graph could be useful to help find your dependency issues, therefore a helper `generateModulesMermaidText` task is included.
+- This generates a graph of dependent modules when the plugin is applied.
+- The longest path of the project is in red.
+- If you utilise [Configuration on demand](https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:configuration_on_demand) Gradle feature, please use `--no-configure-on-demand` flag along the `generateModulesMermaidText` task.
+- You can set the `modules.graph.of.module` parameter if you are only interested in a sub-graph of the module graph.
+```
+./gradlew --no-configure-on-demand generateModulesMermaidText -P "modules.graph.of.module=:feature-one"
+```
+- Adding the parameter `modules.graph.output.mermaid` saves the mermaid file to the specified path
+```
+./gradlew --no-configure-on-demand generateModulesMermaidText -P "modules.graph.output.mermaid=all_modules"
 ```
 
 ### Graph statistics

@@ -11,19 +11,19 @@ repositories {
 
 dependencies {
   implementation gradleApi()
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   testImplementation 'junit:junit:4.13.2'
 }
 
 compileKotlin {
   kotlinOptions {
-    jvmTarget = "11"
+    jvmTarget = "17"
   }
 }
 compileTestKotlin {
   kotlinOptions {
-    jvmTarget = "11"
+    jvmTarget = "17"
   }
 }
 
@@ -36,7 +36,7 @@ gradlePlugin {
   plugins {
     modulesGraphAssert {
       id = 'com.jraska.module.graph.assertion'
-      version = '2.5.0'
+      version = '3.0.0'
       displayName = 'Modules Graph Assert'
       description = 'Gradle plugin to keep your modules graph healthy and lean.'
       implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsPlugin'
