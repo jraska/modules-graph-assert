@@ -1,25 +1,26 @@
-package com.jraska.module.graph
+package com.jraska.module.graph.writer
 
+import com.jraska.module.graph.DependencyGraph
 import org.junit.Test
 
 class GraphvizWriterTest {
-
   @Test
   fun testPrintsProperly() {
-    val graphvizText = GraphvizWriter.toGraphviz(testGraph())
+    val graphvizText = GraphvizWriter.toGraph(testGraph())
 
     assert(graphvizText == EXPECTED_OUTPUT)
   }
 
   @Test
   fun testPrintsProperlyWithAliases() {
-    val aliases = mapOf(
-      "app" to "App",
-      "lib" to "Api",
-      "feature-about" to "Implementation"
-    )
+    val aliases =
+      mapOf(
+        "app" to "App",
+        "lib" to "Api",
+        "feature-about" to "Implementation",
+      )
 
-    val graphvizText = GraphvizWriter.toGraphviz(testGraph(), aliases)
+    val graphvizText = GraphvizWriter.toGraph(testGraph(), aliases)
 
     assert(graphvizText == EXPECTED_OUTPUT_WITH_ALISASES)
   }
@@ -32,12 +33,12 @@ class GraphvizWriterTest {
       "feature-about" to "core",
       "app" to "lib",
       "feature" to "lib",
-      "lib" to "core"
+      "lib" to "core",
     )
   }
-}
 
-private const val EXPECTED_OUTPUT = """digraph G {
+  companion object {
+    private const val EXPECTED_OUTPUT = """digraph G {
 "app" -> "feature" [color=red style=bold]
 "app" -> "feature-about"
 "app" -> "lib"
@@ -47,7 +48,7 @@ private const val EXPECTED_OUTPUT = """digraph G {
 "lib" -> "core" [color=red style=bold]
 }"""
 
-private const val EXPECTED_OUTPUT_WITH_ALISASES = """digraph G {
+    private const val EXPECTED_OUTPUT_WITH_ALISASES = """digraph G {
 "app('App')" -> "feature" [color=red style=bold]
 "app('App')" -> "feature-about('Implementation')"
 "app('App')" -> "lib('Api')"
@@ -56,3 +57,5 @@ private const val EXPECTED_OUTPUT_WITH_ALISASES = """digraph G {
 "feature-about('Implementation')" -> "core"
 "lib('Api')" -> "core" [color=red style=bold]
 }"""
+  }
+}

@@ -1,6 +1,6 @@
 package com.jraska.module.graph.assertion
 
-import com.jraska.module.graph.GraphvizWriter
+import com.jraska.module.graph.writer.GraphvizWriter
 import org.gradle.api.internal.project.DefaultProject
 import org.gradle.api.plugins.JavaLibraryPlugin
 import org.gradle.testfixtures.ProjectBuilder
@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 
 class GradleDependencyGraphFactoryTest {
-
   private val EXPECTED_SINGLE_MODULE = """digraph G {
 ":core"
 }"""
@@ -56,9 +55,9 @@ class GradleDependencyGraphFactoryTest {
 
   @Test
   fun generatesProperGraph() {
-    val dependencyGraph = GradleDependencyGraphFactory.create(appProject, Api.API_IMPLEMENTATON_CONFIGURATIONS)
+    val dependencyGraph = GradleDependencyGraphFactory.create(appProject, Api.API_IMPLEMENTATION_CONFIGURATIONS)
 
-    val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
+    val graphvizText = GraphvizWriter.toGraph(dependencyGraph)
     assert(EXPECTED_GRAPHVIZ == graphvizText)
   }
 
@@ -66,23 +65,24 @@ class GradleDependencyGraphFactoryTest {
   fun generatesWithTestImplementatinoGraph() {
     val dependencyGraph = GradleDependencyGraphFactory.create(appProject, setOf("implementation", "testImplementation"))
 
-    val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
+    val graphvizText = GraphvizWriter.toGraph(dependencyGraph)
     assert(EXPECTED_TEST_IMPLEMENTATION == graphvizText)
   }
 
   @Test
   fun generatesSingleModuleGraphOnNoDependencyModule() {
-    val dependencyGraph = GradleDependencyGraphFactory.create(coreProject, Api.API_IMPLEMENTATON_CONFIGURATIONS)
+    val dependencyGraph = GradleDependencyGraphFactory.create(coreProject, Api.API_IMPLEMENTATION_CONFIGURATIONS)
 
-    val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
+    val graphvizText = GraphvizWriter.toGraph(dependencyGraph)
     assert(EXPECTED_SINGLE_MODULE == graphvizText)
   }
 
   private fun createProject(name: String): DefaultProject {
-    val project = ProjectBuilder.builder()
-      .withName(name)
-      .withParent(rootProject)
-      .build() as DefaultProject
+    val project =
+      ProjectBuilder.builder()
+        .withName(name)
+        .withParent(rootProject)
+        .build() as DefaultProject
 
     project.plugins.apply(JavaLibraryPlugin::class.java)
     return project

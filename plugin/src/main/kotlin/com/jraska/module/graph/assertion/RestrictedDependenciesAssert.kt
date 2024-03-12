@@ -6,18 +6,19 @@ import com.jraska.module.graph.Parse
 import org.gradle.api.GradleException
 
 class RestrictedDependenciesAssert(
-  private val errorMatchers: Array<String>,
-  private val aliasMap: Map<String, String> = emptyMap()
+  private val errorMatchers: Set<String>,
+  private val aliasMap: Map<String, String> = emptyMap(),
 ) : GraphAssert {
   override fun assert(dependencyGraph: DependencyGraph) {
     val matchers = errorMatchers.map { Parse.restrictiveMatcher(it) }
 
-    val failedDependencies = dependencyGraph.dependencyPairs()
-      .map { aliasMap.mapAlias(it) }
-      .map { dependency ->
-        val violations = matchers.filter { it.matches(dependency.pairToAssert()) }.toList()
-        dependency to violations
-      }.filter { it.second.isNotEmpty() }
+    val failedDependencies =
+      dependencyGraph.dependencyPairs()
+        .map { aliasMap.mapAlias(it) }
+        .map { dependency ->
+          val violations = matchers.filter { it.matches(dependency.pairToAssert()) }.toList()
+          dependency to violations
+        }.filter { it.second.isNotEmpty() }
 
     if (failedDependencies.isNotEmpty()) {
       throw GradleException(buildErrorMessage(failedDependencies))

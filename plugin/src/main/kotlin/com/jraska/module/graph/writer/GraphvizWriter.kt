@@ -1,20 +1,24 @@
-package com.jraska.module.graph
+package com.jraska.module.graph.writer
 
+import com.jraska.module.graph.DependencyGraph
 import com.jraska.module.graph.assertion.mapAlias
 
-object GraphvizWriter {
-  fun toGraphviz(dependencyGraph: DependencyGraph, aliases: Map<String, String> = emptyMap()): String {
-
-    val longestPathConnections = dependencyGraph.longestPath()
-      .nodeNames.zipWithNext()
-      .toSet()
+object GraphvizWriter : GraphWriter {
+  override fun toGraph(
+    dependencyGraph: DependencyGraph,
+    aliases: Map<String, String>,
+  ): String {
+    val longestPathConnections =
+      dependencyGraph.longestPath()
+        .nodeNames.zipWithNext()
+        .toSet()
 
     val stringBuilder = StringBuilder()
 
     stringBuilder.append("digraph G {\n")
 
     val dependencyPairs = dependencyGraph.dependencyPairs()
-    if(dependencyPairs.isEmpty()) {
+    if (dependencyPairs.isEmpty()) {
       stringBuilder.append("\"${dependencyGraph.findRoot().key}\"")
         .append("\n")
     }

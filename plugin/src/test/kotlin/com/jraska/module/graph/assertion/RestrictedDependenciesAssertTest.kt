@@ -9,65 +9,69 @@ class RestrictedDependenciesAssertTest {
   fun passesWithNoMatchingMatchers() {
     val dependencyGraph = testGraph()
 
-    RestrictedDependenciesAssert(emptyArray()).assert(dependencyGraph)
+    RestrictedDependenciesAssert(emptySet()).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
   fun failsWhenFeatureCannotDependOnLib() {
     val dependencyGraph = testGraph()
 
-    RestrictedDependenciesAssert(arrayOf("feature -X> lib2")).assert(dependencyGraph)
+    RestrictedDependenciesAssert(setOf("feature -X> lib2")).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
   fun failsWhenLibCannotDependOnAndroid() {
     val dependencyGraph = testGraph()
 
-    RestrictedDependenciesAssert(arrayOf("lib[0-9]* -X> [a-z]*-android")).assert(dependencyGraph)
+    RestrictedDependenciesAssert(setOf("lib[0-9]* -X> [a-z]*-android")).assert(dependencyGraph)
   }
 
   @Test
   fun passesWithNoMatchersToAlias() {
-    val dependencyGraph = DependencyGraph.create(
-      "app" to "feature",
-      "app" to "feature2",
-      "feature2" to "core",
-      "feature" to "core"
-    )
+    val dependencyGraph =
+      DependencyGraph.create(
+        "app" to "feature",
+        "app" to "feature2",
+        "feature2" to "core",
+        "feature" to "core",
+      )
 
-    val aliases = mapOf(
-      "app" to "App",
-      "feature2" to "Impl",
-      "feature" to "Impl",
-      "core" to "Api"
-    )
+    val aliases =
+      mapOf(
+        "app" to "App",
+        "feature2" to "Impl",
+        "feature" to "Impl",
+        "core" to "Api",
+      )
 
     RestrictedDependenciesAssert(
-      arrayOf("Api -X> Impl", "Impl -X> Impl"),
-      aliases
+      setOf("Api -X> Impl", "Impl -X> Impl"),
+      aliases,
     ).assert(dependencyGraph)
   }
 
   @Test(expected = GradleException::class)
   fun failsWithMatchersToAlias() {
-    val dependencyGraph = DependencyGraph.create(
-      "app" to "feature",
-      "app" to "feature2",
-      "feature2" to "core",
-      "feature" to "core",
-      "feature" to "feature2",
-    )
+    val dependencyGraph =
+      DependencyGraph.create(
+        "app" to "feature",
+        "app" to "feature2",
+        "feature2" to "core",
+        "feature" to "core",
+        "feature" to "feature2",
+      )
 
-    val aliases = mapOf(
-      "app" to "App",
-      "feature2" to "Impl",
-      "feature" to "Impl",
-      "core" to "Api"
-    )
+    val aliases =
+      mapOf(
+        "app" to "App",
+        "feature2" to "Impl",
+        "feature" to "Impl",
+        "core" to "Api",
+      )
 
     RestrictedDependenciesAssert(
-      arrayOf("Api -X> Impl", "Impl -X> Impl"),
-      aliases
+      setOf("Api -X> Impl", "Impl -X> Impl"),
+      aliases,
     ).assert(dependencyGraph)
   }
 
@@ -82,7 +86,7 @@ class RestrictedDependenciesAssertTest {
       "lib" to "core",
       "lib" to "core-android",
       "lib2" to "core-android",
-      "core-android" to "core"
+      "core-android" to "core",
     )
   }
 }

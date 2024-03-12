@@ -1,5 +1,7 @@
 package com.jraska.module.graph.assertion
 
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -15,26 +17,29 @@ class FullProjectGradleTest {
     testProjectDir.newFile("settings.gradle").writeText("include ':app', ':core', ':feature', 'core-api'")
 
     createModule(
-      "core-api", content = """
+      "core-api",
+      content = """
       apply plugin: 'java-library'
       
       ext.moduleNameAssertAlias = "Api"
-      """
+      """,
     )
 
     createModule(
-      "core", content = """
+      "core",
+      content = """
       apply plugin: 'java-library'
 
       dependencies {
         implementation project(":core-api")
       }
       ext.moduleNameAssertAlias = "Implementation"
-      """
+      """,
     )
 
     createModule(
-      "feature", content = """
+      "feature",
+      content = """
       apply plugin: 'java-library'
 
       dependencies {
@@ -42,11 +47,12 @@ class FullProjectGradleTest {
       }
       
       ext.moduleNameAssertAlias = "Implementation"
-      """
+      """,
     )
 
     createModule(
-      "app", content = """
+      "app",
+      content = """
           plugins {
               id 'com.jraska.module.graph.assertion'
           }
@@ -65,7 +71,7 @@ class FullProjectGradleTest {
           }
      
           ext.moduleNameAssertAlias = "App"
-      """
+      """,
     )
   }
 
@@ -104,28 +110,49 @@ class FullProjectGradleTest {
   fun printsOnlyModule() {
     val output = runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphvizText", "-Pmodules.graph.of.module=:feature").output
 
-    assert(output.contains("digraph G {\n" +
-      "\":feature('Implementation')\" -> \":core-api('Api')\" [color=red style=bold]\n" +
-      "}"))
+    MatcherAssert.assertThat(
+      output,
+      CoreMatchers.containsString(
+        "digraph G {\n" +
+          "\":feature('Implementation')\" -> \":core-api('Api')\" [color=red style=bold]\n" +
+          "}",
+      ),
+    )
   }
 
   @Test
   fun printsOnlyModuleStatistics() {
-    val output = runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphStatistics", "-Pmodules.graph.of.module=:feature").output
+    val output =
+      runGradleAssertModuleGraph(
+        testProjectDir.root,
+        "generateModulesGraphStatistics",
+        "-Pmodules.graph.of.module=:feature",
+      ).output
 
-    assert(output.contains("GraphStatistics(modulesCount=2, edgesCount=1, height=1, longestPath=':feature -> :core-api')"))
+    MatcherAssert.assertThat(
+      output,
+      CoreMatchers.containsString("GraphStatistics(modulesCount=2, edgesCount=1, height=1, longestPath=':feature -> :core-api')"),
+    )
   }
 
   @Test
   fun savesGraphIntoFile() {
     val outputFile = File(testProjectDir.root, "all_modules.dot")
-    val output = runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphvizText", "-Pmodules.graph.output.gv=${outputFile.absolutePath}").output
+    val output =
+      runGradleAssertModuleGraph(
+        testProjectDir.root,
+        "generateModulesGraphvizText",
+        "-Pmodules.graph.output.gv=${outputFile.absolutePath}",
+      ).output
 
-    assert(output.contains("GraphViz saved to"))
+    assert(output.contains("Graph saved to"))
     assert(outputFile.readText() == EXPECTED_GRAPHVIZ_TEXT)
   }
 
-  private fun createModule(dir: String, content: String) {
+  private fun createModule(
+    dir: String,
+    content: String,
+  ) {
     val newFolder = testProjectDir.newFolder(dir)
     File(newFolder, "build.gradle").writeText(content)
   }

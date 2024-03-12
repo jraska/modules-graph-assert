@@ -33,11 +33,12 @@ class ModuleGraphAssertionsPluginTest {
   fun testAddsOnlyOneTaskWhenApplied2() {
     val plugin = ModuleGraphAssertionsPlugin()
 
-    val extension = GraphRulesExtension().apply {
-      maxHeight = 3
-      allowed = arrayOf(":feature-\\S* -> :lib\\S*", ".* -> :core")
-      restricted = arrayOf(":feature-one -X> :feature-two")
-    }
+    val extension =
+      GraphRulesExtension().apply {
+        maxHeight = 3
+        allowed = setOf(":feature-\\S* -> :lib\\S*", ".* -> :core")
+        restricted = setOf(":feature-one -X> :feature-two")
+      }
 
     plugin.addModulesAssertions(project, extension)
 
@@ -47,7 +48,7 @@ class ModuleGraphAssertionsPluginTest {
     setOf(
       project.tasks.findByName(Api.Tasks.ASSERT_MAX_HEIGHT) as AssertGraphTask,
       project.tasks.findByName(Api.Tasks.ASSERT_ALLOWED) as AssertGraphTask,
-      project.tasks.findByName(Api.Tasks.ASSERT_RESTRICTIONS) as AssertGraphTask
+      project.tasks.findByName(Api.Tasks.ASSERT_RESTRICTIONS) as AssertGraphTask,
     )
   }
 
@@ -55,10 +56,11 @@ class ModuleGraphAssertionsPluginTest {
   fun testAddsOnlyOneTaskWhenApplied3() {
     val plugin = ModuleGraphAssertionsPlugin()
 
-    val extension = GraphRulesExtension().apply {
-      maxHeight = 3
-      allowed = arrayOf(":feature-one -> :lib")
-    }
+    val extension =
+      GraphRulesExtension().apply {
+        maxHeight = 3
+        allowed = setOf(":feature-one -> :lib")
+      }
 
     plugin.addModulesAssertions(project, extension)
 
