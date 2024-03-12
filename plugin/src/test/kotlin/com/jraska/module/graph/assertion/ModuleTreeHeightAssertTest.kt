@@ -45,7 +45,7 @@ class ModuleTreeHeightAssertTest {
       "app" to "feature",
       "app" to "lib",
       "feature" to "lib",
-      "lib" to "core"
+      "lib" to "core",
     )
   }
 }

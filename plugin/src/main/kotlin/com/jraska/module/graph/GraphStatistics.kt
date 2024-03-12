@@ -4,5 +4,5 @@ data class GraphStatistics(
   val modulesCount: Int,
   val edgesCount: Int,
   val height: Int,
-  val longestPath: LongestPath
+  val longestPath: LongestPath,
 )

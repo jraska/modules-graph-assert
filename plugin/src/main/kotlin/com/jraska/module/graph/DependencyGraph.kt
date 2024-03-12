@@ -32,9 +32,10 @@ class DependencyGraph private constructor() {
   }
 
   fun longestPath(key: String): LongestPath {
-    val nodeNames = nodes.getValue(key)
-      .longestPath()
-      .map { it.key }
+    val nodeNames =
+      nodes.getValue(key)
+        .longestPath()
+        .map { it.key }
 
     return LongestPath(nodeNames)
   }
@@ -54,7 +55,7 @@ class DependencyGraph private constructor() {
       modulesCount = nodes.size,
       edgesCount = edgesCount,
       height = height,
-      longestPath = longestPath()
+      longestPath = longestPath(),
     )
   }
 
@@ -74,11 +75,14 @@ class DependencyGraph private constructor() {
   fun serializableGraph(): SerializableGraph {
     return SerializableGraph(
       ArrayList(dependencyPairs()),
-      nodes.keys.first()
+      nodes.keys.first(),
     )
   }
 
-  private fun addConnections(node: Node, into: MutableList<Pair<String, String>>) {
+  private fun addConnections(
+    node: Node,
+    into: MutableList<Pair<String, String>>,
+  ) {
     node.dependsOn.forEach {
       into.add(node.key to it.key)
       addConnections(it, into)
@@ -91,7 +95,7 @@ class DependencyGraph private constructor() {
 
   class SerializableGraph(
     val dependencyPairs: ArrayList<Pair<String, String>>,
-    val firstModule: String
+    val firstModule: String,
   ) : Serializable
 
   class Node(val key: String) {
@@ -135,9 +139,7 @@ class DependencyGraph private constructor() {
     }
 
     fun create(dependencies: List<Pair<String, String>>): DependencyGraph {
-      if (dependencies.isEmpty()) {
-        throw IllegalArgumentException("Graph cannot be empty. Use createSingular for cases with no dependencies")
-      }
+      require(dependencies.isNotEmpty()) { "Graph cannot be empty. Use createSingular for cases with no dependencies" }
 
       val graph = DependencyGraph()
       dependencies.forEach { graph.addEdge(it.first, it.second) }
@@ -156,7 +158,10 @@ class DependencyGraph private constructor() {
       }
     }
 
-    private fun DependencyGraph.addEdge(from: String, to: String) {
+    private fun DependencyGraph.addEdge(
+      from: String,
+      to: String,
+    ) {
       getOrCreate(from).dependsOn.add(getOrCreate(to))
     }
 

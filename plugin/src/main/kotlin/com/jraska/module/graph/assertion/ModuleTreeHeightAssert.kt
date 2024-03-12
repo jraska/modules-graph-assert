@@ -6,7 +6,7 @@ import java.io.Serializable
 
 class ModuleTreeHeightAssert(
   private val moduleName: String?,
-  private val maxHeight: Int
+  private val maxHeight: Int,
 ) : GraphAssert, Serializable {
   override fun assert(dependencyGraph: DependencyGraph) {
     if (moduleName == null) {
@@ -16,11 +16,16 @@ class ModuleTreeHeightAssert(
     }
   }
 
-  private fun assertModuleHeight(dependencyGraph: DependencyGraph, moduleName: String) {
+  private fun assertModuleHeight(
+    dependencyGraph: DependencyGraph,
+    moduleName: String,
+  ) {
     val height = dependencyGraph.heightOf(moduleName)
     if (height > maxHeight) {
       val longestPath = dependencyGraph.longestPath(moduleName)
-      throw GradleException("Module $moduleName is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}")
+      throw GradleException(
+        "Module $moduleName is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}",
+      )
     }
   }
 
@@ -28,7 +33,9 @@ class ModuleTreeHeightAssert(
     val height = dependencyGraph.height()
     if (height > maxHeight) {
       val longestPath = dependencyGraph.longestPath()
-      throw GradleException("Module Graph is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}")
+      throw GradleException(
+        "Module Graph is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}",
+      )
     }
   }
 }

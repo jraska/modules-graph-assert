@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<baseline version="1.0">
+    <file name="src/main/kotlin/com/jraska/module/graph/assertion/ModuleTreeHeightAssert.kt">
+        <error line="27" column="141" source="standard:max-line-length" />
+        <error line="37" column="141" source="standard:max-line-length" />
+    </file>
+    <file name="src/test/kotlin/com/jraska/module/graph/assertion/OnAnyBuildAssertTest.kt">
+        <error line="128" column="141" source="standard:max-line-length" />
+    </file>
+</baseline>

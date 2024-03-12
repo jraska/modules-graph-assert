@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>LongMethod:DependencyGraphTest.kt$DependencyGraphTest$@Test fun countsStatisticsWell()</ID>
+    <ID>MaxLineLength:ModuleTreeHeightAssert.kt$ModuleTreeHeightAssert$"Module $moduleName is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}"</ID>
+    <ID>MaxLineLength:ModuleTreeHeightAssert.kt$ModuleTreeHeightAssert$"Module Graph is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}"</ID>
+    <ID>MaxLineLength:OnAnyBuildAssertTest.kt$OnAnyBuildAssertTest$"""["App"(':app') -&gt; "Implementation"(':core'), "App"(':app') -&gt; "Implementation"(':feature')] not allowed by any of ['Implementation -&gt; Api', 'App -&gt; Api']"""</ID>
+    <ID>MaxLineLength:OnAnyBuildAssertTest.kt$OnAnyBuildAssertTest$"Module :app is allowed to have maximum height of 1, but has 2, problematic dependencies: :app -&gt; :core -&gt; :core-api"</ID>
+    <ID>ReturnCount:GradleDependencyGraphFactory.kt$GradleDependencyGraphFactory$fun create( project: Project, configurationsToLook: Set&lt;String&gt;, ): DependencyGraph</ID>
+    <ID>SerialVersionUIDInSerializableClass:DependencyGraph.kt$DependencyGraph$SerializableGraph : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:ModuleTreeHeightAssert.kt$ModuleTreeHeightAssert : GraphAssertSerializable</ID>
+    <ID>SwallowedException:ModuleGraphAssertionsPlugin.kt$ModuleGraphAssertionsPlugin$checkNotFound: UnknownTaskException</ID>
+    <ID>TooManyFunctions:DependencyGraph.kt$DependencyGraph</ID>
+    <ID>TooManyFunctions:ModuleGraphAssertionsPlugin.kt$ModuleGraphAssertionsPlugin : Plugin</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -12,9 +12,12 @@ object Parse {
     return matcher(matcherText, NO_DEPENDENCY_SIGN_DIVIDER)
   }
 
-  private fun matcher(matcherText: String, divider: String): RegexpDependencyMatcher {
-    if (!matcherText.contains(divider)) {
-      throw IllegalArgumentException("Incorrect format. Expected: 'regexp${divider}regexp', found $matcherText")
+  private fun matcher(
+    matcherText: String,
+    divider: String,
+  ): RegexpDependencyMatcher {
+    require(matcherText.contains(divider)) {
+      "Incorrect format. Expected: 'regexp${divider}regexp', found $matcherText"
     }
 
     return RegexpDependencyMatcher(matcherText.toRegex(), divider)

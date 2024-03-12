@@ -11,10 +11,11 @@ class DependencyGraphPerformanceTest {
   fun setUp() {
     val uri = javaClass.classLoader.getResource("graph/large-graph.txt")
     val file = File(uri?.path!!)
-    val dependencyPairs = file.readLines().map {
-      val parts = it.split(" -> ")
-      parts[0] to parts[1]
-    }
+    val dependencyPairs =
+      file.readLines().map {
+        val parts = it.split(" -> ")
+        parts[0] to parts[1]
+      }
 
     dependencyGraph = DependencyGraph.create(dependencyPairs)
   }

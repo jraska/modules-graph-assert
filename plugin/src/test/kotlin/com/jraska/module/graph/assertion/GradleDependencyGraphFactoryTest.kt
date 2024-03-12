@@ -8,11 +8,12 @@ import org.junit.Before
 import org.junit.Test
 
 class GradleDependencyGraphFactoryTest {
-  private val EXPECTED_SINGLE_MODULE = """digraph G {
+  companion object {
+    private const val EXPECTED_SINGLE_MODULE = """digraph G {
 ":core"
 }"""
 
-  private val EXPECTED_GRAPHVIZ = """digraph G {
+    private const val EXPECTED_GRAPHVIZ = """digraph G {
 ":app" -> ":lib"
 ":app" -> ":feature" [color=red style=bold]
 ":lib" -> ":core" [color=red style=bold]
@@ -20,13 +21,14 @@ class GradleDependencyGraphFactoryTest {
 ":feature" -> ":lib" [color=red style=bold]
 }"""
 
-  private val EXPECTED_TEST_IMPLEMENTATION = """digraph G {
+    private const val EXPECTED_TEST_IMPLEMENTATION = """digraph G {
 ":app" -> ":feature" [color=red style=bold]
 ":feature" -> ":lib" [color=red style=bold]
 ":feature" -> ":core-testing"
 ":lib" -> ":core" [color=red style=bold]
 ":core-testing" -> ":core"
 }"""
+  }
 
   private lateinit var appProject: DefaultProject
   private lateinit var coreProject: DefaultProject

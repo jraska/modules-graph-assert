@@ -86,7 +86,12 @@ class FullProjectGradleTest {
   @Test
   fun statisticsSupportConfigurationCache() {
     runGradleAssertModuleGraph(testProjectDir.root, "--configuration-cache", "generateModulesGraphStatistics")
-    val secondRunResult = runGradleAssertModuleGraph(testProjectDir.root, "--configuration-cache", "generateModulesGraphStatistics")
+    val secondRunResult =
+      runGradleAssertModuleGraph(
+        testProjectDir.root,
+        "--configuration-cache",
+        "generateModulesGraphStatistics",
+      )
 
     assert(secondRunResult.output.contains("Reusing configuration cache."))
   }
@@ -94,7 +99,12 @@ class FullProjectGradleTest {
   @Test
   fun moduleGraphSupportConfigurationCache() {
     runGradleAssertModuleGraph(testProjectDir.root, "--configuration-cache", "generateModulesGraphvizText")
-    val secondRunResult = runGradleAssertModuleGraph(testProjectDir.root, "--configuration-cache", "generateModulesGraphvizText")
+    val secondRunResult =
+      runGradleAssertModuleGraph(
+        testProjectDir.root,
+        "--configuration-cache",
+        "generateModulesGraphvizText",
+      )
 
     assert(secondRunResult.output.contains("Reusing configuration cache."))
   }
@@ -103,12 +113,21 @@ class FullProjectGradleTest {
   fun printsCorrectStatistics() {
     val output = runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphStatistics").output
 
-    assert(output.contains("GraphStatistics(modulesCount=4, edgesCount=5, height=2, longestPath=':app -> :core -> :core-api')"))
+    assert(
+      output.contains(
+        "GraphStatistics(modulesCount=4, edgesCount=5, height=2, longestPath=':app -> :core -> :core-api')",
+      ),
+    )
   }
 
   @Test
   fun printsOnlyModule() {
-    val output = runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphvizText", "-Pmodules.graph.of.module=:feature").output
+    val output =
+      runGradleAssertModuleGraph(
+        testProjectDir.root,
+        "generateModulesGraphvizText",
+        "-Pmodules.graph.of.module=:feature",
+      ).output
 
     MatcherAssert.assertThat(
       output,
@@ -131,7 +150,9 @@ class FullProjectGradleTest {
 
     MatcherAssert.assertThat(
       output,
-      CoreMatchers.containsString("GraphStatistics(modulesCount=2, edgesCount=1, height=1, longestPath=':feature -> :core-api')"),
+      CoreMatchers.containsString(
+        "GraphStatistics(modulesCount=2, edgesCount=1, height=1, longestPath=':feature -> :core-api')",
+      ),
     )
   }
 

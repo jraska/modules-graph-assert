@@ -7,7 +7,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 
 open class AssertGraphTask : DefaultTask() {
-
   @Input
   lateinit var assertion: GraphAssert
 

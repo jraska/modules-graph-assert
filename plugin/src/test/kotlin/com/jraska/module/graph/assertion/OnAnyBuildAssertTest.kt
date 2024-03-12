@@ -17,26 +17,29 @@ class OnAnyBuildAssertTest {
       .writeText("include ':app', ':core', ':feature', 'core-api'")
 
     createModule(
-      "core-api", content = """
+      "core-api",
+      content = """
       apply plugin: 'java-library'
       
       ext.moduleNameAssertAlias = "Api"
-      """
+      """,
     )
 
     createModule(
-      "core", content = """
+      "core",
+      content = """
       apply plugin: 'java-library'
 
       dependencies {
         implementation project(":core-api")
       }
       ext.moduleNameAssertAlias = "Implementation"
-      """
+      """,
     )
 
     createModule(
-      "feature", content = """
+      "feature",
+      content = """
       apply plugin: 'java-library'
 
       dependencies {
@@ -44,13 +47,14 @@ class OnAnyBuildAssertTest {
       }
       
       ext.moduleNameAssertAlias = "Implementation"
-      """
+      """,
     )
   }
 
   private fun createAppModule(moduleGraphAssertConfiguration: String) {
     createModule(
-      "app", content = """
+      "app",
+      content = """
           plugins {
               id 'com.jraska.module.graph.assertion'
           }
@@ -65,7 +69,7 @@ class OnAnyBuildAssertTest {
           }
      
           ext.moduleNameAssertAlias = "App"
-      """
+      """,
     )
   }
 
@@ -77,12 +81,16 @@ class OnAnyBuildAssertTest {
             maxHeight = 1
             assertOnAnyBuild = true
           }   
-      """
+      """,
     )
 
     val output = setupGradle(testProjectDir.root, "help").buildAndFail().output
 
-    assert(output.contains("Module :app is allowed to have maximum height of 1, but has 2, problematic dependencies: :app -> :core -> :core-api"))
+    assert(
+      output.contains(
+        "Module :app is allowed to have maximum height of 1, but has 2, problematic dependencies: :app -> :core -> :core-api",
+      ),
+    )
   }
 
   @Test
@@ -93,7 +101,7 @@ class OnAnyBuildAssertTest {
             maxHeight = 1
             assertOnAnyBuild = false
           }   
-      """
+      """,
     )
 
     val output = setupGradle(testProjectDir.root, "help").build().output
@@ -110,12 +118,16 @@ class OnAnyBuildAssertTest {
             allowed = ['Implementation -> Api', 'App -> Api']
             assertOnAnyBuild = true
           }   
-      """
+      """,
     )
 
     val output = setupGradle(testProjectDir.root, "help").buildAndFail().output
 
-    assert(output.contains("""["App"(':app') -> "Implementation"(':core'), "App"(':app') -> "Implementation"(':feature')] not allowed by any of ['Implementation -> Api', 'App -> Api']"""))
+    assert(
+      output.contains(
+        """["App"(':app') -> "Implementation"(':core'), "App"(':app') -> "Implementation"(':feature')] not allowed by any of ['Implementation -> Api', 'App -> Api']""",
+      ),
+    )
   }
 
   @Test
@@ -125,7 +137,7 @@ class OnAnyBuildAssertTest {
           moduleGraphAssert {
             allowed = ['Implementation -> Api', 'App -> Api']
           }   
-      """
+      """,
     )
 
     val output = setupGradle(testProjectDir.root, "help").build().output
@@ -142,7 +154,7 @@ class OnAnyBuildAssertTest {
             restricted = ['App -X> Api', 'Implementation -X> Implementation']
             assertOnAnyBuild = true
           }   
-      """
+      """,
     )
 
     val output = setupGradle(testProjectDir.root, "help").buildAndFail().output
@@ -150,14 +162,17 @@ class OnAnyBuildAssertTest {
     assert(output.contains("""Dependency '"App"(':app') -> "Api"(':core-api') violates: 'App -X> Api'"""))
   }
 
-  private fun createModule(dir: String, content: String) {
+  private fun createModule(
+    dir: String,
+    content: String,
+  ) {
     val newFolder = testProjectDir.newFolder(dir)
     File(newFolder, "build.gradle").writeText(content)
   }
 
   private fun setupGradle(
     dir: File,
-    vararg arguments: String
+    vararg arguments: String,
   ): GradleRunner {
     return GradleRunner.create()
       .withProjectDir(dir)

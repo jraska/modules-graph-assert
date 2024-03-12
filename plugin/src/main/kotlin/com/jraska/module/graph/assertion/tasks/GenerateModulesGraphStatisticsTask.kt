@@ -7,7 +7,6 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 
 open class GenerateModulesGraphStatisticsTask : DefaultTask() {
-
   @Optional
   @Input
   var onlyModuleStatistics: String? = null

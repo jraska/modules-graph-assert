@@ -28,7 +28,12 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   private var outputFilePath: String? = null
 
   override fun apply(project: Project) {
-    val graphRules = project.extensions.create(GraphRulesExtension::class.java, Api.EXTENSION_ROOT, GraphRulesExtension::class.java)
+    val graphRules =
+      project.extensions.create(
+        GraphRulesExtension::class.java,
+        Api.EXTENSION_ROOT,
+        GraphRulesExtension::class.java,
+      )
 
     project.afterEvaluate {
       addModulesAssertions(project, graphRules)
@@ -169,7 +174,11 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
     }
   }
 
-  private fun restrictedDependenciesAssert(graphRules: GraphRulesExtension) = RestrictedDependenciesAssert(graphRules.restricted, aliases)
+  private fun restrictedDependenciesAssert(graphRules: GraphRulesExtension) =
+    RestrictedDependenciesAssert(
+      graphRules.restricted,
+      aliases,
+    )
 
   private fun Project.addModuleAllowedRulesTask(graphRules: GraphRulesExtension): TaskProvider<AssertGraphTask>? {
     if (graphRules.shouldAssertAllowed()) {

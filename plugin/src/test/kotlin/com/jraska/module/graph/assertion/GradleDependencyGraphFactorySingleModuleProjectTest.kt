@@ -8,13 +8,15 @@ import org.junit.Before
 import org.junit.Test
 
 class GradleDependencyGraphFactorySingleModuleProjectTest {
-  private val EXPECTED_SINGLE_MODULE = """digraph G {
+  companion object {
+    private const val EXPECTED_SINGLE_MODULE = """digraph G {
 ":app"
 }"""
 
-  private val EXPECTED_ROOT_MODULE = """digraph G {
+    private const val EXPECTED_ROOT_MODULE = """digraph G {
 "root  some-root"
 }"""
+  }
 
   private lateinit var singleModule: DefaultProject
   private var rootProject: DefaultProject? = null

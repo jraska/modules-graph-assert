@@ -17,13 +17,14 @@ class DependencyGraphSerializationTest {
 
   @Test
   fun graphIsSerializable() {
-    val originalGraph = DependencyGraph.create(
-      "feature" to "lib",
-      "lib" to "core",
-      "app" to "feature",
-      "feature" to "core",
-      "app" to "core"
-    )
+    val originalGraph =
+      DependencyGraph.create(
+        "feature" to "lib",
+        "lib" to "core",
+        "app" to "feature",
+        "feature" to "core",
+        "app" to "core",
+      )
 
     val deserializedGraph = serializeAndDeserializeGraph(originalGraph)
 
