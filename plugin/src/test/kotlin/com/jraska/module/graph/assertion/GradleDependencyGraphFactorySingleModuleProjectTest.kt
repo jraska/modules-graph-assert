@@ -28,7 +28,7 @@ class GradleDependencyGraphFactorySingleModuleProjectTest {
 
   @Test
   fun generatesProperGraph() {
-    val dependencyGraph = GradleDependencyGraphFactory.create(singleModule, Api.API_IMPLEMENTATON_CONFIGURATIONS)
+    val dependencyGraph = GradleDependencyGraphFactory.create(singleModule, Api.API_IMPLEMENTATION_CONFIGURATIONS)
 
     val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
     assert(EXPECTED_SINGLE_MODULE == graphvizText)
@@ -36,7 +36,7 @@ class GradleDependencyGraphFactorySingleModuleProjectTest {
 
   @Test
   fun generatesProperGraphOnRootModule() {
-    val dependencyGraph = GradleDependencyGraphFactory.create(rootProject!!, Api.API_IMPLEMENTATON_CONFIGURATIONS)
+    val dependencyGraph = GradleDependencyGraphFactory.create(rootProject!!, Api.API_IMPLEMENTATION_CONFIGURATIONS)
 
     val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
     assert(EXPECTED_ROOT_MODULE == graphvizText)
