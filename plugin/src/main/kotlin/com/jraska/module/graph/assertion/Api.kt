@@ -2,7 +2,9 @@ package com.jraska.module.graph.assertion
 
 object Api {
   object Tasks {
+    const val GROUP = "module graph assert"
     const val GENERATE_GRAPHVIZ = "generateModulesGraphvizText"
+    const val GENERATE_MERMAID = "generateModulesMermaidText"
     const val GENERATE_GRAPH_STATISTICS = "generateModulesGraphStatistics"
 
     const val ASSERT_ALL = "assertModuleGraph"
@@ -14,6 +16,7 @@ object Api {
   object Parameters {
     const val PRINT_ONLY_MODULE = "modules.graph.of.module"
     const val OUTPUT_PATH = "modules.graph.output.gv"
+    const val OUTPUT_PATH_MERMAID = "modules.graph.output.mermaid"
   }
 
   object Properties {
@@ -22,6 +25,5 @@ object Api {
 
   const val EXTENSION_ROOT = "moduleGraphAssert"
 
-  val API_IMPLEMENTATON_CONFIGURATIONS = setOf("api", "implementation")
+  val API_IMPLEMENTATION_CONFIGURATIONS = setOf("api", "implementation")
 }
-

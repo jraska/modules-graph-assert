@@ -2,10 +2,26 @@ package com.jraska.module.graph.assertion
 
 open class GraphRulesExtension {
   var maxHeight: Int = 0
-  var restricted = emptyArray<String>() // each restriction in format "regexp -X> regexp" e.g.: ":feature-[a-z]* -X> :forbidden-lib"
-  var allowed = emptyArray<String>() // each allowance in format "regexp -> regexp" e.g.: ":feature-[a-z]* -> :forbidden-lib"
-  var configurations: Set<String> = Api.API_IMPLEMENTATON_CONFIGURATIONS
+
+  /**
+   * each restriction in format "regexp -X> regexp" e.g.: ":feature-[a-z]* -X> :forbidden-lib"
+   */
+  var restricted = emptySet<String>()
+
+  /**
+   * each allowance in format "regexp -> regexp" e.g.: ":feature-[a-z]* -> :forbidden-lib"
+   */
+  var allowed = emptySet<String>()
+  var configurations: Set<String> = Api.API_IMPLEMENTATION_CONFIGURATIONS
   var assertOnAnyBuild: Boolean = false
+
+  var outputFormat: OutputFormat = OutputFormat.GRAPHVIZ
+
+  /**
+   * When set, graph will be stored to this file in [outputFormat].
+
+   */
+  var outputFilePath: String? = null
 
   internal fun shouldAssertHeight() = maxHeight > 0
 

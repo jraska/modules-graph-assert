@@ -1,5 +1,7 @@
 package com.jraska.module.graph.assertion
 
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -16,23 +18,26 @@ class FullProjectMultipleAppliedGradleTest {
       .writeText("include ':app', ':core', 'core-api', 'no-dependencies'")
 
     createModule(
-      "core-api", content = """
+      "core-api",
+      content = """
       apply plugin: 'java-library'
-      """
+      """,
     )
 
     createModule(
-      "core", content = """
+      "core",
+      content = """
       apply plugin: 'java-library'
 
       dependencies {
         implementation project(":core-api")
       }
-      """
+      """,
     )
 
     createModule(
-      "app", content = """
+      "app",
+      content = """
           plugins {
               id 'com.jraska.module.graph.assertion'
           }
@@ -46,11 +51,12 @@ class FullProjectMultipleAppliedGradleTest {
             implementation project(":core-api")
             implementation project(":core")
           }
-      """
+      """,
     )
 
     createModule(
-      "no-dependencies", content = """
+      "no-dependencies",
+      content = """
           plugins {
               id 'com.jraska.module.graph.assertion'
           }
@@ -59,7 +65,7 @@ class FullProjectMultipleAppliedGradleTest {
           moduleGraphAssert {
             maxHeight = 0
           }
-      """
+      """,
     )
   }
 
@@ -69,14 +75,22 @@ class FullProjectMultipleAppliedGradleTest {
       runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphStatistics").output
 
     println(output)
-    assert(output.contains("> Task :app:generateModulesGraphStatistics\n" +
-      "GraphStatistics(modulesCount=3, edgesCount=3, height=2, longestPath=':app -> :core -> :core-api')\n" +
-      "\n" +
-      "> Task :no-dependencies:generateModulesGraphStatistics\n" +
-      "GraphStatistics(modulesCount=1, edgesCount=0, height=0, longestPath=':no-dependencies')"))
+    MatcherAssert.assertThat(
+      output,
+      CoreMatchers.containsString(
+        "> Task :app:generateModulesGraphStatistics\n" +
+          "GraphStatistics(modulesCount=3, edgesCount=3, height=2, longestPath=':app -> :core -> :core-api')\n" +
+          "\n" +
+          "> Task :no-dependencies:generateModulesGraphStatistics\n" +
+          "GraphStatistics(modulesCount=1, edgesCount=0, height=0, longestPath=':no-dependencies')",
+      ),
+    )
   }
 
-  private fun createModule(dir: String, content: String) {
+  private fun createModule(
+    dir: String,
+    content: String,
+  ) {
     val newFolder = testProjectDir.newFolder(dir)
     File(newFolder, "build.gradle").writeText(content)
   }
