@@ -27,5 +27,8 @@ class DependencyGraphPerformanceTest {
     assert(statistics.modulesCount == 1000)
     assert(statistics.edgesCount == 15259)
     assert(statistics.longestPath.pathString().startsWith("23 -> 31 -> 36 -> 57 -> 61 -> 72 -> 74 -> 75"))
+
+    val subGraphStatistics = dependencyGraph.subTree("500").statistics()
+    assert(subGraphStatistics.modulesCount == 281)
   }
 }
