@@ -62,7 +62,7 @@ class DependencyGraph private constructor() {
     require(nodes.contains(key)) { "Dependency Tree doesn't contain module: $key" }
 
     val connections = mutableListOf<Pair<String, String>>()
-    addConnections(nodes.getValue(key), connections, mutableSetOf())
+    addConnections(nodes.getValue(key), connections, mutableSetOf(), mutableSetOf())
 
     return if (connections.isEmpty()) {
       createSingular(key)
@@ -79,9 +79,17 @@ class DependencyGraph private constructor() {
   }
 
   private fun addConnections(
-    node: Node, into: MutableList<Pair<String, String>>,
-    path: MutableSet<Node>
+    node: Node,
+    into: MutableList<Pair<String, String>>,
+    path: MutableSet<Node>,
+    visited: MutableSet<Node>,
   ) {
+    if (visited.contains(node)) {
+      return
+    } else {
+      visited.add(node)
+    }
+
     path.add(node)
     node.dependsOn.forEach { dependant ->
       into.add(node.key to dependant.key)
@@ -91,7 +99,7 @@ class DependencyGraph private constructor() {
         val pathText = path.joinToString(separator = ", ") { it.key }
         throw IllegalStateException("Dependency cycle detected! Cycle in nodes: '${pathText}'.")
       }
-      addConnections(dependant, into, path)
+      addConnections(dependant, into, path, visited)
     }
 
     path.remove(node)

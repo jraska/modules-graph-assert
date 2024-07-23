@@ -29,9 +29,27 @@ class DependencyGraphPerformanceTest {
     assert(statistics.longestPath.pathString().startsWith("23 -> 31 -> 36 -> 57 -> 61 -> 72 -> 74 -> 75"))
   }
 
-  @Test(timeout = 10000)
-  fun whenTheGraphIsLarge_statisticsSubGraphCreatedFast() {
+  @Test(timeout = 1_000)
+  fun whenTheGraphIsLarge_statisticsOfSubgraphMatchFast() {
+    val subGraphStatistics = dependencyGraph.subTree("31").statistics()
+
+    assert(subGraphStatistics.height == 58)
+    assert(subGraphStatistics.longestPath.pathString().startsWith("31 -> 36 -> 57 -> 61 -> 72 -> 74 -> 75"))
+  }
+
+  @Test(timeout = 1_000)
+  fun whenTheGraphIsLarge_statisticsCreatedFast() {
     val subGraphStatistics = dependencyGraph.subTree("500").statistics()
     assert(subGraphStatistics.modulesCount == 281)
+  }
+
+  @Test(timeout = 1_000) // was running out of heap before optimisation
+  fun whenTheGraphIsLarge_statisticsLargeCreatedFast() {
+    val subGraphStatistics = dependencyGraph.subTree("2").statistics()
+
+    assert(subGraphStatistics.modulesCount == 870)
+    assert(subGraphStatistics.edgesCount == 11650)
+    assert(subGraphStatistics.height == 55)
+    assert(subGraphStatistics.longestPath.pathString().startsWith("2 -> 30 -> 76 -> 105 -> 119 -> "))
   }
 }
