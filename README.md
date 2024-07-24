@@ -102,11 +102,9 @@ Please feel free to create PR or issue with any suggestions or ideas. No special
 
 ### Debugging
 
-**Setting up a composite build:**
+**Setting up a composite build**
 
-This case is helpful when you need to debug in a real project.
-Composite builds are consumed directly without publishing a snapshot version.  
-This is done already in `example` project, but you can do the same in any other project:
+[Composite builds](https://docs.gradle.org/current/userguide/composite_builds.html#settings_defined_composite) are consumed directly without publishing a version.  
 
 settings.gradle:
 ```groovy
