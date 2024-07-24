@@ -104,7 +104,7 @@ Please feel free to create PR or issue with any suggestions or ideas. No special
 
 **Setting up a composite build**
 
-[Composite builds](https://github.com/jraska/modules-graph-assert/releases/tag/2.6.0) are consumed directly without publishing a version.  
+[Composite builds](https://docs.gradle.org/current/userguide/composite_builds.html#settings_defined_composite) are consumed directly without publishing a version.  
 
 settings.gradle:
 ```groovy
