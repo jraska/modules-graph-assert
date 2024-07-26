@@ -1,8 +1,8 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
-import com.jraska.module.graph.DependencyMatcher
 import com.jraska.module.graph.Parse
+import com.jraska.module.graph.RegexpDependencyMatcher
 import org.gradle.api.GradleException
 
 class RestrictedDependenciesAssert(
@@ -24,7 +24,7 @@ class RestrictedDependenciesAssert(
     }
   }
 
-  private fun buildErrorMessage(failedDependencies: List<Pair<ModuleDependency, List<DependencyMatcher>>>): String {
+  private fun buildErrorMessage(failedDependencies: List<Pair<ModuleDependency, List<RegexpDependencyMatcher>>>): String {
     return failedDependencies.map {
       val violatedRules = it.second.map { "'$it'" }.joinToString(", ")
       "Dependency '${it.first.assertDisplayText()} violates: $violatedRules"
