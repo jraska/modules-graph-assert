@@ -31,7 +31,7 @@ java {
   targetCompatibility JavaVersion.VERSION_11
 }
 
-group = 'com.jraska.module.graph.assertion'
+group = 'com.github.jokoolle-183.modules-graph-assert'
 
 gradlePlugin {
   website = 'https://github.com/jraska/modules-graph-assert'
