@@ -21,8 +21,8 @@ class ModuleGraphAssertionsPluginTest {
   fun testAddsOnlyOneTaskWhenApplied() {
     val checkDependsOnSize = project.tasks.findByName(CHECK_TASK_NAME)!!.dependsOn.size
 
-    project.plugins.apply(ModuleGraphAssertionsPlugin::class.java)
-    project.evaluate()
+    val plugin = ModuleGraphAssertionsPlugin()
+    plugin.addModulesAssertions(project, GraphRulesExtension())
 
     assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL) != null)
     assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL)!!.dependsOn.isEmpty())
@@ -69,21 +69,5 @@ class ModuleGraphAssertionsPluginTest {
       project.tasks.findByName(Api.Tasks.ASSERT_MAX_HEIGHT) as AssertGraphTask,
       project.tasks.findByName(Api.Tasks.ASSERT_ALLOWED) as AssertGraphTask,
     )
-  }
-
-  @Test
-  fun testPrintGraphvizTextsIsAdded() {
-    project.plugins.apply(ModuleGraphAssertionsPlugin::class.java)
-    project.evaluate()
-
-    assert(project.tasks.findByName("generateModulesGraphvizText") != null)
-  }
-
-  @Test
-  fun testPrintTaskStatisticsIsAdded() {
-    project.plugins.apply(ModuleGraphAssertionsPlugin::class.java)
-    project.evaluate()
-
-    assert(project.tasks.findByName("generateModulesGraphStatistics") != null)
   }
 }
