@@ -29,11 +29,13 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     val graphRules = project.extensions.create(GraphRulesExtension::class.java, Api.EXTENSION_ROOT, GraphRulesExtension::class.java)
 
-    project.gradle.projectsEvaluated {
+    project.afterEvaluate {
       addModulesAssertions(project, graphRules)
 
       if (graphRules.assertOnAnyBuild) {
-        project.runAssertionsDirectly(graphRules)
+        project.gradle.projectsEvaluated {
+          project.runAssertionsDirectly(graphRules)
+        }
       }
     }
   }
