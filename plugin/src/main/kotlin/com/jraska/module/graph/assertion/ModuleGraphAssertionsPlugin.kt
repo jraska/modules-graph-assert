@@ -148,7 +148,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
   }
 
   private fun onlyAllowedAssert(graphRules: GraphRulesExtension) =
-    OnlyAllowedAssert(graphRules.allowed, aliases)
+    OnlyAllowedAssert(graphRules.allowed, aliases, graphRules.allowedViolations)
 }
 
 private fun Project.moduleNameForHeightAssert(): String? {

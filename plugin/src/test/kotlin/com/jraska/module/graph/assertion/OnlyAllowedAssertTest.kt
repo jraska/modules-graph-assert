@@ -70,6 +70,25 @@ class OnlyAllowedAssertTest {
     OnlyAllowedAssert(allowedDependencies, aliases).assert(dependencyGraph)
   }
 
+  @Test
+  fun passesWhenViolationIsAllowed() {
+    val dependencies = testGraph().dependencyPairs().toMutableList().apply { add("api" to "lib2") }
+    val dependencyGraph = DependencyGraph.create(dependencies)
+
+    val allowedDependencies = arrayOf(
+      "app -> .*",
+      "feature[a-z]* -> lib[0-9]*",
+      "feature[a-z]* -> api[0-9]*",
+      "api[0-9]* -> lib",
+    )
+
+    val allowedViolations = mapOf(
+      "api" to listOf("lib2")
+    )
+
+    OnlyAllowedAssert(allowedDependencies, allowedViolations = allowedViolations).assert(dependencyGraph)
+  }
+
   private fun testGraph(): DependencyGraph {
     return DependencyGraph.create(
       "app" to "feature",
