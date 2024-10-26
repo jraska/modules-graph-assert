@@ -51,6 +51,12 @@ moduleGraphAssert {
 }
 ```
 
+#### Kotlin Multiplatform (KMP)
+```groovy
+  configurations += setOf("commonMainImplementation", "commonMainApi") // different sourceSets defaults
+```
+-  Please see [this issue](https://github.com/jraska/modules-graph-assert/issues/249#issuecomment-2437075587) for details and comment if you face issues.
+
 ### Module name alias
 - You don't have to rely on module names and set a property `ext.moduleNameAssertAlias = "ThisWillBeAssertedOn"`
 - This can be set on any module and the `allowed`/`restricted` rules would use the alias instead of module name for asserting.
