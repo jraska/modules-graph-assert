@@ -67,12 +67,13 @@ class FullProjectMultipleAppliedGradleTest {
   fun printsBothCorrectStatistics() {
     val output =
       runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphStatistics").output
+    val ln = System.lineSeparator()
 
     println(output)
-    assert(output.contains("> Task :app:generateModulesGraphStatistics\n" +
-      "GraphStatistics(modulesCount=3, edgesCount=3, height=2, longestPath=':app -> :core -> :core-api')\n" +
-      "\n" +
-      "> Task :no-dependencies:generateModulesGraphStatistics\n" +
+    assert(output.contains("> Task :app:generateModulesGraphStatistics" + ln +
+      "GraphStatistics(modulesCount=3, edgesCount=3, height=2, longestPath=':app -> :core -> :core-api')" +
+      ln + ln +
+      "> Task :no-dependencies:generateModulesGraphStatistics" + ln +
       "GraphStatistics(modulesCount=1, edgesCount=0, height=0, longestPath=':no-dependencies')"))
   }
 
