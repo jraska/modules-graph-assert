@@ -1,7 +1,7 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
-import org.gradle.api.GradleException
+import org.gradle.api.tasks.VerificationException
 import java.io.Serializable
 
 class ModuleTreeHeightAssert(
@@ -20,7 +20,7 @@ class ModuleTreeHeightAssert(
     val height = dependencyGraph.heightOf(moduleName)
     if (height > maxHeight) {
       val longestPath = dependencyGraph.longestPath(moduleName)
-      throw GradleException("Module $moduleName is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}")
+      throw VerificationException("Module $moduleName is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}")
     }
   }
 
@@ -28,7 +28,7 @@ class ModuleTreeHeightAssert(
     val height = dependencyGraph.height()
     if (height > maxHeight) {
       val longestPath = dependencyGraph.longestPath()
-      throw GradleException("Module Graph is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}")
+      throw VerificationException("Module Graph is allowed to have maximum height of $maxHeight, but has $height, problematic dependencies: ${longestPath.pathString()}")
     }
   }
 }

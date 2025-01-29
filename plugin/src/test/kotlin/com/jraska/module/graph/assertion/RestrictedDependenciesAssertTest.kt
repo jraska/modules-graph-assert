@@ -1,7 +1,7 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
-import org.gradle.api.GradleException
+import org.gradle.api.tasks.VerificationException
 import org.junit.Test
 
 class RestrictedDependenciesAssertTest {
@@ -12,14 +12,14 @@ class RestrictedDependenciesAssertTest {
     RestrictedDependenciesAssert(emptyArray()).assert(dependencyGraph)
   }
 
-  @Test(expected = GradleException::class)
+  @Test(expected = VerificationException::class)
   fun failsWhenFeatureCannotDependOnLib() {
     val dependencyGraph = testGraph()
 
     RestrictedDependenciesAssert(arrayOf("feature -X> lib2")).assert(dependencyGraph)
   }
 
-  @Test(expected = GradleException::class)
+  @Test(expected = VerificationException::class)
   fun failsWhenLibCannotDependOnAndroid() {
     val dependencyGraph = testGraph()
 
@@ -48,7 +48,7 @@ class RestrictedDependenciesAssertTest {
     ).assert(dependencyGraph)
   }
 
-  @Test(expected = GradleException::class)
+  @Test(expected = VerificationException::class)
   fun failsWithMatchersToAlias() {
     val dependencyGraph = DependencyGraph.create(
       "app" to "feature",

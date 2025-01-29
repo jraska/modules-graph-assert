@@ -3,7 +3,7 @@ package com.jraska.module.graph.assertion
 import com.jraska.module.graph.DependencyGraph
 import com.jraska.module.graph.Parse
 import com.jraska.module.graph.RegexpDependencyMatcher
-import org.gradle.api.GradleException
+import org.gradle.api.tasks.VerificationException
 
 class RestrictedDependenciesAssert(
   private val errorMatchers: Array<String>,
@@ -20,7 +20,7 @@ class RestrictedDependenciesAssert(
       }.filter { it.second.isNotEmpty() }
 
     if (failedDependencies.isNotEmpty()) {
-      throw GradleException(buildErrorMessage(failedDependencies))
+      throw VerificationException(buildErrorMessage(failedDependencies))
     }
   }
 

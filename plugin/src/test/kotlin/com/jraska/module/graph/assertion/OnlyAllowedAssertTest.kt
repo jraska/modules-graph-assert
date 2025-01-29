@@ -1,11 +1,11 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
-import org.gradle.api.GradleException
+import org.gradle.api.tasks.VerificationException
 import org.junit.Test
 
 class OnlyAllowedAssertTest {
-  @Test(expected = GradleException::class)
+  @Test(expected = VerificationException::class)
   fun failsWithNoMatchingMatchers() {
     val dependencyGraph = testGraph()
 
@@ -33,7 +33,7 @@ class OnlyAllowedAssertTest {
     OnlyAllowedAssert(allowedDependencies).assert(dependencyGraph)
   }
 
-  @Test(expected = GradleException::class)
+  @Test(expected = VerificationException::class)
   fun failsWhenOneNotAllowed() {
     val dependencies = testGraph().dependencyPairs().toMutableList().apply { add("api" to "lib2") }
     val dependencyGraph = DependencyGraph.create(dependencies)

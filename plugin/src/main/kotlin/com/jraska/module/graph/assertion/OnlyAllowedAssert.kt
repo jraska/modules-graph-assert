@@ -2,7 +2,7 @@ package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
 import com.jraska.module.graph.Parse
-import org.gradle.api.GradleException
+import org.gradle.api.tasks.VerificationException
 
 class OnlyAllowedAssert(
   private val allowedDependencies: Array<String>,
@@ -18,7 +18,7 @@ class OnlyAllowedAssert(
 
     if (disallowedDependencies.isNotEmpty()) {
       val allowedRules = allowedDependencies.joinToString(", ") { "'$it'" }
-      throw GradleException("$disallowedDependencies not allowed by any of [$allowedRules]")
+      throw VerificationException("$disallowedDependencies not allowed by any of [$allowedRules]")
     }
   }
 }

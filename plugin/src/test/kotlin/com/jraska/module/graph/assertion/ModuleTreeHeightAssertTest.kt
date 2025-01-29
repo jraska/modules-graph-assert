@@ -1,7 +1,7 @@
 package com.jraska.module.graph.assertion
 
 import com.jraska.module.graph.DependencyGraph
-import org.gradle.api.GradleException
+import org.gradle.api.tasks.VerificationException
 import org.junit.Test
 
 class ModuleTreeHeightAssertTest {
@@ -12,7 +12,7 @@ class ModuleTreeHeightAssertTest {
     ModuleTreeHeightAssert("app", 3).assert(dependencyGraph)
   }
 
-  @Test(expected = GradleException::class)
+  @Test(expected = VerificationException::class)
   fun failsOnTooLargeHeight() {
     val dependencyGraph = testGraph()
 
@@ -26,7 +26,7 @@ class ModuleTreeHeightAssertTest {
     ModuleTreeHeightAssert(null, 3).assert(dependencyGraph)
   }
 
-  @Test(expected = GradleException::class)
+  @Test(expected = VerificationException::class)
   fun failsOnTooHighGraphHeight() {
     val dependencyGraph = testGraph()
 
