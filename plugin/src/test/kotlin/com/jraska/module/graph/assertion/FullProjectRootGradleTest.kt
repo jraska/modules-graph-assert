@@ -36,8 +36,9 @@ class FullProjectRootGradleTest {
 
     val output =
       runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphStatistics").output
+    val ln = System.lineSeparator()
 
-    assert(output.contains(("> Task :generateModulesGraphStatistics\n.*" +
+    assert(output.contains(("> Task :generateModulesGraphStatistics" + ln + ".*" +
       "GraphStatistics\\(modulesCount=2, edgesCount=1, height=1, longestPath=\'root.* -> :core\'\\)").toRegex()))
   }
 
@@ -71,10 +72,11 @@ class FullProjectRootGradleTest {
 
     val output =
       runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphStatistics").output
+    val ln = System.lineSeparator()
 
-    assert(output.contains(("> Task :generateModulesGraphStatistics\n.*" +
-      "GraphStatistics\\(modulesCount=1, edgesCount=0, height=0, longestPath=\'root.*\'\\)\n\n" +
-      "> Task :app:generateModulesGraphStatistics\n+" +
+    assert(output.contains(("> Task :generateModulesGraphStatistics" + ln + ".*" +
+      "GraphStatistics\\(modulesCount=1, edgesCount=0, height=0, longestPath=\'root.*\'\\)" + ln + ln +
+      "> Task :app:generateModulesGraphStatistics" + ln + "+" +
       "GraphStatistics\\(modulesCount=1, edgesCount=0, height=0, longestPath=\':app\'\\)").toRegex()))
   }
 
