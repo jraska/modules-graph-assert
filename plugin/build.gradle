@@ -34,38 +34,17 @@ java {
 group = 'com.jraska.module.graph.assertion'
 
 gradlePlugin {
-  website = POM_URL
-  vcsUrl = POM_URL
+  website = 'https://github.com/jraska/modules-graph-assert'
+  vcsUrl = 'https://github.com/jraska/modules-graph-assert'
 
   plugins {
     modulesGraphAssert {
       id = 'com.jraska.module.graph.assertion'
       version = '2.7.3'
-      displayName = POM_NAME
-      description = POM_DESCRIPTION
+      displayName = 'Modules Graph Assert'
+      description = 'Gradle plugin to keep your modules graph healthy and lean.'
       implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsPlugin'
       tags.addAll('graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module')
-    }
-  }
-}
-
-afterEvaluate {
-  publishing.publications.forEach {
-    it.pom {
-      name = POM_NAME
-      description = POM_DESCRIPTION
-      url = POM_URL
-      licenses {
-        license {
-          name = POM_LICENCE_NAME
-          url = POM_LICENCE_URL
-        }
-      }
-      scm {
-        connection = POM_SCM_CONNECTION
-        developerConnection = POM_SCM_DEV_CONNECTION
-        url = POM_SCM_URL
-      }
     }
   }
 }
