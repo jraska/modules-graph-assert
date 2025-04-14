@@ -1,5 +1,6 @@
-### References to support the Droidcon Berlin 2021 Gradle talk. ([Video Link](https://www.droidcon.com/2021/11/10/nail-your-gradle-build-time/))
+### References to support the Droidcon Berlin 2021 talk: Nail your Gradle build time. ([Video Link](https://www.droidcon.com/2021/11/10/nail-your-gradle-build-time/))
 
+- [Presentation slides](https://docs.google.com/presentation/d/1NXNFT26CaxXYy3GUcBA594ZcCEv-BEongH3TMZai1Tw/edit?usp=sharing)
 - [About module rules](https://proandroiddev.com/module-rules-protect-your-build-time-and-architecture-d1194c7cc6bc)
 - [Why not to use buildSrc](https://proandroiddev.com/stop-using-gradle-buildsrc-use-composite-builds-instead-3c38ac7a2ab3)
 - [Modules graph assert plugin](https://github.com/jraska/modules-graph-assert)
