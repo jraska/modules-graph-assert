@@ -1,4 +1,4 @@
-### References to support the Droidcon London 2023 [Observability talk](https://london.droidcon.com/josef-raska/). (*[Video link](https://www.droidcon.com/2023/11/15/mobile-observability-at-scale/)*)
+### References to support the Droidcon London 2023: Mobile Observability at scale. (*[Video link](https://www.droidcon.com/2023/11/15/mobile-observability-at-scale/)*)
 
 - [The slides of the presentataion](https://docs.google.com/presentation/d/1ZZMT4IXQQV5_fN-ESLX9egJrwSJivv7nCIYLfawTYfk/edit?usp=sharing)
 - [Google SRE book](https://sre.google/sre-book/table-of-contents/) - [Embracing Risk](https://sre.google/sre-book/embracing-risk/): On error budgets
