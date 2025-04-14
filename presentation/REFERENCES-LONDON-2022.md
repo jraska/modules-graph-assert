@@ -1,4 +1,4 @@
-### References to support the Droidcon London 2022 [Modularization talk](https://london.droidcon.com/josef-raska/). (*[Video link](https://www.droidcon.com/2022/11/15/modularization-flatten-your-graph-and-get-the-real-benefits/)*)
+### References to support the Droidcon London 2022 talk: Modularization – flatten your graph – get the benefits. (*[Video link](https://www.droidcon.com/2022/11/15/modularization-flatten-your-graph-and-get-the-real-benefits/)*)
 
 - [The slides of the presentataion](https://docs.google.com/presentation/d/1_c3SsyXBUbCSn9RHL7PjRfprNzxlYr_IjRbqQvEqsOk/edit?usp=sharing)
 - [Example app implementing the presented practices](https://github.com/jraska/github-client)
