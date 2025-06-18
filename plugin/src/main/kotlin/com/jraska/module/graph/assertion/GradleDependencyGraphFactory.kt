@@ -35,8 +35,8 @@ object GradleDependencyGraphFactory {
         project.moduleDisplayName() to project.configurations
           .filter { configurationsToLook.contains(it.name) }
           .flatMap { configuration ->
-            configuration.dependencies.filterIsInstance(ProjectDependency::class.java)
-              .map { it.dependencyProject }
+            configuration.dependencies.filterIsInstance<ProjectDependency>()
+              .map { project.project(it.path) }
           }
           .map { it.moduleDisplayName() }
       }
