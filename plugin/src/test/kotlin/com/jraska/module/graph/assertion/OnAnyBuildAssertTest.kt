@@ -13,8 +13,12 @@ class OnAnyBuildAssertTest {
 
   @Before
   fun setup() {
-    testProjectDir.newFile("settings.gradle")
-      .writeText("include ':app', ':core', ':feature', 'core-api'")
+    testProjectDir.newFile("settings.gradle").writeText("""
+      plugins {
+          id 'com.jraska.module.graph.assertion.settings'
+      }
+      include ':app', ':core', ':feature', 'core-api'
+    """)
 
     createModule(
       "core-api", content = """

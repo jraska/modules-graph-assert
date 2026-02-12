@@ -15,13 +15,15 @@ class ModuleGraphAssertionsPluginTest {
   fun setUp() {
     project = ProjectBuilder.builder().withName("app").build() as DefaultProject
     project.plugins.apply(JavaLibraryPlugin::class.java)
+    project.registerDependencyCollectorService()
+    project.collectAndRegisterDependencies(Api.API_IMPLEMENTATION_CONFIGURATIONS)
   }
 
   @Test
   fun testAddsOnlyOneTaskWhenApplied() {
     val checkDependsOnSize = project.tasks.findByName(CHECK_TASK_NAME)!!.dependsOn.size
 
-    val plugin = ModuleGraphAssertionsPlugin()
+    val plugin = buildModuleGraphAssertionsPlugin()
     plugin.addModulesAssertions(project, GraphRulesExtension())
 
     assert(project.tasks.findByName(Api.Tasks.ASSERT_ALL) != null)
@@ -31,7 +33,7 @@ class ModuleGraphAssertionsPluginTest {
 
   @Test
   fun testAddsOnlyOneTaskWhenApplied2() {
-    val plugin = ModuleGraphAssertionsPlugin()
+    val plugin = buildModuleGraphAssertionsPlugin()
 
     val extension = GraphRulesExtension().apply {
       maxHeight = 3
@@ -53,7 +55,7 @@ class ModuleGraphAssertionsPluginTest {
 
   @Test
   fun testAddsOnlyOneTaskWhenApplied3() {
-    val plugin = ModuleGraphAssertionsPlugin()
+    val plugin = buildModuleGraphAssertionsPlugin()
 
     val extension = GraphRulesExtension().apply {
       maxHeight = 3
@@ -70,4 +72,15 @@ class ModuleGraphAssertionsPluginTest {
       project.tasks.findByName(Api.Tasks.ASSERT_ALLOWED) as AssertGraphTask,
     )
   }
+
+  private fun buildModuleGraphAssertionsPlugin(): ModuleGraphAssertionsPlugin =
+    ModuleGraphAssertionsPlugin()
+      .apply Plugin@{
+        javaClass
+          .getDeclaredField("dependencyCollectorService")
+          .apply {
+            isAccessible = true
+            set(this@Plugin, project.getDependencyCollectorService())
+          }
+      }
 }

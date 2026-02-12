@@ -11,8 +11,12 @@ class FullProjectRootGradleTest {
 
   @Test
   fun printsCorrectStatisticsForRootProjectWithDependency() {
-    testProjectDir.newFile("settings.gradle")
-      .writeText("include ':core'")
+    testProjectDir.newFile("settings.gradle").writeText("""
+      plugins {
+          id 'com.jraska.module.graph.assertion.settings'
+      }
+      include ':core'
+    """)
 
     createRoot(content = """
       plugins {
@@ -43,8 +47,12 @@ class FullProjectRootGradleTest {
 
   @Test
   fun printsCorrectStatisticsForIndependentRootProject() {
-    testProjectDir.newFile("settings.gradle")
-      .writeText("include ':app'")
+    testProjectDir.newFile("settings.gradle").writeText("""
+      plugins {
+          id 'com.jraska.module.graph.assertion.settings'
+      }
+      include ':app'
+    """)
 
     createRoot(content = """
       plugins {
@@ -73,8 +81,8 @@ class FullProjectRootGradleTest {
       runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphStatistics").output
 
     assert(output.contains(("> Task :generateModulesGraphStatistics\n.*" +
-      "GraphStatistics\\(modulesCount=1, edgesCount=0, height=0, longestPath=\'root.*\'\\)\n\n" +
-      "> Task :app:generateModulesGraphStatistics\n+" +
+      "GraphStatistics\\(modulesCount=1, edgesCount=0, height=0, longestPath=\'root.*\'\\)").toRegex()))
+      assert(output.contains(("> Task :app:generateModulesGraphStatistics\n+" +
       "GraphStatistics\\(modulesCount=1, edgesCount=0, height=0, longestPath=\':app\'\\)").toRegex()))
   }
 

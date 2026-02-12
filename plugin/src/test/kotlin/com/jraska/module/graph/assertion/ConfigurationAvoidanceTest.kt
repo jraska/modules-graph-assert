@@ -14,6 +14,14 @@ class ConfigurationAvoidanceTest {
 
   @Before
   fun setup() {
+    testProjectDir.newFile("settings.gradle").writeText(
+      """
+          plugins {
+              id 'com.jraska.module.graph.assertion.settings'
+          }
+      """
+    )
+
     testProjectDir.newFile("build.gradle").writeText(
       """
           plugins {
@@ -42,9 +50,10 @@ class ConfigurationAvoidanceTest {
 }
 
 fun runGradleAssertModuleGraph(dir: File, vararg arguments: String = arrayOf("--configuration-cache", "assertModuleGraph")): BuildResult {
+  val arguments = arguments.asList() + "-Dorg.gradle.unsafe.isolated-projects=true"
   return GradleRunner.create()
     .withProjectDir(dir)
     .withPluginClasspath()
-    .withArguments(arguments.asList())
+    .withArguments(arguments)
     .build()
 }

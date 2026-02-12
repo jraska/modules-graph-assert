@@ -9,26 +9,25 @@ import org.junit.Test
 
 class GradleDependencyGraphFactoryTest {
 
-  private val EXPECTED_SINGLE_MODULE = """digraph G {
-":core"
-}"""
+  private val EXPECTED_SINGLE_MODULE_RELATIONS = listOf("\":core\"")
 
-  private val EXPECTED_GRAPHVIZ = """digraph G {
-":app" -> ":lib"
-":app" -> ":feature" [color=red style=bold]
-":lib" -> ":core" [color=red style=bold]
-":feature" -> ":core"
-":feature" -> ":lib" [color=red style=bold]
-}"""
+  private val EXPECTED_GRAPHVIZ_RELATIONS = listOf(
+    "\":app\" -> \":lib\"",
+    "\":app\" -> \":feature\" [color=red style=bold]",
+    "\":lib\" -> \":core\" [color=red style=bold]",
+    "\":feature\" -> \":core\"",
+    "\":feature\" -> \":lib\" [color=red style=bold]",
+  )
 
-  private val EXPECTED_TEST_IMPLEMENTATION = """digraph G {
-":app" -> ":feature" [color=red style=bold]
-":feature" -> ":lib" [color=red style=bold]
-":feature" -> ":core-testing"
-":lib" -> ":core" [color=red style=bold]
-":core-testing" -> ":core"
-}"""
+  private val EXPECTED_TEST_IMPLEMENTATION_RELATIONS = listOf(
+    "\":app\" -> \":feature\" [color=red style=bold]",
+    "\":feature\" -> \":lib\" [color=red style=bold]",
+    "\":feature\" -> \":core-testing\"",
+    "\":lib\" -> \":core\" [color=red style=bold]",
+    "\":core-testing\" -> \":core\"",
+  )
 
+  private lateinit var dependencyCollectorService: DependencyCollectorService
   private lateinit var appProject: DefaultProject
   private lateinit var coreProject: DefaultProject
   private var rootProject: DefaultProject? = null
@@ -52,30 +51,38 @@ class GradleDependencyGraphFactoryTest {
     val coreTestingProject = createProject("core-testing")
     coreTestingProject.dependencies.add("implementation", coreProject)
     featureProject.dependencies.add("testImplementation", coreTestingProject)
+
+    dependencyCollectorService = rootProject!!.registerDependencyCollectorService().get()
   }
 
   @Test
   fun generatesProperGraph() {
-    val dependencyGraph = GradleDependencyGraphFactory.create(appProject, Api.API_IMPLEMENTATION_CONFIGURATIONS)
+    rootProject!!.collectAndRegisterDependencies(Api.API_IMPLEMENTATION_CONFIGURATIONS)
+    val dependencyGraph = GradleDependencyGraphFactory.create(appProject, dependencyCollectorService)
 
     val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
-    assert(EXPECTED_GRAPHVIZ == graphvizText)
+
+    graphvizText.assertRelations(EXPECTED_GRAPHVIZ_RELATIONS)
   }
 
   @Test
   fun generatesWithTestImplementatinoGraph() {
-    val dependencyGraph = GradleDependencyGraphFactory.create(appProject, setOf("implementation", "testImplementation"))
+    rootProject!!.collectAndRegisterDependencies(setOf("implementation", "testImplementation"))
+    val dependencyGraph = GradleDependencyGraphFactory.create(appProject, dependencyCollectorService)
 
     val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
-    assert(EXPECTED_TEST_IMPLEMENTATION == graphvizText)
+
+    graphvizText.assertRelations(EXPECTED_TEST_IMPLEMENTATION_RELATIONS)
   }
 
   @Test
   fun generatesSingleModuleGraphOnNoDependencyModule() {
-    val dependencyGraph = GradleDependencyGraphFactory.create(coreProject, Api.API_IMPLEMENTATION_CONFIGURATIONS)
+    rootProject!!.collectAndRegisterDependencies(Api.API_IMPLEMENTATION_CONFIGURATIONS)
+    val dependencyGraph = GradleDependencyGraphFactory.create(coreProject, dependencyCollectorService)
 
     val graphvizText = GraphvizWriter.toGraphviz(dependencyGraph)
-    assert(EXPECTED_SINGLE_MODULE == graphvizText)
+
+    graphvizText.assertRelations(EXPECTED_SINGLE_MODULE_RELATIONS)
   }
 
   private fun createProject(name: String): DefaultProject {

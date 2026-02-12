@@ -44,7 +44,15 @@ gradlePlugin {
       displayName = 'Modules Graph Assert'
       description = 'Gradle plugin to keep your modules graph healthy and lean.'
       implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsPlugin'
-      tags.addAll('graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module')
+      tags.addAll('graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module', 'isolated-projects')
+    }
+    modulesGraphAssertSettings {
+      id = 'com.jraska.module.graph.assertion.settings'
+      version = VERSION_NAME
+      displayName = 'Modules Graph Assert Settings Plugin'
+      description = 'Settings plugin for isolated projects compatibility.'
+      implementationClass = 'com.jraska.module.graph.assertion.ModuleGraphAssertionsSettingsPlugin'
+      tags.addAll('graph', 'assert', 'build speed', 'android', 'java', 'kotlin', 'quality', 'multiprojects', 'module', 'settings', 'isolated-projects')
     }
   }
 }

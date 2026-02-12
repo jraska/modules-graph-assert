@@ -27,19 +27,69 @@ A Gradle plugin that helps keep your module graph healthy and lean.
 - `maxHeight = 4` can verify that the [height of the modules tree](https://stackoverflow.com/questions/2603692/what-is-the-difference-between-tree-depth-and-height) with a root in the module will not exceed 4. Tree height is a good metric to prevent module tree degeneration into a list.
  
 ## Usage
-Apply the plugin to a module, which dependencies graph you want to assert.
-```groovy
+
+**IMPORTANT:** Starting from version 2.10.0, the plugin requires TWO plugins to be applied for Gradle isolated projects compatibility:
+
+### 1. Apply the Settings Plugin
+
+In your `settings.gradle(.kts)`:
+
+```kotlin
 plugins {
-  id "com.jraska.module.graph.assertion" version "2.9.0"
+  id("com.jraska.module.graph.assertion.settings") version "2.10.0"
 }
 ```
 
-- You can run `./gradlew assertModuleGraph` to execute configured checks or `./gradlew check` where `assertModuleGraph` will be included.
+Or in Groovy:
+
+```groovy
+plugins {
+  id "com.jraska.module.graph.assertion.settings" version "2.10.0"
+}
+```
+
+### 2. Apply the Project Plugin
+
+In your root `build.gradle(.kts)`:
+
+```kotlin
+plugins {
+  id("com.jraska.module.graph.assertion")
+}
+
+moduleGraphAssert {
+  maxHeight = 2
+  allowed = arrayOf("Implementation -> Api", "App -> .*")
+  restricted = arrayOf("Api -X> Api")
+}
+```
+
+Or in Groovy:
+
+```groovy
+plugins {
+  id "com.jraska.module.graph.assertion"
+}
+
+moduleGraphAssert {
+  maxHeight = 4
+  allowed = [':.* -> :core', ':feature.* -> :lib.*']
+  restricted = [':feature-[a-z]* -X> :forbidden-to-depend-on']
+}
+```
+
+### Running Assertions
+
+- Run `./gradlew assertModuleGraph` to execute configured checks or `./gradlew check` where `assertModuleGraph` will be included.
 - Alternative option is using `assertOnAnyBuild = true` configuration to run the checks on every single Gradle build without need for running explicit tasks - see https://github.com/jraska/modules-graph-assert/pull/184 for more details.
 - Hint: Gradle [Configuration On Demand](https://docs.gradle.org/current/userguide/multi_project_configuration_and_execution.html) may hide some modules from the plugin visibility. If you notice some modules are missing, try the `--no-configure-on-demand` flag.
 
+### Why Two Plugins?
+
+Gradle's [isolated projects](https://docs.gradle.org/current/userguide/isolated_projects.html) feature prevents cross-project access during configuration. The settings plugin uses `gradle.lifecycle.beforeProject` to collect dependency information from all projects in an isolated projects-compatible way. The project plugin then uses this collected data to run assertions. This architecture works with both isolated and non-isolated projects modes.
+
 ### Configuration
-Rules are applied on the Gradle module and its `api` and `implementation` dependencies by default. Typically you would want to apply this in your final app module, however configuration for any module is possible. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
+Rules are applied to analyze the entire project's module graph and its `api` and `implementation` dependencies by default. The plugin analyzes all modules in your project from the root. [Example](https://github.com/jraska/github-client/blob/master/app/build.gradle#L141)
 
 ```groovy
 moduleGraphAssert {

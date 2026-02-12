@@ -12,7 +12,14 @@ class FullProjectGradleTest {
 
   @Before
   fun setup() {
-    testProjectDir.newFile("settings.gradle").writeText("include ':app', ':core', ':feature', 'core-api'")
+    testProjectDir.newFile("settings.gradle").writeText(
+      """
+      plugins {
+          id 'com.jraska.module.graph.assertion.settings'
+      }
+      include ':app', ':core', ':feature', 'core-api'
+    """
+    )
 
     createModule(
       "core-api", content = """
@@ -122,7 +129,7 @@ class FullProjectGradleTest {
     val output = runGradleAssertModuleGraph(testProjectDir.root, "generateModulesGraphvizText", "-Pmodules.graph.output.gv=${outputFile.absolutePath}").output
 
     assert(output.contains("GraphViz saved to"))
-    assert(outputFile.readText() == EXPECTED_GRAPHVIZ_TEXT)
+    outputFile.readText().assertRelations(EXPECTED_GRAPHVIZ_RELATIONS)
   }
 
   private fun createModule(dir: String, content: String) {
@@ -131,12 +138,12 @@ class FullProjectGradleTest {
   }
 
   companion object {
-    const val EXPECTED_GRAPHVIZ_TEXT = """digraph G {
-":app('App')" -> ":core-api('Api')"
-":app('App')" -> ":core('Implementation')" [color=red style=bold]
-":app('App')" -> ":feature('Implementation')"
-":core('Implementation')" -> ":core-api('Api')" [color=red style=bold]
-":feature('Implementation')" -> ":core-api('Api')"
-}"""
+    val EXPECTED_GRAPHVIZ_RELATIONS = listOf(
+      "\":app('App')\" -> \":core-api('Api')\"",
+      "\":app('App')\" -> \":core('Implementation')\" [color=red style=bold]",
+      "\":app('App')\" -> \":feature('Implementation')\"",
+      "\":core('Implementation')\" -> \":core-api('Api')\" [color=red style=bold]",
+      "\":feature('Implementation')\" -> \":core-api('Api')\"",
+    )
   }
 }

@@ -1,21 +1,18 @@
 package com.jraska.module.graph.assertion
 
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtraPropertiesExtension
 
 object GradleModuleAliasExtractor {
-  fun extractModuleAliases(project: Project): Map<String, String> {
-    val rootProject = project.rootProject
-    return (rootProject.subprojects + rootProject)
-      .mapNotNull { alias(it) }
-      .toMap()
-  }
+  fun extractModuleAliases(service: DependencyCollectorService): Map<String, String> =
+    service.getAllProjectAliases()
 
-  private fun alias(project: Project): Pair<String, String>? {
-    if (project.hasProperty(Api.Properties.MODULE_NAME_ALIAS)) {
-      val moduleAlias = project.property(Api.Properties.MODULE_NAME_ALIAS) as String
-      return project.moduleDisplayName() to moduleAlias
-    } else {
-      return null
+  fun Project.extractOwnAlias(): String? =
+    try {
+      extensions
+        .extraProperties
+        .get(Api.Properties.MODULE_NAME_ALIAS) as? String
+    } catch (_: ExtraPropertiesExtension.UnknownPropertyException) {
+      null
     }
-  }
 }

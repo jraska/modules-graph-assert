@@ -12,8 +12,12 @@ class FullProjectMultipleAppliedGradleTest {
 
   @Before
   fun setup() {
-    testProjectDir.newFile("settings.gradle")
-      .writeText("include ':app', ':core', 'core-api', 'no-dependencies'")
+    testProjectDir.newFile("settings.gradle").writeText("""
+      plugins {
+          id 'com.jraska.module.graph.assertion.settings'
+      }
+      include ':app', ':core', 'core-api', 'no-dependencies'
+    """)
 
     createModule(
       "core-api", content = """
@@ -70,9 +74,8 @@ class FullProjectMultipleAppliedGradleTest {
 
     println(output)
     assert(output.contains("> Task :app:generateModulesGraphStatistics\n" +
-      "GraphStatistics(modulesCount=3, edgesCount=3, height=2, longestPath=':app -> :core -> :core-api')\n" +
-      "\n" +
-      "> Task :no-dependencies:generateModulesGraphStatistics\n" +
+      "GraphStatistics(modulesCount=3, edgesCount=3, height=2, longestPath=':app -> :core -> :core-api')\n"))
+    assert(output.contains("> Task :no-dependencies:generateModulesGraphStatistics\n" +
       "GraphStatistics(modulesCount=1, edgesCount=0, height=0, longestPath=':no-dependencies')"))
   }
 

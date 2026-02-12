@@ -3,6 +3,7 @@ package com.jraska.module.graph.assertion.tasks
 import com.jraska.module.graph.DependencyGraph
 import com.jraska.module.graph.GraphvizWriter
 import com.jraska.module.graph.assertion.Api
+import org.codehaus.groovy.runtime.DefaultGroovyMethods.hasProperty
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.Input
@@ -54,20 +55,16 @@ open class GenerateModulesGraphTask : DefaultTask() {
   }
 
   companion object {
-    internal fun outputFilePath(project: Project): String? {
-      if (project.hasProperty(Api.Parameters.OUTPUT_PATH)) {
-        return project.property(Api.Parameters.OUTPUT_PATH).toString()
-      } else {
-        return null
-      }
-    }
+    internal fun outputFilePath(project: Project): String? =
+      project
+        .providers
+        .gradleProperty(Api.Parameters.OUTPUT_PATH)
+        .orNull
 
-    internal fun onlyModule(project: Project): String? {
-      if (project.hasProperty(Api.Parameters.PRINT_ONLY_MODULE)) {
-        return project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
-      } else {
-        return null
-      }
-    }
+    internal fun onlyModule(project: Project): String? =
+      project
+        .providers
+        .gradleProperty(Api.Parameters.PRINT_ONLY_MODULE)
+        .orNull
   }
 }

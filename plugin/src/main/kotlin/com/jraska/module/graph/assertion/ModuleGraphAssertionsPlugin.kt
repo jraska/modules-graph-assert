@@ -16,20 +16,61 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 class ModuleGraphAssertionsPlugin : Plugin<Project> {
 
   private val moduleGraph by lazy {
-    GradleDependencyGraphFactory.create(evaluatedProject, configurationsToLook).serializableGraph()
+    val projectDependencies = dependencyCollectorService.getAllProjectDependencies()
+    if (projectDependencies.isEmpty()) {
+      throw IllegalStateException("""
+        |
+        |No project dependencies were collected. This likely means the settings plugin is not applied.
+        |
+        |To use module-graph-assertion, you MUST apply BOTH plugins:
+        |
+        |1. In settings.gradle(.kts):
+        |   plugins {
+        |       id("com.jraska.module.graph.assertion.settings") version "2.10.0"
+        |   }
+        |
+        |2. In any subproject build.gradle(.kts):
+        |   plugins {
+        |       id("com.jraska.module.graph.assertion")
+        |   }
+        |
+        |   moduleGraphAssert {
+        |       maxHeight = 2
+        |       // ... your configuration
+        |   }
+        |
+        |See: https://github.com/jraska/modules-graph-assert
+        |""".trimMargin())
+    }
+
+    GradleDependencyGraphFactory.create(evaluatedProject, dependencyCollectorService).serializableGraph()
   }
 
   private val aliases by lazy {
-    GradleModuleAliasExtractor.extractModuleAliases(evaluatedProject)
+    GradleModuleAliasExtractor.extractModuleAliases(dependencyCollectorService)
   }
 
   private lateinit var evaluatedProject: Project
   private lateinit var configurationsToLook: Set<String>
+  private lateinit var dependencyCollectorService: DependencyCollectorService
 
   override fun apply(project: Project) {
     val graphRules = project.extensions.create(GraphRulesExtension::class.java, Api.EXTENSION_ROOT, GraphRulesExtension::class.java)
 
     project.afterEvaluate {
+      evaluatedProject = project
+      configurationsToLook = graphRules.configurations
+      dependencyCollectorService =
+        project
+          .registerDependencyCollectorService(graphRules.configurations)
+          .get()
+
+      // Force initialization of the graph during projectsEvaluated
+      project.gradle.projectsEvaluated {
+        moduleGraph
+        aliases
+      }
+
       addModulesAssertions(project, graphRules)
 
       if (graphRules.assertOnAnyBuild) {
