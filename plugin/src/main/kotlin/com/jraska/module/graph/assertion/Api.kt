@@ -13,6 +13,7 @@ object Api {
 
   object Parameters {
     const val PRINT_ONLY_MODULE = "modules.graph.of.module"
+    const val PRINT_ONLY_DIRECT_DEPENDENCIES = "modules.graph.direct.dependencies"
     const val OUTPUT_PATH = "modules.graph.output.gv"
   }
 

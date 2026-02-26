@@ -89,6 +89,7 @@ class ModuleGraphAssertionsPlugin : Plugin<Project> {
       it.aliases = aliases
       it.outputFilePath = GenerateModulesGraphTask.outputFilePath(this)
       it.onlyModuleToPrint = GenerateModulesGraphTask.onlyModule(this)
+      it.onlyPrintDirectDependencies = GenerateModulesGraphTask.onlyDirectDependencies(this)
     }
   }
 

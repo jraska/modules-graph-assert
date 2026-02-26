@@ -109,6 +109,13 @@ class DependencyGraph private constructor() {
     return nodes().flatMap { node -> node.dependsOn }.count()
   }
 
+  /**
+   * Create a new [com.jraska.module.graph.DependencyGraph] where only the nodes that are one edge away from the node
+   * [key] are kept.
+   */
+  fun keepDirectDependencies(key: String): DependencyGraph =
+    create(this.subTree(key).dependencyPairs().filter { (nodeFrom, _) -> nodeFrom == key })
+
   class SerializableGraph(
     val dependencyPairs: ArrayList<Pair<String, String>>,
     val firstModule: String

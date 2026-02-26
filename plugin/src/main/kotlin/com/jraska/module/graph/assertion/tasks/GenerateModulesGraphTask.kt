@@ -20,6 +20,10 @@ open class GenerateModulesGraphTask : DefaultTask() {
   @Input
   var onlyModuleToPrint: String? = null
 
+  @Optional
+  @Input
+  var onlyPrintDirectDependencies: Boolean? = false
+
   @Input
   lateinit var dependencyGraph: DependencyGraph.SerializableGraph
 
@@ -33,11 +37,19 @@ open class GenerateModulesGraphTask : DefaultTask() {
 
   @TaskAction
   fun run() {
-    val dependencyGraph = DependencyGraph.create(dependencyGraph).let {
-      if (onlyModuleToPrint == null) {
+    val dependencyGraph: DependencyGraph = DependencyGraph.create(dependencyGraph).let {
+      val moduleToPrint = onlyModuleToPrint
+      if (moduleToPrint == null) {
         it
       } else {
-        it.subTree(onlyModuleToPrint!!)
+        val subTree = it.subTree(moduleToPrint)
+
+        // Check if we should only print direct dependencies of the root of the given subtree.
+        if (this.onlyPrintDirectDependencies == true) {
+          subTree.keepDirectDependencies(moduleToPrint)
+        } else {
+          subTree
+        }
       }
     }
 
@@ -67,6 +79,15 @@ open class GenerateModulesGraphTask : DefaultTask() {
         return project.property(Api.Parameters.PRINT_ONLY_MODULE) as String?
       } else {
         return null
+      }
+    }
+
+    internal fun onlyDirectDependencies(project: Project): Boolean {
+      if (project.hasProperty(Api.Parameters.PRINT_ONLY_DIRECT_DEPENDENCIES)) {
+        val propValue = project.property(Api.Parameters.PRINT_ONLY_DIRECT_DEPENDENCIES).toString()
+        return propValue == "true"
+      } else {
+        return false
       }
     }
   }
