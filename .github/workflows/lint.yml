@@ -1,0 +1,18 @@
+name: Lint
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Run Gradle Lint
+        run: ./gradlew lintJvm
+
+      - name: Upload lint results
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-results
+          path: |
+            plugin/build/reports/lint-results.html
