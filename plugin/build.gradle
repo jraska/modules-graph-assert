@@ -48,3 +48,24 @@ gradlePlugin {
     }
   }
 }
+
+publishing {
+  publications {
+    withType(MavenPublication) {
+      pom {
+        licenses {
+          license {
+            name = 'The Apache Software License, Version 2.0'
+            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            distribution = 'repo'
+          }
+        }
+        scm {
+          connection = 'scm:git:git://github.com/jraska/modules-graph-assert.git'
+          developerConnection = 'scm:git:ssh://git@github.com/jraska/modules-graph-assert.git'
+          url = 'https://github.com/jraska/modules-graph-assert'
+        }
+      }
+    }
+  }
+}
